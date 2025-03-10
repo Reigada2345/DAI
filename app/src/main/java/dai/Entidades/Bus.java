@@ -18,5 +18,6 @@ public class Bus {
         return (float) lotacao * 100 / capacidade;
     }
 
+    public 
     
 }
