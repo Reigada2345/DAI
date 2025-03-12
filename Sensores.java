@@ -24,4 +24,11 @@ public class Sensores {
         int lotacaoAleatoria = random.nextInt(bus1.getCapacidade() + 1);
         bus1.setLotacao(lotacaoAleatoria);
     }
+
+    public void exibirDados() {
+        System.out.println("Temperatura: " + bus1.getTemperatura() + "°C");
+        System.out.println("Capacidade: " + bus1.getCapacidade());
+        System.out.println("Lotação: " + bus1.getLotacao());
+        System.out.println("Ocupação: " + bus1.percentagem_lotacao() + "%");
+    }
 }

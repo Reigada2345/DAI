@@ -9,10 +9,10 @@ public class Bus {
         this.lotacao = lotacao;
     }
 
-//SETTERS-------
+// SETTERS
     public void setTemperatura(float temperatura) {
         if(temperatura < -20 || temperatura > 50) {
-            throw new IllegalArgumentException("Temperatura fora dos valores expectáveis");
+            throw new IllegalArgumentException("Temperatura fora dos valores esperados");
         } 
         this.temperatura = temperatura;
     }
@@ -30,9 +30,8 @@ public class Bus {
         }
         this.lotacao = lotacao;
     }
-//--------------
 
-//GETTERS-------
+// GETTERS
     public float getTemperatura() {
         return temperatura;
     }
@@ -44,14 +43,12 @@ public class Bus {
     public int getLotacao() {
         return lotacao;
     }
-//--------------
 
+// Método para calcular a porcentagem de ocupação
     public float percentagem_lotacao() {
         if (capacidade == 0) {
             throw new ArithmeticException("Capacidade não pode ser zero.");
         }
         return (float) lotacao * 100 / capacidade;
     }
-    
-    
 }
