@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        /* Estilo do menu no topo */
+        .navbar {
+            width: 100%;
+            background-color: #a67eb5;
+            color: white;
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            margin: 0;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+        }
+
+        .navbar ul li {
+            padding: 10px 20px;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .navbar ul li:hover {
+            background-color: #775b80;
+            border-radius: 5px;
+        }
+
+        /* Estilo do conteúdo principal */
+        .main-content {
+            margin-top: 70px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Menu lateral -->
+    <div class="navbar">
+        <h2>TUB</h2>
+        <ul>
+            <li><a href="dashboard.html"> Início</a></li>
+            <li><a href="autocarros.html"> Autocarros</a></li>
+            <li><a href="paragem.html"> Paragens</a></li>
+            <li><a href="index.html"> Sair</a></li>
+        </ul>
+    </div>
+
+    <!-- Conteúdo principal
+    <div class="main-content">
+        <div class="header">Bem-vindo ao Dashboard</div>
+        <p>.....</p>
+    </div> -->
+
+</body>
+</html>

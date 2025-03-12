@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f4f4f4;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Estilo do menu no topo */
+        .navbar {
+            width: 100%;
+            background-color: #a67eb5;
+            color: white;
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            margin: 0;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+        }
+
+        .navbar ul li {
+            padding: 10px 20px;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .navbar ul li:hover {
+            background-color: #775b80;
+            border-radius: 5px;
+        }
+
+        /* Estilo do conteúdo principal */
+        .main-content {
+            margin-top: 80px;
+            text-align: center;
+        }
+
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* Estilo do seletor de autocarros */
+        .bus-selector {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 18px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        /* Estilo dos botões */
+        .bus-options {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .bus-options button {
+            background-color: #741e94;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 200px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .bus-options button:hover {
+            background-color: #5a1573;
+        }
+
+        #busSelect {
+            color: gray;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <!-- Menu no topo -->
+    <div class="navbar">
+        <h2>TUB</h2>
+        <ul>
+            <li><a href="dashboard.html"> Início</a></li>
+            <li><a href="autocarros.html"> Autocarros</a></li>
+            <li><a href="paragem.html"> Paragens</a></li>
+            <li><a href="index.html"> Sair</a></li>
+        </ul>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div class="main-content">
+        <div class="header">Autocarros</div>
+
+        <!-- Seletor de autocarros -->
+        <div class="bus-selector">
+            <label for="busSelect">Escolha um autocarro:</label>
+            <select id="busSelect" onchange="mostrarOpcoes()">
+                <option value="">   Selecione </option>
+                <option value="101">Autocarro 101</option>
+                <option value="202">Autocarro 202</option>
+                <option value="303">Autocarro 303</option>
+            </select>
+        </div>
+
+        <!-- Opções que aparecem após escolher um autocarro -->
+        <div class="bus-options" id="busOptions">
+            <button onclick="verTemperatura()"> Ver Temperatura</button>
+            <button onclick="verLotacao()"> Ver Lotação</button>
+        </div>
+    </div>
+
+    <script>
+        let autocarroSelecionado = "";
+
+        function mostrarOpcoes() {
+            autocarroSelecionado = document.getElementById("busSelect").value;
+            let opcoes = document.getElementById("busOptions");
+            
+            if (autocarroSelecionado) {
+                opcoes.style.display = "flex";
+            } else {
+                opcoes.style.display = "none";
+            }
+        }
+
+        function verTemperatura() {
+            if (autocarroSelecionado) {
+                alert("A temperatura do Autocarro " + autocarroSelecionado + " é 22°C");
+            }
+        }
+
+        function verLotacao() {
+            if (autocarroSelecionado) {
+                alert("A lotação do Autocarro " + autocarroSelecionado + " é de 65%");
+            }
+        }
+
+        
+    </script>
+
+</body>
+</html>
