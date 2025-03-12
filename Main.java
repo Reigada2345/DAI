@@ -1,7 +1,8 @@
 public class Main {
     public static void main(String[] args) {
-        Sensores sensor = new Sensores();
+        Bus bus1 = new Bus(0, 80, 0);
+        Sensores sensor = new Sensores(bus1);
         sensor.atualizarSensores();
-        sensor.exibirDados(); // Exibir os dados gerados
+        sensor.exibirDados();
     }
 }

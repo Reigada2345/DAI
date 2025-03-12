@@ -44,7 +44,7 @@ public class Bus {
         return lotacao;
     }
 
-// Método para calcular a porcentagem de ocupação
+// CALCULAR LOTACAO
     public float percentagem_lotacao() {
         if (capacidade == 0) {
             throw new ArithmeticException("Capacidade não pode ser zero.");
