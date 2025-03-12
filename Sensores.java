@@ -6,7 +6,7 @@ public class Sensores {
 
     public Sensores(Bus bus) {
         random = new Random();
-        this.bus = bus;
+        this.bus = bus; 
         
         // INICIALIZAR DADOS
         atualizarSensores();
