@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informações do Autocarro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .info {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="busName">Informações do Autocarro</h1>
+        <div class="info"><strong>Temperatura:</strong> <span id="temperature">-</span></div>
+        <div class="info"><strong>Lotação:</strong> <span id="occupancy">-</span></div>
+        <div class="info"><strong>Horário:</strong> <span id="schedule">-</span></div>
+        <div class="info"><strong>Ponto de partida:</strong> <span id="departure">-</span></div>
+        <div class="info"><strong>Ponto de chegada:</strong> <span id="destination">-</span></div>
+    </div>
+
+    <script>
+        // Função para obter os parâmetros da URL
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                busName: params.get('busName'),
+                temperature: params.get('temperature'),
+                occupancy: params.get('occupancy'),
+                schedule: params.get('schedule'),
+                departure: params.get('departure'),
+                destination: params.get('destination')
+            };
+        }
+
+        // Função para exibir as informações do autocarro
+        function displayBusInfo() {
+            const params = getQueryParams();
+            document.getElementById('busName').textContent = params.busName;
+            document.getElementById('temperature').textContent = params.temperature;
+            document.getElementById('occupancy').textContent = params.occupancy;
+            document.getElementById('schedule').textContent = params.schedule;
+            document.getElementById('departure').textContent = params.departure;
+            document.getElementById('destination').textContent = params.destination;
+        }
+
+        // Chama a função para exibir as informações do autocarro
+        displayBusInfo();
+    </script>
+</body>
+</html>
