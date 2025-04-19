@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TUB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+
+
+    <style> 
+        body {
+            font-family: Montserrat, sans-serif;
+            ;
+            display: flex;
+            justify-content: center;
+            align-items: center;      
+            height: 100vh;
+            background-color: #f4f4f4;
+            flex-direction: column;
+            margin: 0;    
+        } 
+        
+        h1 {
+            
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700; /* Deixa a fonte mais parecida com o logótipo */
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        .login-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 320px;
+            text-align: center;
+            margin: 0 auto;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #2c72b7;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #1a436c;
+        }
+    </style>
+</head>
+<body>
+   <h1>TUB</h1>
+    
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm">  <!-- Adicionado ID ao formulário -->
+            <input type="email" id="email" name="email" placeholder="E-mail" required>
+            <input type="password" id="password" name="password" placeholder="Senha" required>
+            <button type="submit">Entrar</button>
+        </form>
+    </div>
+    
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Evita o envio padrão do formulário
+    
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+    
+           
+
+            if (email === "admin@email.com" && password === "1234") {
+                window.location.href = "dashboard.html"; // Agora redireciona corretamente
+            } else {
+                alert("E-mail ou senha incorretos!");
+            }
+        });
+    </script>
+</body>
+</html>

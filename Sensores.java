@@ -1,10 +1,10 @@
 import java.util.*;
 
 public class Sensores {
-    private Bus bus;
+    private Autocarro bus;
     private Random random;
 
-    public Sensores(Bus bus) {
+    public Sensores(Autocarro bus) {
         random = new Random();
         this.bus = bus; 
         
