@@ -103,6 +103,38 @@
             background-color: #1a436c;
         }
 
+        .bus-table {
+            display: none;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #2c72b7;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+
+
     </style>
 </head>
 <body>
@@ -112,7 +144,7 @@
         <h2>TUB</h2>
         <ul>
             <li><a href="dashboard.html"> Início</a></li>
-            <li><a href="dashboard.html"> Autocarros</a></li>
+            <li><a href="autocarros_por_rota.html"> Autocarros</a></li>
             <li><a href="paragem.html"> Paragens</a></li>
             <li><a href="index.html"> Sair</a></li>
         </ul>
@@ -126,35 +158,100 @@
                 <img src="bus1.jpg" alt="Linha 1">
                 <h2>Linha 1</h2>
                 <p>Lugares ocupados: 70%</p>
-                <button onclick="redirectToBusInfo('Linha 1', '25°C', '70%', '08:00 - 9:00', 'Estação de Comboios', 'Universidade do Minho' )">Ver Informações</button>
+                <button onclick=" mostrarTabela('linha1')">Ver Informações</button>
             </div>
             <div class="bus-card">
                 <img src="bus2.jpg" alt="Linha 2">
                 <h2>Linha 2</h2>
                 <p>Lugares ocupados: 50%</p>
-                <button onclick="redirectToBusInfo('Linha 2', '22°C', '50%', '20:00 - 21:00', 'Universidade do Minho','Estação de Comboios')">Ver Informações</button>
+                <button onclick="mostrarTabela('linha2')">Ver Informações</button>
             </div>
             <!-- Adiciona mais autocarros conforme necessário -->
             <div class="bus-card">
                 <img src="bus3.jpg" alt="Linha 3">
                 <h2>Linha 3</h2>
                 <p>Lugares ocupados: 90%</p>
-                <button onclick="redirectToBusInfo('Linha 3', '20°C', '50%', '22:00 - 23:00', 'Estação de Comboios','Universidade do Minho')">Ver Informações</button>
+                <button onclick="mostrarTabela('linha3')">Ver Informações</button>
             </div>
             <div class="bus-card">
                 <img src="bus4.jpg" alt="Linha 4">
                 <h2>Linha 4</h2>
                 <p>Lugares ocupados: 20%</p>
-                <button onclick="redirectToBusInfo('Linha 4', '24°C', '20%', '23:00 - 00:00', 'Universidade do Minho','Estação de Comboios')">Ver Informações</button>
+                <button onclick="mostrarTabela('linha4')">Ver Informações</button>
             </div>
+        </div>
+        <!--tabela de autocarros por rota-->
+        <div id="linha1" class="bus-table">
+            <h2>Autocarros - Linha 1</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rota</th>
+                        <th>Número do Autocarro</th>
+                        <th>Horário</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Rota 1</td>
+                        <td>101</td>
+                        <td>08:00 - 09:00</td>
+                        <td>Em operação</td>
+                    </tr>
+                    <tr>
+                        <td>Rota 1</td>
+                        <td>102</td>
+                        <td>09:00 - 10:00</td>
+                        <td>Em operação</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="linha2" class="bus-table">
+            <h2>Autocarros - Linha 2</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rota</th>
+                        <th>Número do Autocarro</th>
+                        <th>Horário</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Rota 2</td>
+                        <td>201</td>
+                        <td>08:30 - 09:30</td>
+                        <td>Em operação</td>
+                    </tr>
+                    <tr>
+                        <td>Rota 2</td>
+                        <td>202</td>
+                        <td>09:30 - 10:30</td>
+                        <td>Em operação</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
+
     <script>
-       function redirectToBusInfo(busName, temperature, occupancy, schedule, departure, destination) {
-            const url = `bus-info.html?busName=${encodeURIComponent(busName)}&temperature=${encodeURIComponent(temperature)}&occupancy=${encodeURIComponent(occupancy)}&schedule=${encodeURIComponent(schedule)}&departure=${encodeURIComponent(departure)}&destination=${encodeURIComponent(destination)}`;
-            window.location.href = url;
+        function mostrarTabela(linhaId) {
+            // Esconde todas as tabelas
+            const tabelas = document.querySelectorAll('.bus-table');
+            tabelas.forEach(tabela => tabela.style.display = 'none');
+
+            // Mostra a tabela correspondente
+            const tabelaSelecionada = document.getElementById(linhaId);
+            if (tabelaSelecionada) {
+                tabelaSelecionada.style.display = 'block';
+            }
         }
+
+   
     </script>
 </body>
 </html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informações do Autocarro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #2c72b7;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Informações do Autocarro</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Rota</th>
+                <th>Número do Autocarro</th>
+                <th>Horário</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody id="busInfoTable">
+            <!-- Os dados serão preenchidos dinamicamente -->
+        </tbody>
+    </table>
+
+    <script>
+        // Obtém os parâmetros da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const busNumber = urlParams.get('bus');
+
+        // Dados simulados para os autocarros
+        const busData = {
+            "101": [
+                { rota: "Rota 1", horario: "08:00 - 09:00", estado: "Em operação" },
+                { rota: "Rota 1", horario: "09:00 - 10:00", estado: "Em operação" }
+            ],
+            "202": [
+                { rota: "Rota 2", horario: "08:30 - 09:30", estado: "Em operação" },
+                { rota: "Rota 2", horario: "09:30 - 10:30", estado: "Em operação" }
+            ],
+            "303": [
+                { rota: "Rota 3", horario: "07:00 - 08:00", estado: "Em operação" },
+                { rota: "Rota 3", horario: "08:00 - 09:00", estado: "Em manutenção" }
+            ]
+        };
+
+        // Preenche a tabela com os dados do autocarro selecionado
+        const tableBody = document.getElementById('busInfoTable');
+        if (busData[busNumber]) {
+            busData[busNumber].forEach(info => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${info.rota}</td>
+                    <td>${busNumber}</td>
+                    <td>${info.horario}</td>
+                    <td>${info.estado}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } else {
+            tableBody.innerHTML = `<tr><td colspan="4">Nenhuma informação disponível para o autocarro ${busNumber}</td></tr>`;
+        }
+    </script>
+</body>
+</html>
