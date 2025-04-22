@@ -59,12 +59,12 @@
     <script>
         // Obtém os parâmetros da URL
         const urlParams = new URLSearchParams(window.location.search);
-        const busName = urlParams.get('busName');
-        const temperature = urlParams.get('temperature');
-        const occupancy = urlParams.get('occupancy');
-        const schedule = urlParams.get('schedule');
-        const departure = urlParams.get('departure');
-        const destination = urlParams.get('destination');
+        const busName = urlParams.get('busName') || 'Informaçao nao disponivel';;
+        const temperature = urlParams.get('temperature') || 'Informaçao nao disponivel';
+        const occupancy = urlParams.get('occupancy') || 'Informaçao nao disponivel';
+        const schedule = urlParams.get('schedule') || 'Informaçao nao disponivel';
+        const departure = urlParams.get('departure') || 'Informaçao nao disponivel';
+        const destination = urlParams.get('destination') || 'Informaçao nao disponivel';
 
         // Preenche os elementos HTML com os dados do autocarro
         document.getElementById('busName').textContent = busName;
