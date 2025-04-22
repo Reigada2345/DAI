@@ -1,0 +1,6465 @@
+
+
+
+
+
+
+
+
+
+
+
+
+var app = angular.module('app', ['ngResource',
+
+
+
+    'angular-spinkit',
+
+
+
+    'ui.router',
+
+
+
+    'ui.load',
+
+
+
+    'ui.bootstrap',
+
+
+
+    'ui.mask',
+
+
+
+    'ui.tree',
+
+
+
+    'ngFileUpload',
+
+
+
+    'ngCordova',
+
+
+
+    'ngSanitize',
+
+
+
+    'satellizer',
+
+
+
+    'toastr',
+
+
+
+   // 'ngMap',
+
+
+
+    'bootstrapLightbox',
+
+
+
+    'ngAnimate',
+
+
+
+    'LocalStorageModule',
+
+
+
+    'dndLists',
+
+
+
+    'ngMessages',
+
+
+
+    'isteven-multi-select',
+
+
+
+    'jlareau.bowser',
+
+
+
+    'sticky',
+
+
+
+    // 'btford.socket-io',
+
+
+
+    'youtube-embed',
+
+
+
+    'textAngular',
+
+
+
+    'md.data.table',
+
+
+
+    'angular.chips',
+
+
+
+    'djds4rce.angular-socialshare',
+
+
+
+    'ngMaterial',
+
+
+
+    'ngMdIcons',
+
+
+
+    'chart.js',
+
+
+
+    'FBAngular',
+
+
+
+    'angularMoment',
+
+
+
+    'multipleSelection',
+
+
+
+    'ui.navbar',
+
+
+
+    'vcRecaptcha',
+
+
+
+    'uiCropper',
+
+
+
+    'ngMaterialDatePicker',
+
+
+
+    'materialCalendar',
+
+
+
+    'angularLazyImg',
+
+
+
+    'slickCarousel',
+
+
+
+    'ngclipboard',
+
+
+
+    'cgBusy',
+
+
+
+    'duScroll',
+
+
+
+    'angular-google-analytics','chart.js','ui-leaflet']);
+
+
+
+
+
+
+
+app.constant('API_SERVER', '/')
+
+
+
+app.constant('API_FACEBOOK', 'http://tub.pt/')
+
+
+
+app.constant('API_SOCKET', '192.168.1.87:8001')
+
+
+
+app.constant('TEMPLATE', 'TUB')
+
+
+
+app.constant('NKEY', '0BjJXFeLU/QhpjKs0PNtr38he6YLMHWFr1vAXYwiMvye9lYG45Z99g==')
+
+ 
+
+/* 
+
+   $scope.$on('$destroy', function() {
+
+                     removeFullscreenHandler();
+
+                  });
+
+ 
+
+ */
+
+
+
+app.factory('qServer', ['$resource', 'API_SERVER', function ($resource, API_SERVER) {
+
+    return $resource(API_SERVER + 'core/request.php', null, {
+
+        'get': {method: 'GET'}
+
+    });
+
+}])
+
+
+
+
+
+app.config(['$stateProvider', '$mdAriaProvider', 'ChartJsProvider', '$httpProvider', '$sceProvider', '$locationProvider', '$urlRouterProvider', '$controllerProvider', '$compileProvider', '$filterProvider', '$provide', 'AnalyticsProvider', '$mdThemingProvider', '$authProvider', 'API_SERVER', 'TEMPLATE', '$mdDateLocaleProvider', 'lazyImgConfigProvider',
+
+
+
+    function ($stateProvider, $mdAriaProvider, ChartJsProvider, $httpProvider, $sceProvider, $locationProvider, $urlRouterProvider, $controllerProvider, $compileProvider, $filterProvider, $provide, AnalyticsProvider, $mdThemingProvider, $authProvider, API_SERVER, TEMPLATE, $mdDateLocaleProvider,lazyImgConfigProvider) {
+
+
+
+        $mdDateLocaleProvider.formatDate = function (date) {
+
+
+
+            return moment(date).format('DD-MM-YYYY');
+
+
+
+        };
+
+
+
+        
+
+        //var scrollable = document.querySelector('#tris');
+
+        lazyImgConfigProvider.setOptions({
+
+          offset: 100, // how early you want to load image (default = 100)
+
+          errorClass: 'img-error', // in case of loading image failure what class should be added (default = null)
+
+          successClass: 'img-success', // in case of loading image success what class should be added (default = null)
+
+          onError: function(image){}, // function fired on loading error
+
+          onSuccess: function(image){}, // function fired on loading success
+
+          //container: angular.element(scrollable) // if scrollable container is not $window then provide it here. This can also be an array of elements.
+
+        });
+
+        
+
+
+
+        AnalyticsProvider.setAccount('Uas');   
+
+
+
+        AnalyticsProvider.trackPages(true);
+
+
+
+        AnalyticsProvider.setPageEvent('$stateChangeSuccess');
+
+
+
+        
+
+
+
+        
+
+
+
+        var homectrls = {1: 'home', 2: 'home', 3: 'home', 4: 'home'};
+
+
+
+//ChartJsProvider.setOptions({ });
+
+
+
+
+
+
+
+        $sceProvider.enabled(false);
+
+
+
+        $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function (taRegisterTool, taOptions) {
+
+
+
+                taOptions.toolbar = [
+
+
+
+                    ['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'redo', 'undo', 'clear'],
+
+
+
+                    ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'indent', 'outdent', 'html', 'insertImage']
+
+
+
+                ];
+
+
+
+
+
+
+
+
+
+
+
+                return taOptions;
+
+
+
+            }]);
+
+
+
+
+
+
+
+        $mdThemingProvider.definePalette('tubblue', {
+
+
+
+            '50': 'e0eff7',
+
+
+
+            '100': 'b3d8ea',
+
+
+
+            '200': '80bedd',
+
+
+
+            '300': '4da4cf',
+
+
+
+            '400': '2691c4',
+
+
+
+            '500': '007dba',
+
+
+
+            '600': '0075b3',
+
+
+
+            '700': '006aab',
+
+
+
+            '800': '0060a3',
+
+
+
+            '900': '004d94',
+
+
+
+            'A100': 'bfdcff',
+
+
+
+            'A200': '8cc0ff',
+
+
+
+            'A400': '59a4ff',
+
+
+
+            'A700': '4096ff',
+
+
+
+            'contrastDefaultColor': 'light',
+
+
+
+            'contrastDarkColors': [
+
+
+
+                '50',
+
+
+
+                '100',
+
+
+
+                '200',
+
+
+
+                '300',
+
+
+
+                'A100',
+
+
+
+                'A200',
+
+
+
+                'A400',
+
+
+
+                'A700'
+
+
+
+            ],
+
+
+
+            'contrastLightColors': [
+
+
+
+                '400',
+
+
+
+                '500',
+
+
+
+                '600',
+
+
+
+                '700',
+
+
+
+                '800',
+
+
+
+                '900'
+
+
+
+            ]
+
+
+
+        });
+
+
+
+        $mdThemingProvider.definePalette('tubred', {
+
+
+
+            '50': 'fae5e8',
+
+
+
+            '100': 'f3bec5',
+
+
+
+            '200': 'ec929e',
+
+
+
+            '300': 'e46677',
+
+
+
+            '400': 'de465a',
+
+
+
+            '500': 'd8253d',
+
+
+
+            '600': 'd42137',
+
+
+
+            '700': 'ce1b2f',
+
+
+
+            '800': 'c81627',
+
+
+
+            '900': 'bf0d1a',
+
+
+
+            'A100': 'ffebec',
+
+
+
+            'A200': 'ffb8bc',
+
+
+
+            'A400': 'ff858c',
+
+
+
+            'A700': 'ff6c73',
+
+
+
+            'contrastDefaultColor': 'light',
+
+
+
+            'contrastDarkColors': [
+
+
+
+                '50',
+
+
+
+                '100',
+
+
+
+                '200',
+
+
+
+                '300',
+
+
+
+                'A100',
+
+
+
+                'A200',
+
+
+
+                'A400',
+
+
+
+                'A700'
+
+
+
+            ],
+
+
+
+            'contrastLightColors': [
+
+
+
+                '400',
+
+
+
+                '500',
+
+
+
+                '600',
+
+
+
+                '700',
+
+
+
+                '800',
+
+
+
+                '900'
+
+
+
+            ]
+
+
+
+        });
+
+
+
+        $mdThemingProvider.definePalette('tubyellow', {
+
+
+
+            '50': 'fcfbe5',
+
+
+
+            '100': 'f9f6bd',
+
+
+
+            '200': 'f5f092',
+
+
+
+            '300': 'f0e966',
+
+
+
+            '400': 'ede545',
+
+
+
+            '500': 'eae024',
+
+
+
+            '600': 'e7dc20',
+
+
+
+            '700': 'e4d81b',
+
+
+
+            '800': 'e1d316',
+
+
+
+            '900': 'dbcb0d',
+
+
+
+            'A100': 'ffffff',
+
+
+
+            'A200': 'fffbd4',
+
+
+
+            'A400': 'fff7a1',
+
+
+
+            'A700': 'fff587',
+
+
+
+            'contrastDefaultColor': 'light',
+
+
+
+            'contrastDarkColors': [
+
+
+
+                '50',
+
+
+
+                '100',
+
+
+
+                '200',
+
+
+
+                '300',
+
+
+
+                '400',
+
+
+
+                '500',
+
+
+
+                '600',
+
+
+
+                '700',
+
+
+
+                '800',
+
+
+
+                '900',
+
+
+
+                'A100',
+
+
+
+                'A200',
+
+
+
+                'A400',
+
+
+
+                'A700'
+
+
+
+            ],
+
+
+
+            'contrastLightColors': []
+
+
+
+        });
+
+
+
+        $mdThemingProvider.definePalette('tubgray', {
+
+
+
+            '50': 'e0e0e0',
+
+
+
+            '100': 'b3b3b3',
+
+
+
+            '200': '808080',
+
+
+
+            '300': '4d4d4d',
+
+
+
+            '400': '262626',
+
+
+
+            '500': '000000',
+
+
+
+            '600': '000000',
+
+
+
+            '700': '000000',
+
+
+
+            '800': '000000',
+
+
+
+            '900': '000000',
+
+
+
+            'A100': 'a6a6a6',
+
+
+
+            'A200': '8c8c8c',
+
+
+
+            'A400': '737373',
+
+
+
+            'A700': '666666',
+
+
+
+            'contrastDefaultColor': 'light',
+
+
+
+            'contrastDarkColors': [
+
+
+
+                '50',
+
+
+
+                '100',
+
+
+
+                '200',
+
+
+
+                'A100',
+
+
+
+                'A200'
+
+
+
+            ],
+
+
+
+            'contrastLightColors': [
+
+
+
+                '300',
+
+
+
+                '400',
+
+
+
+                '500',
+
+
+
+                '600',
+
+
+
+                '700',
+
+
+
+                '800',
+
+
+
+                '900',
+
+
+
+                'A400',
+
+
+
+                'A700'
+
+
+
+            ]
+
+
+
+        });
+
+
+
+        $mdThemingProvider.theme('default')
+
+
+
+                .primaryPalette('tubblue', {
+
+
+
+                    'default': '500',
+
+
+
+                    'hue-1': '500',
+
+
+
+                    'hue-2': '500',
+
+
+
+                    'hue-3': '500'
+
+
+
+                })
+
+
+
+                .accentPalette('tubred', {
+
+
+
+                    'default': '500',
+
+
+
+                    'hue-1': '500',
+
+
+
+                    'hue-2': '500',
+
+
+
+                    'hue-3': '500'
+
+
+
+                })
+
+
+
+//    .warnPalette('tubyellow', {
+
+
+
+//      'default': '500',
+
+
+
+//      'hue-1': '500',
+
+
+
+//      'hue-2': '500',
+
+
+
+//      'hue-3': '500'
+
+
+
+//    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+
+
+
+        var regexIso8601 = /\d{4}(.\d{2}){2}(\s|T)(\d{2}.){2}\d{2}/;
+
+
+
+
+
+
+
+        function convertDateStringsToDates(input) {
+
+
+
+            // Ignore things that aren't objects.
+
+
+
+            if (typeof input !== "object")
+
+
+
+                return input;
+
+
+
+
+
+
+
+            for (var key in input) {
+
+
+
+                if (!input.hasOwnProperty(key))
+
+
+
+                    continue;
+
+
+
+
+
+
+
+                var value = input[key];
+
+
+
+                var match;
+
+
+
+                // Check for string properties which look like dates.
+
+
+
+                // TODO: Improve this regex to better match ISO 8601 date strings.
+
+
+
+                if (typeof value === "string" && key != 'activity' && key != 'object' && (match = value.match(regexIso8601))) {
+
+
+
+                    // Assume that Date.parse can parse ISO 8601 strings, or has been shimmed in older browsers to do so.
+
+
+
+                    var milliseconds = Date.parse(match[0]);
+
+
+
+                    if (!isNaN(milliseconds)) {
+
+
+
+                        input[key] = new Date(milliseconds);
+
+
+
+                    }
+
+
+
+                } else if (typeof value === "object" && key != 'activity' && key != 'object') {
+
+                    // Recurse into object
+
+
+
+                    convertDateStringsToDates(value);
+
+
+
+                }
+
+
+
+            }
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        $httpProvider.defaults.transformResponse.push(function (responseData) {
+
+
+
+            convertDateStringsToDates(responseData);
+
+
+
+            return responseData;
+
+
+
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        $httpProvider.defaults.useXDomain = true;
+
+
+
+        //     $sceProvider.enabled(true);
+
+
+
+        $authProvider.loginUrl = API_SERVER + 'core/login.php';
+
+
+
+        $authProvider.baseUrl = null;
+
+
+
+        $locationProvider.html5Mode(true);
+
+
+
+
+
+
+
+        var skipIfLoggedIn = ['$q', '$auth', '$location', function ($q, $auth, $location) {
+
+
+
+                var deferred = $q.defer();
+
+
+
+                if ($auth.isAuthenticated()) {
+
+
+
+                    $location.path('/home/');
+
+
+
+                } else {
+
+
+
+                    deferred.resolve();
+
+
+
+                }
+
+
+
+                return deferred.promise;
+
+
+
+            }];
+
+
+
+
+
+
+
+
+
+
+
+        function loginRequired($q, $location, $auth) {
+
+
+
+            var deferred = $q.defer();
+
+
+
+            var path = angular.copy($location.path());
+
+            var aut = $auth.getPayload();
+
+            if ($auth.isAuthenticated()) {
+
+                
+
+                if(aut.role == '4'){
+
+                    $location.path('/')
+
+                 }
+
+                 else{
+
+                     deferred.resolve();
+
+                 }
+
+
+
+            } else {
+
+
+
+                
+
+
+
+                
+
+
+
+                if (aut != undefined) {
+
+                    
+
+                    if(aut.role == '4'){
+
+                        
+
+                    
+
+                    }
+
+                    else{
+
+                        $location.path('/login/').search('route', path);
+
+                    }
+
+                } else {
+
+
+
+                    $location.path('/login/').search('route', path);
+
+
+
+                    ;
+
+
+
+                }
+
+
+
+                ;
+
+
+
+            }
+
+
+
+            ;
+
+
+
+            return deferred.promise;
+
+
+
+        };
+
+
+
+
+
+
+
+
+
+
+
+        // lazy controller, directive and service
+
+
+
+        app.controller = $controllerProvider.register;
+
+
+
+        app.directive = $compileProvider.directive;
+
+
+
+        app.filter = $filterProvider.register;
+
+
+
+        app.factory = $provide.factory;
+
+
+
+        app.service = $provide.service;
+
+
+
+        app.constant = $provide.constant;
+
+
+
+
+
+
+
+        var s = 'i';
+
+
+
+
+
+
+
+
+
+
+
+        $urlRouterProvider
+
+
+
+                .otherwise('/');
+
+
+
+        $stateProvider
+
+
+
+                .state('backoffice', {
+
+
+
+                    url: '/admin',
+
+
+
+                    abstract: true,
+
+
+
+                    templateUrl: 'templates/backoffice/_structure/partial_main.html',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'css/font-awesome.min.css',
+
+
+
+                                    'css/font-awesome-brands.css',
+
+
+
+                                    'css/font-awesome-core.css',
+
+
+
+                                    'css/font-awesome-light.css',
+
+
+
+                                    'css/font-awesome-regular.css',
+
+
+
+                             
+
+                             
+
+                             
+
+                             
+
+                                    'css/main_style.css',
+
+                             
+
+                                    'css/ui-navbar.min.css',
+
+                             
+
+                                    'css/material-datetimepicker.css',
+
+                             
+
+                                    'css/angular-material-calendar.css',
+
+                             
+
+                                    'css/md-data-table.min.css',
+
+
+
+                                    'templates/frontoffice/_structure/blocks/header.css',
+
+
+
+                                    'templates/frontoffice/_structure/blocks/footer.css',
+
+
+
+                                    'templates/frontoffice/_structure/blocks/sidemenu.css',
+
+
+
+                                    'templates/frontoffice/_structure/widget/sidebar.css',
+
+                                    'js/pdfmake.min.js',
+
+                                    'js/vfs_fonts.min.js',
+
+                                    'js/browserpdf.js',
+
+                             
+                                    'js/v4-shims.js',
+
+
+
+                                    'js/main/controllers.js',
+
+
+
+                                    'js/main/services.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'backoffice'
+
+
+
+                })
+
+
+
+                .state('backoffice.forms', {
+
+
+
+                    abstract: true,
+
+
+
+                    url: '/forms',
+
+
+
+                    template: '<ui-view></ui-view>',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/forms/js/controllers.js'
+
+
+
+
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'forms'
+
+
+
+                })
+
+
+
+                .state('backoffice.forms.forms', {
+
+
+
+                    url: '/create/',
+
+
+
+                    templateUrl: 'templates/forms/partial_form_create.html',
+
+
+
+                    controller: 'formcreate'
+
+
+
+                })
+
+
+
+                .state('backoffice.documents', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<ui-view></ui-view>',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/backoffice/documents/js/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'documentsmain'
+
+
+
+                })
+
+
+
+                .state('backoffice.documents.documents', {
+
+
+
+                    url: '/documentos/',
+
+
+
+                    templateUrl: 'templates/backoffice/documents/partial_documentos.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                    },
+
+
+
+                    controller: 'documents'
+
+
+
+                })
+
+
+
+                .state('backoffice.documents.adddocumento', {
+
+
+
+                    url: '/documento/novo/',
+
+
+
+                    templateUrl: 'templates/backoffice/documents/partial_adddocumento.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                    },
+
+
+
+                    controller: 'adddocumento'
+
+
+
+                })
+
+
+
+                .state('login', {
+
+
+
+                    templateUrl: 'templates/backoffice/login/partial_login.html',
+
+
+
+                    url: '/login/?route',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/backoffice/login/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'login'
+
+
+
+                })
+
+
+
+                .state('backoffice.candidaturas', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<pageheader></pageheader>',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/backoffice/candidaturas/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'Candidaturasmain'
+
+
+
+                })
+
+
+
+                .state('backoffice.candidaturas.candidaturas', {
+
+
+
+                    url: '/candidaturas/',
+
+
+
+                    templateUrl: 'templates/backoffice/candidaturas/partial_candidaturas.html',
+
+
+
+                    controller: 'Candidaturaslist'
+
+
+
+                })
+
+                
+
+                .state('backoffice.candidaturas.vagas', {
+
+
+
+                    url: '/vagas/',
+
+
+
+                    templateUrl: 'templates/backoffice/candidaturas/partial_vagas.html',
+
+
+
+                    controller: 'Vagaslist'
+
+
+
+                })
+
+                
+
+                .state('backoffice.candidaturas.vaga', {
+
+
+
+                    url: '/vaga/:id',
+
+
+
+                    templateUrl: 'templates/backoffice/candidaturas/partial_vaga.html',
+
+
+
+                    controller: 'Vaga'
+
+
+
+                })
+
+
+
+                .state('backoffice.qualidade', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<pageheader></pageheader>',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/backoffice/qualidade/controllers.js',
+
+                                    'modules/backoffice/qualidade/filters.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'qualidademain'
+
+
+
+                })
+
+
+
+                .state('backoffice.qualidade.satisfacao', {
+
+
+
+                    url: '/satisfacao/',
+
+
+
+                    templateUrl: 'templates/backoffice/qualidade/satisfacao.html',
+
+
+
+                    controller: 'satisfacao'
+
+
+
+                })
+
+
+
+
+
+                .state('backoffice.qualidade.occurrences', {
+
+                url: '/ocorrencias/?offset&limit&field&sort&fields&filter&op',
+
+                reloadOnSearch: false,
+
+                templateUrl: 'templates/backoffice/qualidade/partial_occurrences.html',
+
+                resolve: {
+
+                    
+
+                    loginRequired: loginRequired,
+
+                },
+
+                controller: 'occurrences'
+
+            })
+
+
+
+                .state('backoffice.qualidade.novaocorrencia', {
+
+                url: '/ocorrencia/nova/',
+
+                templateUrl: 'templates/backoffice/qualidade/novaocorrencia.html',
+
+                resolve: {
+
+                   
+
+                    loginRequired: loginRequired,
+
+                },
+
+                controller: 'novaocorrencia'
+
+            })
+
+            
+
+                .state('backoffice.qualidade.occurrence', {
+
+                url: '/ocorrencia/:id/',
+
+                templateUrl: 'templates/backoffice/qualidade/partial_occurrence.html',
+
+                resolve: {
+
+                     qServer: 'qServer',
+
+                    page: function (qServer, $stateParams, $q, $location) {
+
+                        var deferred = $q.defer();
+
+                            qServer.get({action: 'infopage', params: {route: 'backoffice.qualidade.occurrence'}}, function (data) {
+
+                             
+
+                               deferred.resolve(data.result);
+
+                            
+
+                        }, function(){
+
+                            $location.path('/admin/ocorrencias/');
+
+                           
+
+                            deferred.reject();
+
+                        });
+
+
+
+                        return deferred.promise;    
+
+                    },
+
+                    loginRequired: loginRequired,
+
+                },
+
+                controller: 'occurrence'
+
+            })
+
+
+
+                .state('backoffice.schoolbus', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<pageheader></pageheader>',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/backoffice/schoolbus/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'Schoolbusmain'
+
+
+
+                })
+
+
+
+                .state('backoffice.schoolbus.schoolbus', {
+
+
+
+                    url: '/schoolbus/',
+
+
+
+                    templateUrl: 'templates/backoffice/schoolbus/partial_schoolbus.html',
+
+
+
+                    controller: 'Schoolbuslist'
+
+
+
+                })
+
+
+
+                .state('backoffice.schoolbus.schoolbusinfo', {
+
+
+
+                    url: '/schoolbus/dashboard',
+
+
+
+                    templateUrl: 'templates/backoffice/schoolbus/partial_schoolbus_info.html',
+
+
+
+                    controller: 'Schoolbusgraph'
+
+
+
+                })
+
+
+
+                .state('backoffice.schoolbus.schoolbusrequisicao', {
+
+
+
+                    url: '/schoolbus/:id/',
+
+
+
+                    templateUrl: 'templates/backoffice/schoolbus/schoolbusrequisicao.html',
+
+
+
+                    controller: 'Schoolbus'
+
+
+
+                })
+
+
+
+                .state('backoffice.passes', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<pageheader></pageheader>',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/backoffice/passes/controllers.js',
+                                    'css/ui-cropper.css'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'passesmain'
+
+
+
+                })
+
+
+
+                .state('backoffice.passes.passes', {
+
+
+
+                    url: '/passes/',
+
+
+
+                    templateUrl: 'templates/backoffice/passes/partial_passes.html',
+
+
+
+                    controller: 'passeslist'
+
+
+
+                })
+
+                  
+
+                .state('backoffice.passes.passesescolar', {
+
+
+
+                    url: '/passesescolar/',
+
+
+
+                    templateUrl: 'templates/backoffice/passes/partial_passesescolar.html',
+
+
+
+                    controller: 'passesescolarlist'
+
+
+
+                })
+
+                .state('backoffice.tool', {
+
+
+
+                    url: '/herminio/',
+
+
+
+                    templateUrl: 'tool.html',
+
+                     resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/backoffice/passes/controllers.js',
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+
+                    controller: 'apoiotool'
+
+
+
+
+                })
+
+                
+
+                .state('backoffice.passes.dashboard', {
+
+
+
+                    url: '/passesdashboard/',
+
+
+
+                    templateUrl: 'templates/backoffice/passes/partial_passes_info.html',
+
+
+
+                    controller: 'passesdashboard'
+
+
+
+                })
+
+
+
+                .state('backoffice.passes.passesrequisicao', {
+
+
+
+                    url: '/passes/:id/',
+
+
+
+                    templateUrl: 'templates/backoffice/passes/passesrequisicao.html',
+
+
+
+                    controller: 'passes'
+
+
+
+                })
+
+
+
+                .state('backoffice.eub', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<pageheader></pageheader>',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/backoffice/eub/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'eubmain'
+
+
+
+                })
+
+
+
+                .state('backoffice.eub.parquimetros', {
+
+
+
+                    url: '/parquimetros/',
+
+
+
+                    templateUrl: 'templates/backoffice/eub/partial_parquimetros.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired
+
+
+
+                    },
+
+
+
+                    controller: 'parquimetros'
+
+
+
+                })
+
+
+
+                .state('backoffice.eub.avencas', {
+
+
+
+                    url: '/avencas/',
+
+
+
+                    templateUrl: 'templates/backoffice/eub/partial_avencas.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired
+
+
+
+                    },
+
+
+
+                    controller: 'avencas'
+
+
+
+                })
+
+                
+
+                .state('backoffice.eub.avisos', {
+
+
+
+                    url: '/avisos/',
+
+
+
+                    templateUrl: 'templates/backoffice/eub/partial_avisos.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired
+
+
+
+                    },
+
+
+
+                    controller: 'avisos'
+
+
+
+                })
+
+
+
+                .state('backoffice.eub.avenca', {
+
+
+
+                    url: '/avencas/:id/',
+
+
+
+                    templateUrl: 'templates/backoffice/eub/partial_avenca.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired
+
+
+
+                    },
+
+
+
+                    controller: 'avenca'
+
+
+
+                })
+
+
+
+                .state('backoffice.eletricos', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<pageheader></pageheader>',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/backoffice/eletricos/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'eletricosmain'
+
+
+
+                })
+
+
+
+                .state('backoffice.eletricos.eletricos', {
+
+
+
+                    url: '/eletricos/',
+
+
+
+                    templateUrl: 'templates/backoffice/eletricos/partial_eletricos.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired
+
+
+
+                    },
+
+
+
+                    controller: 'eletricos'
+
+
+
+                })
+
+                              
+
+                .state('backoffice.fiscais', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<pageheader></pageheader>',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/backoffice/fiscais/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'fiscaismain'
+
+
+
+                })
+
+
+
+                .state('backoffice.fiscais.fiscais', {
+
+
+
+                    url: '/revisores/',
+
+
+
+                    templateUrl: 'templates/backoffice/fiscais/partial_fiscais.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired
+
+
+
+                    },
+
+
+
+                    controller: 'fiscais'
+
+
+
+                })
+
+                
+
+                .state('backoffice.sivi', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<pageheader></pageheader>',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/backoffice/sivi/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'sivimain'
+
+
+
+                })
+
+
+
+                .state('backoffice.sivi.sivi', {
+
+
+
+                    url: '/sivi/',
+
+
+
+                    templateUrl: 'templates/backoffice/sivi/sivi.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired
+
+
+
+                    },
+
+
+
+                    controller: 'sivi'
+
+
+
+                })
+
+                
+
+                .state('backoffice.sivi.dashboard', {
+
+
+
+                    url: '/sivi/',
+
+
+
+                    templateUrl: 'templates/backoffice/sivi/sivi.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired
+
+
+
+                    },
+
+
+
+                    controller: 'sividashboard'
+
+
+
+                })
+
+
+
+                .state('backoffice.noticias', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<pageheader></pageheader>',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/backoffice/noticias/js/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'noticiasmain'
+
+
+
+                })
+
+
+
+                .state('backoffice.users', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<pageheader></pageheader>',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/backoffice/user/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'users'
+
+
+
+                })
+
+
+
+                .state('backoffice.users.users', {
+
+
+
+                    url: '/users/?offset&limit&field&sort&fields&filter',
+
+
+
+                    reloadOnSearch: false,
+
+
+
+                    templateUrl: 'templates/backoffice/users/partial_users.html',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/user/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'userslist'
+
+
+
+                })
+
+
+
+                .state('backoffice.users.user', {
+
+
+
+                    url: '/user/:id/',
+
+
+
+                    templateUrl: 'templates/backoffice/users/partial_user.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired
+
+
+
+                    },
+
+
+
+                    controller: 'user'
+
+
+
+                })
+
+
+
+                .state('backoffice.routes', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<pageheader></pageheader>',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/backoffice/routes/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'routesmain'
+
+
+
+                })
+
+
+
+                .state('backoffice.routes.routes', {
+
+
+
+                    url: '/percursos/',
+
+
+
+                    reloadOnSearch: false,
+
+
+
+                    templateUrl: 'templates/backoffice/routes/partial_routes.html',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/user/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'routes'
+
+
+
+                })
+
+
+
+                .state('backoffice.routes.route', {
+
+
+
+                    url: '/percurso/:id/',
+
+
+
+                    templateUrl: 'templates/backoffice/routes/partial_route.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired
+
+
+
+                    },
+
+
+
+                    controller: 'route'
+
+
+
+                })
+
+
+
+                .state('backoffice.stops', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<pageheader></pageheader>',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/backoffice/stops/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'stopsmain'
+
+
+
+                })
+
+
+
+                .state('backoffice.stops.stops', {
+
+
+
+                    url: '/paragens/',
+
+
+
+                    reloadOnSearch: false,
+
+
+
+                    templateUrl: 'templates/backoffice/stops/partial_stops.html',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/stops/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'stops'
+
+
+
+                })
+
+
+
+                .state('backoffice.stops.stop', {
+
+
+
+                    url: '/paragem/:id/',
+
+
+
+                    templateUrl: 'templates/backoffice/stops/partial_stop.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired
+
+
+
+                    },
+
+
+
+                    controller: 'stop'
+
+
+
+                })
+
+
+
+                .state('backoffice.noticias.noticias', {
+
+
+
+                    url: '/noticias/?offset&limit&field&sort&fields&filter',
+
+
+
+                    reloadOnSearch: false,
+
+
+
+                    templateUrl: 'templates/backoffice/noticias/partial_noticias.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                    },
+
+
+
+                    controller: 'noticias'
+
+
+
+                })
+
+
+
+                .state('backoffice.noticias.interno', {
+
+
+
+                    url: '/interno/?offset&limit&field&sort&fields&filter',
+
+
+
+                    reloadOnSearch: false,
+
+
+
+                    templateUrl: 'templates/backoffice/noticias/partial_interno.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                    },
+
+
+
+                    controller: 'internolist'
+
+
+
+                })
+
+
+
+                .state('backoffice.noticias.addnoticia', {
+
+
+
+                    url: '/noticia/nova/',
+
+
+
+                    templateUrl: 'templates/backoffice/noticias/partial_addnoticia.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                    },
+
+
+
+                    controller: 'addnoticia'
+
+
+
+                })
+
+
+
+                .state('backoffice.noticias.noticia', {
+
+
+
+                    url: '/noticia/:id/',
+
+
+
+                    templateUrl: 'templates/backoffice/noticias/partial_noticia.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                    },
+
+
+
+                    controller: 'noticia'
+
+
+
+                })
+
+
+
+                .state('backoffice.schedules', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<pageheader></pageheader>',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function(uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/backoffice/schedules/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'schedulesmain'
+
+
+
+                })
+
+
+
+                .state('backoffice.schedules.schedules', {
+
+
+
+                    url: '/schedules/',
+
+
+
+                    templateUrl: 'templates/backoffice/schedules/partial_routes.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                    },
+
+
+
+                    controller: 'routes'
+
+
+
+                })
+
+
+
+                .state('backoffice.schedules.schedule', {
+
+
+
+                    url: '/schedule/:id/',
+
+
+
+                    templateUrl: 'templates/backoffice/schedules/partial_route.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                    },
+
+
+
+                    controller: 'route'
+
+
+
+                })
+
+
+
+                .state('backoffice.schedules.totems', {
+
+
+
+                    url: '/totems/',
+
+
+
+                    templateUrl: 'templates/backoffice/schedules/totems.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                    },
+
+
+
+                    controller: 'totems'
+
+
+
+                })
+
+
+
+                .state('backoffice.schedules.totem', {
+
+
+
+                    url: '/totem/:id/',
+
+
+
+                    templateUrl: 'templates/backoffice/schedules/totem.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                    },
+
+
+
+                    controller: 'totem'
+
+
+
+                })
+
+
+
+                .state('frontoffice', {
+
+
+
+                    abstract: true,
+
+
+
+                    templateUrl: 'templates/frontoffice/_structure/main_front.html',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+                                    'css/style_critical.css',
+
+                                    'css/style.css',
+
+                                    // 'css/style_mobile.css',
+
+                                    'js/fontawesome.js',
+
+                                    'js/fontawesome.min.js',
+
+                                    'js/v4-shims.js',
+
+                                    'modules/frontoffice/js/controllers.js',
+
+                                    'modules/frontoffice/js/filters.js'
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'frontoffice'
+
+
+
+                })
+
+
+
+                .state('frontoffice.components', {
+
+
+
+                    url: '/components/',
+
+
+
+                    templateUrl: 'templates/frontoffice/components/components.html',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/frontoffice/news/controllers.js',
+
+                                    'templates/frontoffice/components/components.css'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'NewsMainController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.register', {
+
+
+
+                    url: '/registo/',
+
+
+
+                    templateUrl: 'templates/frontoffice/_structure/authentication/registration.html',
+
+
+
+                    resolve: {
+
+
+
+//              //   skipIfLoggedIn: skipIfLoggedIn,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/frontoffice/auth/controllers.js',
+
+                                    'templates/frontoffice/_structure/authentication/authentication.css'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'authentication'
+
+
+
+                })
+
+
+
+                .state('frontoffice.user', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<ui-view></ui-view>',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/frontoffice/user/controllers.js',
+
+                                    'templates/frontoffice/home/home.css',
+
+                                    'templates/frontoffice/commerce/css/comercio.css'
+
+
+
+
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'UserMainController'
+
+
+
+                })
+
+                .state('ceiia', {
+
+                    url: '/integration/?source&integrationToken',
+
+                    templateUrl: 'templates/frontoffice/user/partial_loginceiia.html',
+                    resolve: {
+
+                        deps: ['uiLoad',
+
+                            function (uiLoad) {
+
+                                return uiLoad.load([
+                                     'css/style_critical.css',
+                                    'css/style.css',
+                                    'js/fontawesome.js',
+                                    'js/fontawesome.min.js',
+                                    'js/v4-shims.js',
+                                    'modules/frontoffice/auth/controllers.js',
+                                    'templates/frontoffice/home/home.css',
+                                    'templates/frontoffice/commerce/css/comercio.css'
+
+
+
+                                ]);
+
+                            }
+
+                        ]
+
+                    },
+                    controller: 'authIntegration',
+                    
+
+                })    
+
+                .state('frontoffice.user.user', {
+
+
+
+                    url: '/areapessoal/',
+
+
+
+                    templateUrl: 'templates/frontoffice/user/partial_utilizador.html',
+
+
+
+                    controller: 'UserController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.news', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<ui-view></ui-view>',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/frontoffice/news/controllers.js',
+
+                                    'templates/frontoffice/news/news.css'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'NewsMainController'
+
+
+
+                })
+
+
+
+
+
+
+
+                .state('frontoffice.news.news', {
+
+
+
+                    url: '/noticias/',
+
+
+
+                    templateUrl: 'templates/frontoffice/news/partial_noticias.html',
+
+
+
+                    controller: 'NewsController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.news.archives', {
+
+
+
+                    url: '/arquivo/?offset&limit&field&sort&fields&filter',
+
+
+
+                    reloadOnSearch: false,
+
+
+
+                    templateUrl: 'templates/frontoffice/news/partial_arquivo.html',
+
+
+
+                    controller: 'ArchiveController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.news.new', {
+
+                    url: '/noticia/:id/',
+
+
+
+                    templateUrl: 'templates/frontoffice/news/partial_noticia.html',
+
+
+
+                    controller: 'NewController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.news.edigma', {
+
+
+
+                    url: '/noticiasedigma/',
+
+
+
+                    templateUrl: 'templates/frontoffice/news/partial_noticiasedigma.html',
+
+
+
+                    controller: 'EdigmaController'
+
+
+
+                })
+
+                
+
+                .state('frontoffice.news.internodashboard', {
+
+
+
+                    url: '/internodashboard/?offset&limit&field&sort&fields&filter',
+
+
+
+                    reloadOnSearch: false,
+
+
+
+                    templateUrl: 'templates/backoffice/noticias/partial_internodashboard.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                    },
+
+
+
+                    controller: 'interno'
+
+
+
+                })
+
+
+
+                .state('frontoffice.enterprise', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<ui-view></ui-view>',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/frontoffice/enterprise/controllers.js',
+
+                                    'templates/frontoffice/enterprise/css/enterprise.css'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'EnterpriseMainController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.warnings', {
+
+
+
+                    url: '/avisos/?offset&limit&field&sort&fields&filter',
+
+
+
+                    reloadOnSearch: false,
+
+
+
+                    templateUrl: 'templates/frontoffice/warnings/partial_avisos.html',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                      'modules/frontoffice/news/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'WarningsController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.warning', {
+
+
+
+                    url: '/aviso/:id/:lang/',
+
+
+
+                    templateUrl: 'templates/frontoffice/warnings/partial_aviso.html',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/frontoffice/news/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'NewController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.commerce', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<ui-view></ui-view>',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/frontoffice/commerce/controllers.js',
+
+                                    'templates/frontoffice/commerce/css/comercio.css',
+
+                                     'css/ui-cropper.css'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'OutletMainController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.commerce.sales', {
+
+
+
+                    url: '/postosdevenda/',
+
+
+
+                    templateUrl: 'templates/frontoffice/commerce/partial_postosdevenda.html',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    // 'templates/frontoffice/commerce/css/comercio.css'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'SalesController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.commerce.entidadesresolucao', {
+
+
+
+                    url: '/entidadesresolucao/',
+
+
+
+                    templateUrl: 'templates/frontoffice/commerce/partial_entidadesresolucao.html',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    // 'templates/frontoffice/commerce/css/comercio.css'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'SalesController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.commerce.schoolbus', {
+
+
+
+                    url: '/schoolbus/',
+
+
+
+                    templateUrl: 'templates/frontoffice/commerce/partial_schoolbus.html',
+
+
+
+                    controller: 'SchoolBusController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.commerce.inscricao',{
+
+
+
+                    url: '/inscricao/',
+
+
+
+                    templateUrl: 'templates/frontoffice/commerce/partial_inscricao.html',
+
+
+
+                     resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    // '  templates/frontoffice/enterprise/css/menuprincipal.css'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'InscricaoController'
+
+
+
+                })
+
+                
+
+                .state('frontoffice.commerce.passescolar',{
+
+
+
+                    url: '/passeescolargratuito/',
+
+
+
+                    templateUrl: 'templates/frontoffice/commerce/partial_passeescolar2.html',
+
+
+
+                     
+
+
+
+                    controller: 'PasseEscolarController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.commerce.bracaratour', {
+
+
+
+                    url: '/bracaratour/',
+
+
+
+                    templateUrl: 'templates/frontoffice/commerce/partial_bracaratour.html',
+
+
+
+                    controller: 'BracaraTourController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.commerce.payshop', {
+
+
+
+                    url: '/payshop/',
+
+
+
+                    templateUrl: 'templates/frontoffice/commerce/partial_payshop.html',
+
+
+
+                    controller: 'PayshopController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.commerce.transporttitles', {
+
+
+
+                    url: '/titulos/',
+
+
+
+                    templateUrl: 'templates/frontoffice/commerce/partial_titulostransporte.html',
+
+
+
+                    controller: 'TransportTitlesController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.commerce.tarrif', {
+
+
+
+                    url: '/tarifario/',
+
+
+
+                    templateUrl: 'templates/frontoffice/commerce/partial_tarifario.html',
+
+
+
+                    controller: 'TarrifController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.commerce.coroas', {
+
+
+
+                    url: '/sistemacoroas/',
+
+
+
+                    templateUrl: 'templates/frontoffice/commerce/partial_coroas.html',
+
+
+
+                    controller: 'CoroasController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.commerce.downloads', {
+
+
+
+                    url: '/downloads/',
+
+
+
+                    templateUrl: 'templates/frontoffice/commerce/partial_downloads.html',
+
+
+
+                    controller: 'DownloadsController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.enterprise.mission', {
+
+
+
+                    url: '/missao/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_missao.html',
+
+
+
+                    controller: 'MissionController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.enterprise.delations', {
+
+
+
+                    url: '/denuncias/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_denuncias.html',
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+                                    // 'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css',
+
+                                    // 'https://bootswatch.com/5/yeti/bootstrap.css',
+
+                                    'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js',
+
+                                    'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js',
+
+                                    'https://kit.fontawesome.com/357dce286d.js',
+
+                                    'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                })
+
+
+
+                .state('frontoffice.enterprise.enterpriseinformation', {
+
+
+
+                    url: '/informacaoinstitucional/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_informacaoempresarial.html',
+
+
+
+                    controller: 'InfoEnterpriseController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.enterprise.organigrama', {
+
+
+
+                    url: '/organigrama/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_organigrama.html',
+
+
+
+                    controller: 'OrganigramaController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.enterprise.history', {
+
+
+
+                    url: '/historia/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_historia.html',
+
+
+
+                    controller: 'HistoryController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.enterprise.indicators', {
+
+
+
+                    url: '/indicadores/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_indicadores.html',
+
+
+
+                    controller: 'IndicatorsController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.enterprise.quality', {
+
+
+
+                    url: '/qualidade/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_qualidade.html',
+
+
+
+                    controller: 'QualityController'
+
+
+
+                })
+
+                
+
+                .state('backoffice.qualidade.lostandfound', {
+
+                    url: '/perdidosachados/?offset&limit&field&sort&fields&filter&op',
+
+                    reloadOnSearch: false,
+
+                    templateUrl: 'templates/backoffice/perdidos/partial_perdidos.html',
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+                    },
+
+                    controller: 'perdidos'
+
+                })
+
+
+
+                .state('frontoffice.enterprise.cofinanciados', {
+
+
+
+                    url: '/cofinanciados/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_cofinanciados.html'
+
+
+
+                })
+
+             
+
+                .state('frontoffice.enterprise.pmeb', {
+
+
+
+                    url: '/pmeb/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_pmeb.html'
+
+
+
+                })
+
+
+
+                .state('frontoffice.enterprise.recruitment', {
+
+
+
+                    url: '/recrutamento2/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_recrutamento.html',
+
+
+
+                    controller: 'RecruitmentController'
+
+
+
+                })
+
+                
+
+                .state('frontoffice.enterprise.recruitment2', {
+
+
+
+                    url: '/recrutamento/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_recrutamento2.html',
+
+
+
+                    controller: 'RecruitmentController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.commerce.sugestion', {
+
+
+
+                    url: '/sugestao/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_sugestion.html',
+
+
+
+                    controller: 'SugestionController'
+
+
+
+                })
+
+                
+
+                .state('frontoffice.commerce.sugestion2', {
+
+
+
+                    url: '/apoioaocliente/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_sugestion2.html',
+
+
+
+                    controller: 'SugestionController2'
+
+
+
+                })
+
+                
+
+                .state('frontoffice.commerce.sugestioncheck', {
+
+
+
+                    url: '/apoioaocliente/:id/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_sugestioncheck.html',
+
+
+
+                    controller: 'SugestionCheckController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.commerce.covid', {
+
+
+
+                    url: '/covid/',
+
+
+
+                      resolve: {
+
+
+
+                        //   skipIfLoggedIn: skipIfLoggedIn,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    // 'templates/frontoffice/enterprise/css/menuprincipal.css'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    templateUrl: 'templates/frontoffice/covid.html'
+
+
+
+                })
+
+
+
+                .state('frontoffice.commerce.perdidoseachados', {
+
+
+
+                    url: '/perdidoseachados/',
+
+
+
+                    templateUrl: 'templates/frontoffice/commerce/partial_perdidoseachados.html',
+
+
+
+                    controller: 'perdidoseachadosController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.enterprise.fleet', {
+
+
+
+                    url: '/frota/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_frota.html',
+
+
+
+                    controller: 'FleetController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.enterprise.aluguer', {
+
+
+
+                    url: '/aluguer/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_aluguerfrota.html',
+
+
+
+                    controller: 'RentController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.enterprise.contacts', {
+
+
+
+                    url: '/contatos/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_contatos.html',
+
+
+
+                    controller: 'ContactsController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.enterprise.concursos', {
+
+
+
+                    url: '/concursos/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_concursos.html',
+
+
+
+                    controller: 'ConcursosController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.enterprise.mobile', {
+
+
+
+                    url: '/tubmobile/',
+
+
+
+                    templateUrl: 'templates/frontoffice/enterprise/partial_tubMobile.html',
+
+
+
+                    controller: 'MobileController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.routes', {
+
+
+
+                    url: '/percursos/',
+
+
+
+                    templateUrl: 'templates/frontoffice/percursos/partial_percursos.html',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/frontoffice/percursos/controllers.js',
+
+                                    'templates/frontoffice/percursos/percursos.css'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'RoutesController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.commerce.percursos', {
+
+
+
+                    url: '/percursos/',
+
+
+
+                    templateUrl: 'templates/frontoffice/percursos/partial_percursos.html',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/frontoffice/percursos/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'RoutesController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.route', {
+
+
+
+                    url: '/percurso/:id/',
+
+
+
+                    templateUrl: 'templates/frontoffice/percursos/partial_percurso.html',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/frontoffice/percursos/controllers.js',
+
+                                    'templates/frontoffice/percursos/percursos.css'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'RouteController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.route2', {
+
+
+
+                    url: '/percurso2/:id/',
+
+
+
+                    templateUrl: 'templates/frontoffice/percursos/partial_percurso2.html',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/frontoffice/percursos/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'RouteController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.proximosautocarros', {
+
+
+
+                    url: '/proximosautocarros/:id/',
+
+
+
+                    templateUrl: 'templates/frontoffice/percursos/partial_paragens.html',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+                                    'js/autoComplete.min.js',
+
+                                    'js/leaflet.markercluster.js',
+
+                                    'css/autoComplete.min.css',
+
+                                    'css/MarkerCluster.Default.css',
+
+                                    'css/MarkerCluster.css',
+
+                                    'modules/frontoffice/percursos/controllers.js',
+
+                                    'templates/frontoffice/percursos/percursos.css'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'ParagensController'
+
+
+
+                })
+
+      
+
+                .state('frontoffice.polls', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<ui-view></ui-view>',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/frontoffice/polls/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'PollsMainController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.polls.poll', {
+
+
+
+                    url: '/inquerito/',
+
+
+
+                    templateUrl: 'templates/frontoffice/polls/poll.html',
+
+
+
+                    controller: 'PollController'
+
+
+
+                })
+
+
+
+                .state('frontoffice.home', {
+
+
+
+                    url: '/',
+
+
+
+                    templateUrl: 'templates/frontoffice/home/partial_home.html',
+
+
+
+                    resolve: {
+
+
+
+                        //   skipIfLoggedIn: skipIfLoggedIn,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'templates/frontoffice/home/home.css',
+
+
+
+                                    'modules/frontoffice/home/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'home'
+
+
+
+                })
+
+
+
+                .state('realtime', {
+
+
+
+                    url: '/realtime/',
+
+
+
+                    templateUrl: 'templates/real/partial_real.html',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'js/main/services.js',
+
+
+
+                                    'modules/realtime/js/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'RealController'
+
+
+
+                })
+
+                
+
+                .state('realtimesae', {
+
+
+
+                    url: '/sae/',
+
+
+
+                    templateUrl: 'templates/real/stop.html',
+
+
+
+                    resolve: {
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'js/main/services.js',
+
+
+
+                                    'modules/realtime/js/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'SaeController'
+
+
+
+                })
+
+
+
+                .state('main.warnings', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<pageheader></pageheader>',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function (uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/warnings/js/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'warningsmain'
+
+
+
+                })
+
+
+
+                .state('main.warnings.warnings', {
+
+
+
+                    url: '/warnings/',
+
+
+
+                    templateUrl: 'modules/warnings/tpl/partial_warnings.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                    },
+
+
+
+                    controller: 'warnings'
+
+
+
+                })
+
+
+
+                .state('main.schoolbus', {
+
+
+
+                    abstract: true,
+
+
+
+                    template: '<pageheader></pageheader>',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                        deps: ['uiLoad',
+
+
+
+                            function(uiLoad) {
+
+
+
+                                return uiLoad.load([
+
+
+
+                                    'modules/schoolbus/js/controllers.js'
+
+
+
+                                ]);
+
+
+
+                            }
+
+
+
+                        ]
+
+
+
+                    },
+
+
+
+                    controller: 'schoolbusmain'
+
+
+
+                })
+
+
+
+                .state('main.schoolbus.schoolbus', {
+
+
+
+                    url: '/schoolbus/',
+
+
+
+                    templateUrl: 'modules/schoolbus/tpl/partial_schoolbus.html',
+
+
+
+                    resolve: {
+
+
+
+                        loginRequired: loginRequired,
+
+
+
+                    },
+
+
+
+                    controller: 'schoolbus'
+
+
+
+                })
+
+
+
+
+
+
+
+    }
+
+
+
+]);
+
+
+
+
+
+
+
+app.run(function ($rootScope, $FB, $templateCache, amMoment) {
+
+
+
+
+
+
+
+//    amMoment.changeLocale('pt');
+
+
+
+//    $templateCache.put('partials/menu-link.tmpl.html',
+
+
+
+//            '<md-button ng-class="{\'{{section.icon}}\' : true}" \n' +
+
+
+
+//            '  ui-sref-active="active" ui-sref="{{section.state}}" ng-click="focusSection()">\n' +
+
+
+
+//            '  {{section | humanizeDoc}}\n' +
+
+
+
+//            '  <span class="md-visually-hidden "\n' +
+
+
+
+//            '    ng-if="isSelected()">\n' +
+
+
+
+//            '    current page\n' +
+
+
+
+//            '  </span>\n' +
+
+
+
+//            '</md-button>\n' +
+
+
+
+//            '');
+
+
+
+//
+
+
+
+//    $templateCache.put('partials/menu-toggle.tmpl.html',
+
+
+
+//            '<md-button class="md-button-toggle" ng-class="{\'toggled\' : isOpen(),\'{{section.icon}}\' : true}"\n' +
+
+
+
+//            '  ng-click="toggle()"\n' +
+
+
+
+//            '  aria-controls="docs-menu-{{section.name | nospace}}"\n' +
+
+
+
+//            '  flex layout="row"\n' +
+
+
+
+//            '  aria-expanded="{{isOpen()}}">\n' +
+
+
+
+//            '  {{section.name}}\n' +
+
+
+
+//            '  <md-icon md-font-set="fa fa-chevron-down" class="md-toggle-icon" ng-class="{\'toggled\' : isOpen()}"></md-icon>' +
+
+
+
+//            '</md-button>\n' +
+
+
+
+//            '<ul ng-show="isOpen()" id="docs-menu-{{section.name | nospace}}" class="menu-toggle-list">\n' +
+
+
+
+//            '  <li ng-repeat="page in section.pages">\n' +
+
+
+
+//            '    <menu-link section="page"></menu-link>\n' +
+
+
+
+//            '  </li>\n' +
+
+
+
+//            '</ul>\n' +
+
+
+
+//            '');
+
+
+
+
+
+
+
+    amMoment.changeLocale('pt');
+
+    var a = '01-01-2021';
+
+    var sf = '02-04-2021';
+
+    var pasc = '04-04-2021';
+
+    var d = '25-04-2021';
+
+    var e = '01-05-2021';
+
+    var corpo = '03-06-2021';
+
+    var g = '10-06-2021';
+
+    var saojoao = '24-06-2021';
+
+    var h = '15-08-2021';
+
+    var i = '05-10-2021';
+
+    var j = '01-11-2021';
+
+    var k = '01-12-2021';
+
+    var l = '08-12-2021';
+
+    var m = '25-12-2021';
+
+    
+
+    var laborDay = '09-07-2015';
+
+   
+
+
+
+    moment.updateLocale('pt', {
+
+       holidays: [a, sf, pasc, d, e , corpo, g ,saojoao, h, i , j , k , l ,m],
+
+       holidayFormat: 'DD-MM-YYYY'
+
+    });
+
+    
+
+    
+
+     
+
+
+
+
+
+    $templateCache.put('partials/menu-link.tmpl.html',
+
+
+
+        '<div class="menu_link"> \n' +
+
+
+
+        '<md-button class="menu_link_button" \n' +
+
+
+
+        '  ui-sref-active="active" ui-sref="{{section.state}}" ng-click="focusSection()">\n' +
+
+
+
+        '  <i class="fas fa-{{section.icon}} fa-2x"></i>' +
+
+
+
+        '  <div class="md-visually-hidden "\n' +
+
+
+
+        '    ng-if="isSelected()">\n' +
+
+
+
+        '    current page\n' +
+
+
+
+        '  </div>\n' +
+
+
+
+        '<div class="menu_link_text">{{section | humanizeDoc}}</div></md-button></div>\n' +
+
+
+
+        '');    
+
+
+
+     $templateCache.put('partials/menu-toggle.tmpl.html',
+
+
+
+        '<div class="menu_toggle">\n' +
+
+
+
+        '<md-button class="menu_toggle_button" ng-class="{\'toggled\' : isOpen()}"\n' +
+
+
+
+        '   ng-click="toggle()"\n' +
+
+
+
+        '   aria-controls="docs-menu-{{section.name | nospace}}"\n' +
+
+
+
+//        '   flex layout="row"\n' +
+
+
+
+        '   aria-expanded="{{isOpen()}}">\n' + 
+
+
+
+        '   <i class="fas fa-{{section.icon}} fa-2x"></i>' +
+
+
+
+        '<div class="menu_toggle_text">{{section | humanizeDoc}}</div></md-button>\n' +
+
+
+
+//        '<ul ng-show="isOpen()" id="docs-menu-{{section.name | nospace}}" class="menu-toggle-list">\n' +
+
+
+
+//        '  <li ng-repeat="page in section.pages" style="height:35px">\n' +
+
+
+
+//        '<md-button style="    min-width: 45px;" \n' +
+
+
+
+//        '  ui-sref-active="active" ui-sref="{{page.state}}" ng-click="focusSection()">\n' +
+
+
+
+//        '  \n' +
+
+
+
+//        '  <span class="md-visually-hidden "\n' +
+
+
+
+//        '    ng-if="isSelected()">\n' +
+
+
+
+//        '    current page\n' +
+
+
+
+//        '  </span>\n' +
+
+
+
+//        '<center style="margin-bottom: 5px;margin-top: -10px;"><span style="font-size:14px;text-transform:capitalize">{{page.name}}</span></center></md-button>\n' +
+
+
+
+//        '  </li>\n' +
+
+
+
+//        '</ul>\n' +
+
+
+
+        '<div id="docs-menu-{{section.name | nospace}}" class="menu_toggle_wrapper">\n' +
+
+
+
+        '  <div ng-repeat="page in section.pages" class="menu_toggle_item">\n' +
+
+
+
+        '<md-button \n' +
+
+
+
+        '  ui-sref-active="active" ui-sref="{{page.state}}" ng-click="focusSection()">\n' +
+
+
+
+        '  \n' +
+
+
+
+        '  <div class="md-visually-hidden "\n' +
+
+
+
+        '    ng-if="isSelected()">\n' +
+
+
+
+        '    current page\n' +
+
+
+
+        '  </div>\n' +
+
+
+
+        '<div class="menu_toggle_subtext">{{page.name}}</div></md-button>\n' +
+
+
+
+        '  </div>\n' +
+
+
+
+        '</div>\n' +
+
+
+
+        '</div>\n' +
+
+
+
+        '');
+
+
+
+
+
+
+
+
+
+
+
+    //  $FB.init('123758384745710');
+
+
+
+    $rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
+
+
+
+
+
+
+
+        $rootScope.lastroute = from.name;
+
+
+
+        $rootScope.lastrouteparams = fromParams;
+
+
+
+        document.body.scrollTop = document.documentElement.scrollTop = 0;
+
+
+
+    });
+
+
+
+
+
+
+
+});
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,349 @@
+app.controller('appCtrl', ['$scope','$auth','$state','$mdSidenav','db','NKEY', '$mdDialog', function($scope, $auth, $state, $mdSidenav, db, NKEY, $mdDialog){
+
+      
+
+
+  /*     $mdDialog.show({
+                    template: '<md-dialog style="width:40%" ><div layout="row"       layout-align="center center" ><img style="margin:10px;width:50%" src="manutencao.png"></div></img><div style="text-align:justify;margin:10px;font-weight:bold;" >Informamos que, por motivos que nos são alheios, no momento, e por tempo indeterminado, os nossos serviços de aplicação móvel e website encontram-se indisponíveis.<br><br>Pedimos desculpa pelos incómodos que este problema possa causar. Tentaremos ser breves na resolução do mesmo.<br><br>Obrigado pela compreensão</div></md-dialog>',
+                    parent: angular.element(document.body),
+                    clickOutsideToClose: true,
+                    escapeToClose: true,
+
+                }); */
+
+
+     
+
+  
+
+    $scope.NKEY = NKEY;
+
+    
+
+    $scope.settheme = function(y,x,s){
+
+            $scope.titlecrm = x;
+
+            $scope.imagecrm = y;
+
+            $scope.styleimage = s;
+p
+    };
+
+
+
+     $scope.returnstate = function(){
+
+            var s = $state.current.name.split('.');
+
+            return  s[s.length-1];
+
+        };
+
+
+
+
+
+    var icons = {
+
+        image: 'fa-file-image',
+
+        pdf: 'fa-file-pdf',
+
+        word: 'fa-file-word',
+
+        powerpoint: 'fa-file-powerpoint',
+
+        excel: 'fa-file-excel',
+
+        csv: 'fa-file-csv',
+
+        audio: 'fa-file-audio',
+
+        video: 'fa-file-video',
+
+        archive: 'fa-file-archive',
+
+        code: 'fa-file-code',
+
+        text: 'fa-file-alt',
+
+        file: 'fa-file'
+
+    }
+
+
+
+    $scope.office = ["doc","docx","ppt","pptx","xls","xlsx"];
+
+    $scope.imagesexts = ["gif","jpeg","jpg","png","bmp","GIF","JPEG","JPG","PNG","BMP"];
+
+
+
+    $scope.ftypes = {
+
+        "gif": icons.image,
+
+        "jpeg": icons.image,
+
+        "jpg": icons.image,
+
+        "png": icons.image,
+
+        "pdf": icons.pdf,
+
+        "doc": icons.word,
+
+        "docx": icons.word,
+
+        "ppt": icons.powerpoint,
+
+        "pptx": icons.powerpoint,
+
+        "xls": icons.excel,
+
+        "xlsx": icons.excel,
+
+        "csv": icons.csv,
+
+        "aac": icons.audio,
+
+        "mp3": icons.audio,
+
+        "ogg": icons.audio,
+
+        "avi": icons.video,
+
+        "flv": icons.video,
+
+        "mkv": icons.video,
+
+        "mp4": icons.video,
+
+        "gz": icons.archive,
+
+        "zip": icons.archive,
+
+        "css": icons.code,
+
+        "html": icons.code,
+
+        "js": icons.code,
+
+        "txt": icons.text
+
+    }
+
+
+
+
+
+    $scope.ftypesm = {"image/cgm": {"icon": "file-image-o"},
+
+            "image/fits": {"icon": "file-image-o"},
+
+            "image/g3fax": {"icon": "file-image-o"},
+
+            "image/gif": {"icon": "file-image-o"},
+
+            "image/ief": {"icon": "file-image-o"},
+
+            "image/jp2": {"icon": "file-image-o"},
+
+            "image/jpeg": {"icon": "file-image-o"},
+
+            "image/jpm": {"icon": "file-image-o"},
+
+            "image/jpx": {"icon": "file-image-o"},
+
+            "image/naplps": {"icon": "file-image-o"},
+
+            "image/png": {"icon": "file-image-o"},
+
+            "image/prs.btif": {"icon": "file-image-o"},
+
+            "image/prs.pti": {"icon": "file-image-o"},
+
+            "image/t38": {"icon": "file-image-o"},
+
+            "image/tiff": {"icon": "file-image-o"},
+
+            "image/tiff-fx": {"icon": "file-image-o"},
+
+            "image/vnd.adobe.photoshop": {"icon": "file-image-o"},
+
+            "image/vnd.cns.inf2": {"icon": "file-image-o"},
+
+            "image/vnd.djvu": {"icon": "file-image-o"},
+
+            "image/vnd.dwg": {"icon": "file-image-o"},
+
+            "image/vnd.dxf": {"icon": "file-image-o"},
+
+            "image/vnd.fastbidsheet": {"icon": "file-image-o"},
+
+            "image/vnd.fpx": {"icon": "file-image-o"},
+
+            "image/vnd.fst": {"icon": "file-image-o"},
+
+            "image/vnd.fujixerox.edmics-mmr": {"icon": "file-image-o"},
+
+            "image/vnd.fujixerox.edmics-rlc": {"icon": "file-image-o"},
+
+            "image/vnd.globalgraphics.pgb": {"icon": "file-image-o"},
+
+            "image/vnd.microsoft.icon": {"icon": "file-image-o"},
+
+            "image/vnd.mix": {"icon": "file-image-o"},
+
+            "image/vnd.ms-modi": {"icon": "file-image-o"},
+
+            "image/vnd.net-fpx": {"icon": "file-image-o"},
+
+            "image/vnd.sealed.png": {"icon": "file-image-o"},
+
+            "image/vnd.sealedmedia.softseal.gif": {"icon": "file-image-o"},
+
+            "image/vnd.sealedmedia.softseal.jpg": {"icon": "file-image-o"},
+
+            "image/vnd.svf": {"icon": "file-image-o"},
+
+            "image/vnd.wap.wbmp": {"icon": "file-image-o"},
+
+            "image/vnd.xiff": {"icon": "file-image-o"},
+
+            "image/bmp": {"icon": "file-image-o"},
+
+            "application/pdf": {"icon": "file-pdf-o"},
+
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {"icon": "file-word-o"},
+
+            "application/msword": {"icon": "file-word-o"},
+
+            "application/vnd.oasis.opendocument.text": {"icon": "file-word-o"},
+
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {"icon": "file-excel-o"},
+
+            "application/vnd.oasis.opendocument.spreadsheet": {"icon": "file-excel-o"},
+
+            "text/plain": {"icon": "file-text-o"},
+
+            "application/x-rar-compressed": {"icon": "file-archive-o"},
+
+            "application/x-rar": {"icon": "file-archive-o"},
+
+            "application/zip": {"icon": "file-archive-o"},
+
+            "other": {"icon": "file-o"},
+
+            "application/octet-stream": {"icon": "file-archive-o"}};
+
+
+
+            $scope.labeltabela ={page: 'Página:', rowsPerPage: 'Registos:', of: 'de'};
+
+            
+
+
+
+    $scope.body = false;
+
+
+
+    $scope.returnfield = function (id, f, object) {
+
+            var stringqq = 'Sem Correspondência';
+
+            angular.forEach(object, function (o) {
+
+                if (o.id == id)
+
+                    stringqq = o[f];
+
+            })
+
+            return stringqq;
+
+        };
+
+
+
+    $scope.clickIcon = 'menu';
+
+        $scope.clickIconMorph = function() {
+
+            if ($scope.clickIcon === 'menu'){
+
+                $scope.clickIcon = 'keyboard_tab';
+
+            }
+
+            else {
+
+                $scope.clickIcon = 'menu';
+
+            }
+
+        };
+
+
+
+    $scope.toggle = function(){
+
+        $mdSidenav('left').toggle();
+
+        $scope.body = !$scope.body;
+
+    };
+
+
+
+    $scope.toggle_topbar_menu = function(){
+
+        $mdSidenav('left').toggle();
+
+        $scope.body = !$scope.body;
+
+    };
+
+
+
+    
+
+    $scope.tooglenotifications = function()
+
+    {
+
+        $scope.notification = !$scope.notification;
+
+    };
+
+
+
+    
+
+
+
+
+
+    $scope.hgt = window.innerHeight - 50;
+
+    $scope.wdth = window.innerWidth;
+
+
+
+
+
+    $scope.toggle_SideMenu = function() {
+
+         $scope.sidemenu_Toggle = !$scope.sidemenu_Toggle;
+
+    }
+
+
+
+
+
+
+
+}]);

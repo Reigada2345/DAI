@@ -1,0 +1,495 @@
+app.factory('subdomain', ['$location', function ($location) {
+    var host = $location.host();
+    if (host.indexOf('.') < 0) 
+        return null;
+    else
+        return host.split('.')[0];
+}]);
+
+app.factory('Server', ['$resource', 'API_SERVER', function($resource, API_SERVER) {
+    return $resource(API_SERVER + 'core/request.php', null, {
+        'c': {method: 'POST'},
+        'r': {method: 'GET'},
+        'u': {method: 'PUT'},
+        'd': {method: 'DELETE'},
+        'ra': {method: 'GET', isArray: true},
+        'app':{method: 'GET', url: API_SERVER +'api/app.php' },
+        'pdf': {
+            method: 'POST',
+            responseType: 'arraybuffer',
+            transformResponse: function(data, headersGetter) {
+                // Stores the ArrayBuffer object in a property called "data"
+                return {
+                    data: data
+                };
+            }
+        },
+        'pdfrotas': {
+            method: 'POST',
+            url: 'modules/backoffice/schedules/gerarhorario.php',
+            responseType: 'arraybuffer',
+            transformResponse: function(data, headersGetter) {
+                // Stores the ArrayBuffer object in a property called "data"
+                return {
+                    data: data
+                };
+            }
+        },
+        'pdfMapaPercurso': {
+            method: 'POST',
+            url: 'modules/backoffice/schedules/gerarmapa.php',
+            responseType: 'arraybuffer',
+            transformResponse: function(data, headersGetter) {
+                // Stores the ArrayBuffer object in a property called "data"
+                return {
+                    data: data
+                };
+            }
+        },
+        'pdfmapa': {
+            method: 'POST',
+            url: 'modules/backoffice/schedules/gerarmapa.php',
+            responseType: 'arraybuffer',
+            transformResponse: function(data, headersGetter) {
+                // Stores the ArrayBuffer object in a property called "data"
+                return {
+                    data: data
+                };
+            }
+        }
+        
+     
+    });
+}]);
+
+
+
+
+
+
+
+
+app.factory('options', function(Server, $q){
+        var service = {};
+        service.getoptions = function(table, fields, scope, id, filterby, ticked, array) {
+             var deferred = $q.defer();
+            var scope = scope + 'options';
+            var loading = scope + 'loading';
+            var params = {
+                fields: fields,
+                table: table
+            };
+            if (array != undefined && array != null) {
+                params.array = true;
+            }
+            if (filterby != undefined && filterby != null) {
+                params.filter = filterby;
+            }
+            if (id != undefined && id != null) {
+                params.id = id;
+            }
+
+            var json = {action:'getterms', params:params};
+            Server.r(json, function(data){
+                if(data)
+                    deferred.resolve(data.result);
+                else{
+                    data = [];
+                    deferred.resolve(data.result);
+                }
+            })
+            
+            return deferred.promise;
+    };
+    
+    return service;
+});  
+
+
+
+app.factory('paging', function($location){
+    var service = {};
+    service.page = function(p, l, f, s, fd, v, i){
+        
+        var params = {};
+        if (p)
+            params.offset = p;
+        if (l)
+            params.limit = l;
+        if (f)
+            params.field = f;
+        if (s)
+            params.sort = s;
+        if (fd && fd != null){
+            if (angular.isArray(fd))
+				params.fields = fd;
+			else
+				params.fields = [fd];
+			}
+        if (v){
+            params.filter = v;
+            }
+            if(!i){
+        $location.search(params);
+        }
+        return params;
+    }
+    return service;
+});
+
+app.service('maintable', function() {
+	 var maintable= 'Default';
+
+	 this.returnValue = function() {
+		 return maintable;
+	 };
+	 this.setValue = function(mt) {
+		 maintable = mt;
+	 };
+})
+
+
+
+
+
+
+app.factory('showtoastr', function(toastr) {
+    var service = {};
+    service.toaster = function(type, message, title) {
+        if (type == "success")
+            toastr.success(message, title);
+        else if (type == "error")
+            toastr.error(message, title);
+        else if (type == "info")
+            toastr.info(message, title);
+        else if (type == "warning")
+            toastr.warning(message, title);
+    }
+    return service;
+});
+
+
+app.factory('db', function(Server, $q, $state, showtoastr,$auth,maintable,$q,$rootScope){
+    var service = {};
+    
+    function refreshinfo(){
+        var obj = {};
+        var split = $state.current.name.split('.');
+        obj.module = split[1];
+        //obj.page = split[2][split[2].length-1] != 's' ? split[2] + 's' : split[2];
+        return obj;
+    };
+    
+    //POST RAW DOESNT FILTER FIEDLS
+    service.cr = function(a, pa, fields, m , p, notoast){
+        var obj = refreshinfo();
+        var module = obj.module;
+        var page = obj.page;
+        var deferred = $q.defer();
+        var json = {
+            module: m != null && m != undefined ? m : module,
+            page: p != null && p != undefined ? p : page,
+            action: a,
+            params: pa
+        };
+        
+        
+        Server.c(json, fields, function(sucess) {
+            if (notoast == false || !notoast){
+                showtoastr.toaster(sucess.status, sucess.message);
+            } 
+            
+            deferred.resolve(sucess.result);
+        }, function(error) {
+			if(error.data.message == "O seu acesso expirou. Por favor autentique-se novamente."){
+				$auth.logout();
+				$state.go('login');
+			}
+			else {
+                            if (notoast == false || !notoast){
+                                showtoastr.toaster(error.data.status, error.data.message, error.data.title);
+                            }  
+                            
+			}
+            deferred.reject(error.result);
+        })
+       return deferred.promise; 
+    }
+    
+    service.ur = function(a, pa, fields, m , p, notoast){
+        var obj = refreshinfo();
+        var module = obj.module;
+        var page = obj.page;
+        var deferred = $q.defer();
+        var json = {
+            module: m != null && m != undefined ? m : module,
+            page: p != null && p != undefined ? p : page,
+            action: a,
+            params: pa
+        };
+        
+        
+        Server.u(json, fields, function(sucess) {
+            if (notoast == false || !notoast){
+                showtoastr.toaster(sucess.status, sucess.message);
+            } 
+            
+            deferred.resolve(sucess.result);
+        }, function(error) {
+			if(error.data.message == "O seu acesso expirou. Por favor autentique-se novamente."){
+				$auth.logout();
+				$state.go('login');
+			}
+			else {
+                            if (notoast == false || !notoast){
+                                showtoastr.toaster(error.data.status, error.data.message, error.data.title);
+                            }  
+                            
+			}
+            deferred.reject(error.result);
+        })
+       return deferred.promise; 
+    }
+    
+    service.dc = function(a, pa, m , p, payload, notoast){
+        var obj = refreshinfo();
+        var module = obj.module;
+        var page = obj.page;
+        var deferred = $q.defer();
+        var json = {
+            module: m != null && m != undefined ? m : module,
+            page: p != null && p != undefined ? p : page,
+            action: a,
+            params: pa
+        };
+        
+        
+        Server.c(json, payload, function(sucess) {
+             if (notoast == false || !notoast){
+                showtoastr.toaster(sucess.status, sucess.message);
+            } 
+            deferred.resolve(sucess.result);
+        }, function(error) {
+			if(error.data.message == "O seu acesso expirou. Por favor autentique-se novamente."){
+				$auth.logout();
+				$state.go('login');
+			}
+			else {
+                            showtoastr.toaster(error.data.status, error.data.message, error.data.title);
+			}
+            deferred.reject(error.result);
+        })
+       return deferred.promise; 
+    }
+
+    service.c = function(a, pa, data, fields,m, p){
+        var obj = refreshinfo();
+        var module = obj.module;
+        var page = obj.page;
+        var deferred = $q.defer();
+        var json = {
+            module: m != null && m != undefined ? m : module,
+            page: p != null && p != undefined ? p : page,
+            action: a,
+            params: pa
+        };
+        
+        
+        var table = maintable.returnValue();
+    
+        var send = {};
+        if (data.base64 != undefined){
+            send.base64 = data.base64;
+        };
+        send[table] = {};
+        var promises1 = [];
+        var promises2 = [];
+        
+        angular.forEach(data, function(ob, i){
+            var deferred1 = $q.defer();
+            promises1.push(deferred1.promise);
+                angular.forEach(fields, function(f){
+                var deferred2 = $q.defer();
+                promises2.push(deferred2.promise);    
+                    if (f.field == i && f.extended == undefined){
+                      // send[table] = {};
+					   send[table][i] = ob;
+                        
+                    }
+                    else if (f.field == i && f.ttwe != undefined){
+                        var tempextended = '@'+f.extended;
+                        if (send[f.ttwe] == undefined){
+                            send[f.ttwe] = {};
+							send[f.ttwe][tempextended] = {};
+							send[f.ttwe][tempextended][i] = ob;
+                        }
+                        else{
+                            if(send[f.ttwe][tempextended] == undefined){
+                                send[f.ttwe][tempextended] = {};
+								send[f.ttwe][tempextended][i] = ob;
+                            }
+                            else {
+								send[f.ttwe][tempextended] = {};
+								send[f.ttwe][tempextended][i] = ob;
+                            }    
+                        }
+                    }
+                }); 
+        });
+        
+        
+        
+        
+        
+   $q.all([promises1.promise, promises2.promise]).then(function(){
+        Server.c(json, send, function(sucess) {
+            showtoastr.toaster(sucess.status, sucess.message);
+            deferred.resolve(sucess.result);
+        }, function(error) {
+			if(error.data.message == "O seu acesso expirou. Por favor autentique-se novamente."){
+				$auth.logout();
+				$state.go('login');
+			}
+			else {
+                            showtoastr.toaster(error.data.status, error.data.message, error.data.title);
+			}
+            deferred.reject(error.result);
+        })
+       
+        });
+         return deferred.promise; 
+    }
+
+    service.u = function(a, pa, data, original, fields, m, p, toast){
+        var obj = refreshinfo();
+        var module = obj.module;
+        var page = obj.page;
+        var deferred = $q.defer();
+        var json = {
+            module: m != null && m != undefined ? m : module,
+            page: p != null && p != undefined ? p : page,
+            action: a,
+            params: pa
+        };
+
+        var newdata = angular.copy(data);
+        var table = maintable.returnValue();
+        var send = {};
+        send[table] = {};
+        var promises1 = [];
+        var promises2 = [];
+        
+        angular.forEach(original.object, function(ob, i, o) {
+            var deferred1 = $q.defer();
+            promises1.push(deferred1.promise);
+            if (!angular.equals(newdata[i], ob)){
+                angular.forEach(fields, function(f){
+                var deferred2 = $q.defer();
+                promises2.push(deferred2.promise);    
+                    if (f.field == i && f.extended == undefined){
+                        send[table][i] = newdata[i]; 
+                    }
+                    else if (f.field == i && f.extended != undefined){
+                        if (send[f.extended] != undefined){
+                            send[f.extended][i] =  newdata[i];
+                        }
+                        else {
+                            send[f.extended] = {};
+                            send[f.extended][i] = newdata[i];
+                        }
+                    }
+                });
+             };
+        });
+        
+        $q.all([promises1.promise, promises2.promise]).then(function(){
+        
+        Server.u(json, send, function(sucess) {
+            deferred.resolve(sucess.result);
+            if (toast == false || !toast){
+                showtoastr.toaster(sucess.status, sucess.message);
+            }   
+    
+        }, function(error) {
+			if(error.data.message == "O seu acesso expirou. Por favor autentique-se novamente."){
+				$auth.logout();
+				$state.go('login');
+			}
+			else {
+                            if (toast == false || !toast){
+				showtoastr.toaster(error.data.status, error.data.message);
+                            }
+			}
+            deferred.reject(error.result);
+        })
+        
+        });
+        return deferred.promise;
+    }
+
+    service.r = function(a, pa, m, p, toast){
+        var obj = refreshinfo();
+        var module = obj.module;
+        var page = obj.page;
+        var deferred = $q.defer();
+        var json = {
+            module: m != null && m != undefined ? m : module,
+            page: p != null && p != undefined ? p : page,
+            action: a,
+            params: pa
+        }
+        
+        Server.r(json, function(data) {
+            		
+            deferred.resolve(data.result);
+			
+        }, function(error){
+			if(error.status == 404){
+				$state.go('main.'+module+'.'+page+'s');
+				showtoastr.toaster('warning', 'O registo que tentou aceder n達o existe.','Erro 404');
+			}
+			else if(error.data.message == "O seu acesso expirou. Por favor autentique-se novamente."){
+				$auth.logout();
+				$state.go('login');
+			}
+			else{
+                            if (toast == false || !toast){
+				showtoastr.toaster(error.data.status, error.data.message,error.data.title);
+                            }
+			}
+
+            deferred.reject(error);
+        })
+        return deferred.promise;
+    }
+
+    service.d = function(a, pa, data, m, p){
+        var obj = refreshinfo();
+        var module = obj.module;
+        var page = obj.page;
+        var deferred = $q.defer();
+        var json = {
+            module: m != null && m != undefined ? m : module,
+            page: p != null && p != undefined ? p : page,
+            action: a,
+            params: pa
+        }
+
+        Server.d(json, data, function(sucess) {
+            showtoastr.toaster(sucess.status, sucess.message, sucess.title);
+            deferred.resolve(sucess.result);
+        }, function(error) {
+            showtoastr.toaster(error.data.status, error.data.message, error.data.title);
+            deferred.reject(error.result);
+        })
+        
+        return deferred.promise;
+    }
+    
+    
+    
+    
+
+    return service;
+
+});

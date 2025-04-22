@@ -1,0 +1,1491 @@
+app.controller('frontoffice', ['$scope', '$state', '$auth', '$location', 'Server', 'toastr', '$http', 'bowser', 'localStorageService', 'TEMPLATE', '$q', 'API_SERVER', '$timeout', '$mdDialog','db','$interval','paging', function ($scope, $state, $auth, $location, Server, toastr, $http, bowser, localStorageService, TEMPLATE, $q, API_SERVER, $timeout, $mdDialog, db, $interval, paging) {
+
+
+
+            var params = {};
+
+            $scope.filtros = {};
+
+            $scope.filtros.values = [];
+
+
+
+            $scope.getcurrentstate = function () {
+
+                var split = $state.current.name.split('.');
+
+                var currentstate = split[split.length - 1];
+
+                return currentstate;
+
+            };
+
+
+
+
+
+            $scope.mobmenu = 0;
+
+            $scope.toggleMobileMenu = function(){
+
+                if($scope.mobmenu == 0){
+
+                    $scope.mobmenu = 1;
+
+                }else{
+
+                    $scope.mobmenu = 0;
+
+                }
+
+            }
+
+            $scope.closeMobileMenu = function(){
+
+                    $scope.mobmenu = 0;
+
+            }
+
+            $scope.toggledItem = null;
+
+            $scope.toggleSidemenuItems = function(x){
+
+                if($scope.toggledItem == x){
+
+                    $scope.toggledItem = null;
+
+                } else {
+
+                    $scope.toggledItem = x
+
+                }
+
+            }
+
+
+            $scope.ismobile = function() {
+               if (navigator.userAgent.match(/Android/i)
+                 || navigator.userAgent.match(/webOS/i)
+                 || navigator.userAgent.match(/iPhone/i)
+                 || navigator.userAgent.match(/iPad/i)
+                 || navigator.userAgent.match(/iPod/i)
+                 || navigator.userAgent.match(/BlackBerry/i)
+                 || navigator.userAgent.match(/Windows Phone/i)) {
+                    
+
+                         
+                    $timeout(function(){
+                         const link = document.createElement('a');
+                        link.setAttribute('target', '_blank');
+                        link.setAttribute('href', 'https://tub.pt/FAQ.pdf');
+                        link.setAttribute('download', `FAQ.pdf`);
+                        document.body.appendChild(link);
+                        link.click();
+                        link.remove();
+                    });
+
+                           
+
+
+
+
+
+                 } else {
+                     $mdDialog.show({
+                        preserveScope: true,
+                        scope: $scope,
+                        fullscreen:false,
+                        targetEvent:event,
+                        parent: angular.element(document.body),
+                        templateUrl: "faq.html",
+                        parent: angular.element(document.body),
+                        clickOutsideToClose: true
+                    });
+                 }
+            }; 
+
+           
+
+
+
+         
+
+
+
+
+            $scope.showPicture = function(event,path,folder,file){
+
+                $scope.picture=null;
+
+                $scope.alt=null;
+
+                if (path && folder && file){
+
+                    $scope.picture=path+folder+'/images/'+file;
+
+                    $scope.alt=file;
+
+                } else if(path && folder && !file) {
+
+                    $scope.picture=path+folder;
+
+                    if(folder){
+
+                        $scope.alt=folder;
+
+                    }
+
+                } else {
+
+                    $scope.picture=path;
+
+                    if(folder){
+
+                        $scope.alt=folder;
+
+                    }
+
+                }
+
+                $mdDialog.show({
+
+                    preserveScope: true,
+
+                    scope: $scope,
+
+                    targetEvent:event,
+
+                    templateUrl: 'templates/frontoffice/_structure/dialogs/picturedialog.html',
+
+                    parent: angular.element(document.body),
+
+                    clickOutsideToClose: true
+
+                });
+
+            };
+
+
+
+            $scope.loginPopup = function(event,tab){
+
+                $scope.loginTab=tab;
+
+                $mdDialog.show({
+
+                    preserveScope: true,
+
+                    scope: $scope,
+
+                    targetEvent:event,
+
+                    templateUrl: 'templates/frontoffice/_structure/dialogs/login.html',
+
+                    parent: angular.element(document.body),
+
+                    clickOutsideToClose: true
+
+                });
+
+            };
+
+            $scope.loginStep = function(x){
+
+                if(x == "next"){
+
+                    $scope.loginTab = $scope.loginTab + 1;
+
+                }
+
+                else if(x == "prev"){
+
+                    $scope.loginTab = $scope.loginTab - 1;
+
+                } else {
+
+                    $scope.loginTab = x;
+
+                }
+
+            };
+
+
+
+            
+
+            // SLIDER AVISOS
+
+            $scope.avisosSlider = {
+
+                enabled: true,
+
+                autoplay: true,
+
+                draggable: true,
+
+                arrows: false,
+
+                autoplaySpeed: 5000,
+
+                method: {},
+
+                event: {
+
+                    beforeChange: function (event, slick, currentSlide, nextSlide) {
+
+                    },
+
+                    afterChange: function (event, slick, currentSlide, nextSlide) {
+
+                    }
+
+                }
+
+            };
+
+
+
+            
+
+//PREVIEW DE FOTOGRAFIAS
+
+        
+
+        db.r('frontofficemenu').then(function (data) {
+
+
+
+            angular.forEach(data.menu, function (m) {
+
+                if (m.pages.length == 1) {
+
+                    m.type = 'link';
+
+                    m.state = 'frontoffice.' + m.route + '.' + m.pages[0].route;
+
+                    m.id = m.pages[0].id;
+
+                    delete m.pages;
+
+                } else {
+
+                    m.type = 'toggle';
+
+                }
+
+                angular.forEach(m.pages, function (p) {
+
+                    p.type = 'link';
+
+                    p.state = 'frontoffice.' + m.route + '.' + p.route;
+
+                    p.name = p.page;
+
+                });
+
+            });
+
+//          menu.setSections(data.menu);
+
+            $scope.menu = data.menu;
+
+        });
+
+        
+
+        $scope.saveemail = function(){
+
+            db.cr('subscribenewsletter',null,{email:$scope.emailnws}).then(function(){
+
+                toastr.success('Obrigado por subscrever a newsletter dos TUB.');
+
+                $scope.email = null; 
+
+            });
+
+        };
+
+
+
+ $scope.previewphoto = function ($event, index, path, images, obj, filename) {
+
+            
+
+     function opendialog(){
+
+                $scope.indexpreview = index;
+
+                $scope.pathpreview = path;
+
+                $scope.photopreview = $scope.pathpreview + $scope.imagespreview[index];
+
+                $mdDialog.show({
+
+                    preserveScope: true,
+
+                    scope: $scope,
+
+                    hasBackdrop :false,
+
+                    templateUrl: 'templates/frontoffice/documents/dialogs/previewphoto.html',
+
+                    parent: angular.element(document.body),
+
+                    clickOutsideToClose: true,
+
+                    targetEvent: $event
+
+                });
+
+            }
+
+            if (obj != null && obj != undefined && obj != ''){
+
+                var promises = [];
+
+                var imgs = [];
+
+                angular.forEach(images, function(i,k){
+
+                    if (i.filename == filename){
+
+                        index = k;
+
+                    }
+
+                    imgs.push(i.filename);
+
+                    var deferred = $q.defer();
+
+                    promises.push(deferred.promise);
+
+                });
+
+                $q.all([promises.promise]).then(function() {
+
+                    console.log(imgs);
+
+                    $scope.imagespreview = imgs;
+
+                    opendialog();
+
+                });
+
+                
+
+            }
+
+            else{
+
+                $scope.imagespreview = images;
+
+                opendialog();
+
+            }
+
+            
+
+            
+
+        };
+
+
+
+
+
+        $scope.fwdpreview = function(x){
+
+            
+
+            var index =  $scope.indexpreview;
+
+            var images = $scope.imagespreview;
+
+            var path = $scope.pathpreview;
+
+            
+
+
+
+            var l = images.length-1;
+
+            if (index == l){
+
+                $scope.indexpreview = 0;
+
+                
+
+            }
+
+            else {
+
+               $scope.indexpreview++;
+
+              
+
+            }
+
+            if(x=='setas'){
+
+                $scope.photopreview = path + images[$scope.indexpreview];
+
+                $scope.$apply()
+
+            }
+
+            else{
+
+                $scope.photopreview = path + images[$scope.indexpreview];
+
+            }
+
+            
+
+            
+
+        }
+
+        
+
+        $scope.backpreview = function(x){
+
+            
+
+            var index =  $scope.indexpreview;
+
+            var images = $scope.imagespreview;
+
+            var path = $scope.pathpreview;
+
+            
+
+             
+
+            var l = images.length-1;
+
+            if (index == 0){
+
+                $scope.indexpreview = l;
+
+                $scope.$apply(function(){
+
+                $scope.photopreview = path + images[$scope.indexpreview];
+
+            });
+
+            }
+
+            else {
+
+                $scope.indexpreview--;
+
+             
+
+            }
+
+            
+
+            if(x=='setas'){
+
+                $scope.photopreview = path + images[$scope.indexpreview];
+
+                $scope.$apply()
+
+            }
+
+            else{
+
+                $scope.photopreview = path + images[$scope.indexpreview];
+
+            }
+
+            
+
+        }
+
+
+
+
+
+
+
+            $scope.paging = paging;
+
+            $scope.arraystoupdate = [];
+
+            $scope.getparams = function () {
+
+            /* PARAMS Pagination 
+
+             INT Offset = Page || Required
+
+             INT Limit = Number of Rows || Required 
+
+             Array Field = Fields for Sorting
+
+             Array Sort = Type of Sorting Sort[0] sorting of Fields[0] 
+
+             Array Fields = Fields for Searching
+
+             String Filter = Search value
+
+             */
+
+
+
+            if ($state.params.offset) {
+
+                params.offset = parseInt($state.params.offset);
+
+                $scope.offsetpag = parseInt($state.params.offset);
+
+            } else {
+
+                params.offset = 1;
+
+            }
+
+            ;
+
+            if ($state.params.limit) {
+
+                params.limit = parseInt($state.params.limit);
+
+            } else {
+
+                params.limit = 9;
+
+            }
+
+            ;
+
+            if ($state.params.field) {
+
+                if (angular.isArray($state.params.field))
+
+                    params.field = $state.params.field;
+
+                else
+
+                    params.field = [$state.params.field];
+
+            }
+
+
+
+            if ($state.params.sort) {
+
+                if (angular.isArray($state.params.sort))
+
+                    params.sort = $state.params.sort;
+
+                else
+
+                    params.sort = [$state.params.sort];
+
+            }
+
+
+
+            if ($state.params.fields) {
+
+                if (angular.isArray($state.params.fields))
+
+                    params.fields = $state.params.fields;
+
+                else
+
+                    params.fields = [$state.params.fields];
+
+            }
+
+            if ($state.params.filter) {
+
+                if (angular.isArray($state.params.filter))
+
+                    params.filter = $state.params.filter;
+
+                else
+
+                    params.filter = [$state.params.filter];
+
+            }
+
+            return params;
+
+        };
+
+
+
+        //////
+
+
+
+        $scope.returnparams = function (params) {
+
+
+
+            if (params.field != undefined) {
+
+                if (angular.isArray(params.field[0]))
+
+                    params.field = params.field[0];
+
+            }
+
+            ;
+
+
+
+            if (params.sort != undefined) {
+
+                if (angular.isArray(params.sort[0]))
+
+                    params.sort = params.sort[0];
+
+            }
+
+            ;
+
+
+
+            if (params.fields != undefined) {
+
+                if (angular.isArray(params.fields[0]))
+
+                    params.fields = params.fields[0];
+
+            }
+
+            ;
+
+
+
+            if (params.filter != undefined) {
+
+                if (angular.isArray(params.filter[0]))
+
+                    params.filter = params.filter[0];
+
+            }
+
+            ;
+
+            return params;
+
+        };
+
+
+
+        /////
+
+        /*  Updates params.field array
+
+         String f = Sort ASC or DESC
+
+         String fd = field from database
+
+         Triggers new reload of view/list
+
+         */
+
+        function updatefield(f, fd) {
+
+            if (params.field == undefined) {
+
+                params.field = [];
+
+                params.sort = [];
+
+            }
+
+            ;
+
+            if (params.field.indexOf(fd) == -1) {
+
+                params.field.push(fd);
+
+                params.sort.push(f);
+
+            } else {
+
+                var i = params.field.indexOf(fd);
+
+                params.sort[i] = f;
+
+            }
+
+            ;
+
+
+
+            $scope.$broadcast('list', 1, params.limit, params.field, params.sort, params.fields, params.filter);
+
+        }
+
+
+
+
+
+        $scope.gotopage = function (p, l, f, s, fd, fil) {
+
+            $scope.$broadcast('list', p, l, f, s, fd, fil);
+
+        };
+
+
+
+
+
+        //fd field f valor
+
+        function updatefieldsearch(fd, f){
+
+            if (params.fields == undefined) {
+
+                params.fields = [];
+
+                params.filter = [];
+
+            }
+
+            ;
+
+            var i = params.fields.indexOf(fd);
+
+            if (i == -1) {
+
+                params.fields.push(fd);
+
+                params.filter.push(f);
+
+            } else if (i != -1 && params.filter[i] != f)
+
+            {
+
+                params.filter[i] = f;
+
+                $scope.filtros.values.splice(i,1);
+
+            }
+
+
+
+            $scope.$broadcast('list', 1, params.limit, params.field, params.sort, params.fields, params.filter);
+
+        };
+
+
+
+
+
+
+
+
+
+        // CHIPS
+
+
+
+
+
+
+
+        // Pushs/Updates a chip into array $scope.filtros.values 
+
+        /*
+
+         String t = type of chip 'sort' or 'search'
+
+         String n = label for chip 
+
+         String f = value for inner chip , value of the sort or value of the filter
+
+         String fd = field from database
+
+         Int 0 or null = field to know if you should reload the view/list using the updatefield function
+
+         */
+
+
+
+
+
+
+
+
+
+        $scope.pushchip = function (t, n, f, fd, rld) {
+
+            if (t == 'sort' && rld != 0) {
+
+                updatefield(f, fd);
+
+            }
+
+            if (t == 'search' && rld != 0) {
+
+                updatefieldsearch(fd,f);
+
+            }
+
+            var ob = {
+
+                type: t,
+
+                name: n,
+
+                fl: f
+
+            };
+
+            var add = true;
+
+            angular.forEach($scope.filtros.values, function (v) {
+
+                if (v.type == t && v.name == n && v.fl == f) {
+
+                    add = false;
+
+                    v.fl = f;
+
+                }
+
+            });
+
+            if (add) {
+
+                $scope.filtros.values.push(ob);
+
+            }
+
+        };
+
+
+
+        /* Deletes Chip trigering new search and updating params
+
+         Object x = object from array $scope.filtros.values
+
+         */
+
+        
+
+        $scope.deleteChip = function (x) {
+
+            $scope.getparams();
+
+            var isort = 0;
+
+            var isearch = 0;
+
+            angular.forEach($scope.filtros.values, function (v, i) {
+
+                if (v.fl == x.fl && v.name == x.name && v.type == x.type) {
+
+                    if (v.type == 'sort') {
+
+                        params.field.splice(isort, 1);
+
+                        params.sort.splice(isort, 1);
+
+                    }
+
+                    if (v.type == 'search') {
+
+                        params.fields.splice(isearch, 1);
+
+                        params.filter.splice(isearch, 1);
+
+                    }
+
+                    $scope.filtros.values.splice(i, 1);
+
+                    $scope.$broadcast('list', 1, params.limit, params.field, params.sort, params.fields, params.filter);
+
+                }
+
+                if (v.type == 'sort')
+
+                    isort++;
+
+                if (v.type == 'search')
+
+                    isearch++;
+
+            });
+
+
+
+
+
+        };
+
+
+
+
+
+        $scope.returnsort = function (field) {
+
+            var params = $scope.getparams();
+
+            if (params.field != undefined) {
+
+                var index = params.field.indexOf(field);
+
+                if (index != -1) {
+
+                    if (params.sort[index] == 'ASC') {
+
+                        return 'DESC';
+
+                    } else
+
+                        return 'ASC';
+
+
+
+                } else
+
+                    return 'ASC';
+
+            } else
+
+                return 'ASC';
+
+
+
+        };
+
+        ///////////////////////////
+
+
+
+        $scope.handlefiltros = function (field, sort, fields, filter, data) {
+
+            if (!$scope.filtros.values.length) {
+
+                if (field != undefined && field != null) {
+
+                    angular.forEach(field, function (f, i) {
+
+                        // var name = angular.copy($scope.returnlabel(f, data));
+
+                        $scope.pushchip('sort', f, sort[i], null, 0);
+
+                    });
+
+
+
+                }
+
+                if (fields) {
+
+                    angular.forEach(fields, function (f, i) {
+
+                        $scope.pushchip('search', f, filter[i], null, 0);
+
+                    });
+
+                }
+
+
+
+            }
+
+        };
+
+        /////////////////
+
+
+
+
+
+
+
+        // String x = field from database, return label from object fields for presentation on Chips
+
+        // Object ob = object that will be iterated for comparation with X string
+
+        $scope.returnlabel = function (x, ob) {
+
+            label = null;
+
+            angular.forEach(ob, function (f) {
+
+                if (f.field == x) {
+
+                    label = f.label;
+
+                }
+
+            });
+
+            return label;
+
+        };
+
+
+
+        // SEARCH LIST
+
+
+
+        /*  Returns Array of Objects for Search input on Search template || IMPORTANT result must be deferred or wont work
+
+         String Field = field from the database that is going to be searched
+
+         String Value = value for the search
+
+         String Table = table where to search when its an FK field || Null
+
+         Array Fields = fields to return when defined
+
+         */
+
+        $scope.getfs = function (field, value, table, fields) {
+
+            var params = $scope.getparams();
+
+            if (value != undefined) {
+
+                if (value.length < 1) {
+
+                    $scope.deleteChip({fl: params.filter[params.fields.indexOf($scope.returnsfield(field, table, fields))], type: 'search', name: $scope.returnsfield(field, table, fields)});
+
+                } else {
+
+                    var deferred = $q.defer();
+
+                    var substring2 = field.substring(0, 2);
+
+                    field = table != undefined ? (substring2 == 'id' ? field.substring(2, field.length) : fields[0].name) : field;
+
+
+
+                    var params = {
+
+                        table: table != undefined ? table : maintable.returnValue(),
+
+                        filter: field,
+
+                        fields: [field],
+
+                        id: value,
+
+                        like: true,
+
+                        array: true
+
+                    };
+
+
+
+                    db.r('getterms', params).then(function (data) {
+
+                        deferred.resolve(data);
+
+                    });
+
+                    return deferred.promise;
+
+                }
+
+            }
+
+        };
+
+
+
+
+
+        /* ui-bootstrap type-ahead submit
+
+         string $model = filter value
+
+         */
+
+        $scope.filterdata = function ($item, $model, $label, $event, table, field, flds) {
+
+            var substring2 = field.substring(0, 2);
+
+            var fields = table != undefined ? (substring2 == 'id' ? field.substring(2, field.length) : flds[0].name) : field;
+
+            $scope.pushchip('search', field, $model, fields);
+
+
+
+        }
+
+
+
+
+
+        /* Returns new field without the ID suffix (Alias of the field) inside the Search Template 
+
+         String field = field from database
+
+         String table = table from database
+
+         */
+
+        $scope.returnsfield = function (field, table, fields) {
+
+            var substring2 = field.substring(0, 2);
+
+            field = table != undefined ? (substring2 == 'id' ? field.substring(2, field.length) : fields[0].name) : field;
+
+            return field;
+
+        }
+
+
+
+
+
+        $scope.refreshtoken = function(){
+
+            $scope.logged = $auth.getPayload();
+
+        };
+
+        
+
+        $scope.refreshtoken();
+
+        
+
+        
+
+        $http.get("json/routes.json").then(function (response) {
+
+            $scope.routes = response.data;
+
+            $scope.routeslist = [];
+
+            angular.forEach($scope.routes, function (r) {
+
+                $scope.routeslist.push({id: r[0], nome: r[1]});
+
+            });
+
+            
+
+        });
+
+        
+
+        $http.get("json/stops.json").then(function (response) {
+
+            $scope.stops = response.data;
+
+        });
+
+        
+
+        
+
+        
+
+        var regeximgs =  /(http)?s?:?(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg))/i;
+
+        
+
+        db.r('noticiaslist',{limit:6,offset:1,listfilterby:[{field:"interna",operator:"!=",value:"1"}]}).then(function(data){
+
+            $scope.newssidebar = data;
+
+            angular.forEach($scope.newssidebar, function(n){
+
+                if(n.path == null || n.path == undefined || n.path == ''){
+
+                    if(n.idcategoria==1)
+
+                        n.image = "templates/img/tub_site_banner_noticia.png";
+
+                    else if(n.idcategoria==2)
+
+                        n.image = "templates/img/tub_site_banner_avisos.png";
+
+                }
+
+                else if(n.path.match(regeximgs))
+
+                    n.image = n.path;
+
+                else
+
+                    n.image = n.path+"/images/thumbs/"+n.cover;
+
+            });
+
+        });
+
+        
+
+        db.r('getavisos').then(function(data){
+
+            $scope.avisoshome = data;
+
+//            angular.forEach($scope.avisoshome, function(a){
+
+//                if(a.path == null || a.path == undefined || a.path == '')
+
+//                    a.path = "templates/img/tub.jpg";
+
+//                
+
+//                a.linhasafectadas = a.linhasafectadas == null ? [] : angular.fromJson(a.linhasafectadas);
+
+//                
+
+//            });
+
+            $scope.currentaviso = 0;
+
+            $interval(function(){
+
+                if ($scope.currentaviso+1 == $scope.avisoshome.length)
+
+                {
+
+                    $scope.currentaviso = 0;
+
+                }else{
+
+                    $scope.currentaviso = $scope.currentaviso+1;
+
+                }
+
+                
+
+            },3000);
+
+        });
+
+        
+
+        
+
+        $scope.logout = function(){
+
+            $auth.logout();
+
+            delete $scope.logged;
+
+            $state.go('frontoffice.home');
+
+        };
+
+        
+
+        
+
+        function returnjson(m, p, a, pa) {
+
+
+
+            var json = {
+
+                module: m,
+
+                page: p,
+
+                action: a,
+
+                params: pa
+
+            };
+
+            return json;
+
+        };
+
+
+
+        $scope.duvida = {};
+
+        
+
+        $scope.askdoubt = function(){
+
+          db.dc("addcontacto",null,null,null,$scope.duvida);  
+
+        };
+
+        
+
+
+
+        $scope.getoptions = function (table, fields, scope, id, filterby, ticked, array) {
+
+            var scope = scope + 'options';
+
+            var loading = scope + 'loading';
+
+            $scope[loading] = true;
+
+            var params = {
+
+                fields: fields,
+
+                table: table
+
+            };
+
+            if (array != undefined && array != null) {
+
+                params.array = true;
+
+            }
+
+            if (filterby != undefined && filterby != null) {
+
+                params.filter = filterby;
+
+            }
+
+            if (id != undefined && id != null) {
+
+                params.id = id;
+
+            }
+
+
+
+            var json = returnjson('null', 'null', 'getterms', params);
+
+            Server.r(json, function (data) {
+
+                $scope[scope] = data.result;
+
+                if (ticked != null && ticked != undefined) {
+
+                    angular.forEach($scope[scope], function (t) {
+
+                        if (t.id == ticked) {
+
+                            t.ticked = true;
+
+                        }
+
+
+
+                    });
+
+                }
+
+                ;
+
+                $scope[loading] = false;
+
+            });
+
+
+
+
+
+
+
+
+
+        };
+
+
+
+
+
+
+
+        $scope.showLoginDialog = function (ev) {
+
+            $mdDialog.show({
+
+//                controller: DialogController,
+
+                templateUrl: 'templates/loginRegister/partial_login.html',
+
+                parent: angular.element(document.body),
+
+                targetEvent: ev,
+
+                scope: $scope,
+
+                preserveScope: true,
+
+                clickOutsideToClose: true,
+
+                fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
+
+            });
+
+        };
+
+        
+
+        
+
+
+
+
+
+
+
+      //  $scope.getoptions('especialidades', ['especialidade'], 'especialidade');
+
+
+
+         $scope.closemddialog = function () {
+
+            $mdDialog.hide();
+
+        };
+
+        
+
+        $scope.user = {};
+
+
+
+        $scope.login = function () {
+
+
+
+            var user = {
+
+                email: $scope.user.email,
+
+                password: $scope.user.password
+
+            };
+
+
+
+            $auth.login(user)
+
+                .then(function () {
+
+                    $scope.logged = $auth.getPayload();
+
+                    $mdDialog.hide();
+
+                    $scope.refreshtoken();
+
+
+
+                })
+
+                .catch(function (response) {
+
+                    $scope.message = "Utilizador e/ou Password errados";
+
+                });
+
+        };
+
+
+
+
+
+    }]);
+

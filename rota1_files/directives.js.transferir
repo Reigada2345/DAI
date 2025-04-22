@@ -1,0 +1,3135 @@
+app.directive('errSrc', function() {
+
+  return {
+
+    link: function(scope, element, attrs) {
+
+        
+
+        if(attrs.src == null){
+
+            attrs.$set('src', attrs.errSrc);
+
+        }
+
+        
+
+        
+
+      element.bind('error', function() {
+
+        if (attrs.src != attrs.errSrc) {
+
+          attrs.$set('src', attrs.errSrc);
+
+        }
+
+      });
+
+    }
+
+  }
+
+});
+
+
+
+
+
+
+
+app.factory('memoize', [
+
+  function() {
+
+
+
+    function service() {
+
+      return memoizeFactory.apply(this, arguments);
+
+    }
+
+
+
+    function memoizeFactory(fn) {
+
+
+
+      var cache = {};
+
+
+
+      function memoized() {
+
+
+
+        var args = [].slice.call(arguments);
+
+
+
+        var key = JSON.stringify(args);
+
+
+
+        if (cache.hasOwnProperty(key)) {
+
+          return cache[key];
+
+        }
+
+
+
+        cache[key] = fn.apply(this, arguments);
+
+
+
+        return cache[key];
+
+
+
+      }
+
+
+
+      return memoized;
+
+
+
+    }
+
+
+
+    return service;
+
+
+
+  }
+
+]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.factory('filterStabilize', ['memoize',
+
+  function(memoize) {
+
+
+
+    function service(fn) {
+
+
+
+      function filter() {
+
+        var args = [].slice.call(arguments);
+
+        // always pass a copy of the args so that the original input can't be modified
+
+        args = angular.copy(args);
+
+        // return the `fn` return value or input reference (makes `fn` return optional)
+
+        var filtered = fn.apply(this, args) || args[0];
+
+        return filtered;
+
+      }
+
+
+
+      var memoized = memoize(filter);
+
+
+
+      return memoized;
+
+
+
+    }
+
+
+
+    return service;
+
+
+
+  }
+
+])
+
+
+
+
+
+app.filter('groupBy', ['filterStabilize', function(stabilize){
+
+    return stabilize( function (data, key) {
+
+        if (!(data && key)) return;
+
+        var result = {};
+
+        for (var i=0;i<data.length;i++) {
+
+            if (!result[data[i][key]])
+
+                result[data[i][key]]=[];
+
+            result[data[i][key]].push(data[i])
+
+        }
+
+        return result;
+
+    });
+
+}])
+
+
+
+
+
+
+
+app.factory('zxcvbn', [function() {
+
+    return {
+
+        score: function() {
+
+            var compute = zxcvbn.apply(null, arguments);
+
+            return compute && compute.score;
+
+        }
+
+    };
+
+}]);
+
+
+
+
+
+app.filter('passwordCount', [function() {
+
+    return function(value, peak) {
+
+        var value = angular.isString(value) ? value : '',
+
+        peak = isFinite(peak) ? peak : 7;
+
+
+
+        return value && (value.length > peak ? peak + '+' : value.length);
+
+    };
+
+}]);
+
+
+
+
+
+
+
+app.directive('okPassword', ['zxcvbn', function(zxcvbn) {
+
+    return {
+
+        // restrict to only attribute and class
+
+        restrict: 'AC',
+
+
+
+        // use the NgModelController
+
+        require: 'ngModel',
+
+
+
+        // add the NgModelController as a dependency to your link function
+
+        link: function($scope, $element, $attrs, ngModelCtrl) {
+
+            $element.on('blur change keydown', function(evt) {
+
+                $scope.$evalAsync(function($scope) {
+
+                    // update the $scope.password with the element's value
+
+                    var pwd = $scope.password = $element.val();
+
+
+
+                    // resolve password strength score using zxcvbn service
+
+                    $scope.passwordStrength = pwd ? (pwd.length > 7 && zxcvbn.score(pwd) || 0) 
+
+                    : null;
+
+
+
+                    // define the validity criterion for okPassword constraint
+
+                    ngModelCtrl.$setValidity('okPassword', $scope.passwordStrength >= 2);
+
+                });
+
+            });
+
+        }
+
+    };
+
+}]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.directive('compareTo', function() {
+
+    return {
+
+        require: "ngModel",
+
+        scope: {
+
+            otherModelValue: "=compareTo"
+
+        },
+
+        link: function(scope, element, attributes, ngModel) {
+
+
+
+            ngModel.$validators.compareTo = function(modelValue) {
+
+                return modelValue == scope.otherModelValue;
+
+            };
+
+
+
+            scope.$watch("otherModelValue", function() {
+
+                ngModel.$validate();
+
+            });
+
+        }
+
+    };
+
+});
+
+
+
+app.directive('nifValid', function($q){
+
+    return {
+
+        require: "ngModel",
+
+        link: function(scope, element, attributes, ngModel){
+
+            
+
+          ngModel.$validators.nifinvalid = function(modelValue, viewValue){
+
+                var contribuinte = modelValue || viewValue;
+
+                var comparador;
+
+                if (ngModel.$isEmpty(viewValue) || viewValue.length < 9){
+
+                    return true;
+
+                }
+
+                var temErro=0;
+
+                var first = contribuinte.substr(0,1);
+
+                var second = contribuinte.substr(0,2);
+
+                if (
+
+                    first != '1' && // pessoa singular
+
+                    first != '2' && // pessoa singular
+
+                    first != '3' && // pessoa singular
+
+                    second != '45' && // pessoa singular não residente
+
+                    first != '5' && // pessoa colectiva
+
+                    first != '6' && // administração pública
+
+                    second != '70' && // herança indivisa
+
+                    second != '71' && // pessoa colectiva não residente
+
+                    second != '72' && // fundos de investimento
+
+                    second != '77' && // atribuição oficiosa
+
+                    second != '79' && // regime excepcional
+
+                    first != '8' && // empresário em nome individual (extinto)
+
+                    second != '90' && // condominios e sociedades irregulares
+
+                    second != '91' && // condominios e sociedades irregulares
+
+                    second != '98' && // não residentes
+
+                    second != '99' // sociedades civis
+
+                ) 
+
+
+
+                { 
+
+                        temErro=1;
+
+                }
+
+
+
+                var check1 = first*9;
+
+                var check2 = contribuinte.substr(1,1)*8;
+
+                var check3 = contribuinte.substr(2,1)*7;
+
+                var check4 = contribuinte.substr(3,1)*6;
+
+                var check5 = contribuinte.substr(4,1)*5;
+
+                var check6 = contribuinte.substr(5,1)*4;
+
+                var check7 = contribuinte.substr(6,1)*3;
+
+                var check8 = contribuinte.substr(7,1)*2;
+
+
+
+                var total= check1 + check2 + check3 + check4 + check5 + check6 + check7 + check8;
+
+                var divisao= total / 11;
+
+                var modulo11=total - parseInt(divisao)*11;
+
+                if ( modulo11==1 || modulo11==0){ comparador=0; } // excepção
+
+                else { comparador= 11-modulo11;}
+
+
+
+
+
+                var ultimoDigito=contribuinte.substr(8,1)*1;
+
+                if ( ultimoDigito != comparador ){ 
+
+                    temErro=1;
+
+                }
+
+
+
+                    if (temErro==1){ 
+
+                        return false; 
+
+                    }
+
+                    else
+
+                        return true;
+
+
+
+                };
+
+            }
+
+        };
+
+   
+
+});
+
+
+
+app.directive('nicValid', function($q){
+
+    return {
+
+        require: "ngModel",
+
+        scope: {
+
+            doctype: '=?'
+
+        },
+
+        link: function(scope, element, attributes, ngModel){
+
+            
+
+        scope.$watch("doctype", function(){    
+
+            
+
+            if(scope.doctype=='CC' || !scope.doctype){
+
+                    ngModel.$validators.biinvalid = function(modelValue, viewValue){
+
+                        return true;
+
+                    }
+
+                
+
+                
+
+                    ngModel.$validators.nicinvalid = function(modelValue, viewValue){
+
+                    if (ngModel.$isEmpty(viewValue)){
+
+                        return $q.resolve();
+
+                    }
+
+
+
+                    var numeroDocumento = modelValue;
+
+
+
+
+
+
+
+                        var mappings = {0:0,1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,A:10,B:11,C:12,D:13,E:14,F:15,G:16,H:17,I:18,J:19,K:20,L:21,M:22,N:23,O:24,P:25,Q:26,R:27,S:28,T:29,U:30,V:31,W:32,X:33,Y:34,Z:35};
+
+
+
+                        var sum = 0;
+
+                        var secondDigit = false;
+
+                        if(numeroDocumento.length != 12)
+
+                            return false;
+
+                        for (var i = numeroDocumento.length-1; i >= 0; --i)
+
+                        {
+
+                                var valor = mappings[numeroDocumento[i].toUpperCase()];
+
+                                if (secondDigit)
+
+                                {
+
+                                 valor *= 2;
+
+                                 if (valor > 9)
+
+                                valor -= 9;
+
+                                }
+
+                                sum += valor;
+
+                                secondDigit = !secondDigit;
+
+                        }
+
+                        return (sum % 10) == 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   }       
+
+               } 
+
+
+
+            else if(scope.doctype=='BI'){
+
+                ngModel.$validators.nicinvalid = function(modelValue, viewValue){
+
+                    return true;
+
+                }
+
+            
+
+                ngModel.$validators.biinvalid = function(modelValue, viewValue){
+
+                    if (ngModel.$isEmpty(viewValue)){
+
+                        return $q.resolve();
+
+                    }
+
+                    var comparador;
+
+                    var numeroDocumento = modelValue;
+
+                    
+
+                    var check1 = numeroDocumento.substr(0,1)*9;
+
+                    var check2 = numeroDocumento.substr(1,1)*8;
+
+                    var check3 = numeroDocumento.substr(2,1)*7;
+
+                    var check4 = numeroDocumento.substr(3,1)*6;
+
+                    var check5 = numeroDocumento.substr(4,1)*5;
+
+                    var check6 = numeroDocumento.substr(5,1)*4;
+
+                    var check7 = numeroDocumento.substr(6,1)*3;
+
+                    var check8 = numeroDocumento.substr(7,1)*2;
+
+
+
+                    var total= check1 + check2 + check3 + check4 + check5 + check6 + check7 + check8;
+
+                    var divisao= total / 11;
+
+                    var modulo11=total - parseInt(divisao)*11;
+
+                    
+
+                    if (modulo11==1 || modulo11==0){ 
+
+                        comparador=0; 
+
+                    } //
+
+                    else {
+
+                        comparador=11-modulo11;
+
+                    }
+
+
+
+                    var ultimoDigito=numeroDocumento.substr(8,1)*1;
+
+                    
+
+                    
+
+                
+
+                    
+
+                    if ( ultimoDigito != comparador ){ 
+
+                        return false;
+
+                    }
+
+                    else{
+
+                        return true;
+
+                    }
+
+                        
+
+                };
+
+
+
+                }
+
+                
+
+            else{
+
+                ngModel.$validators.nicinvalid = function(modelValue, viewValue){
+
+                    return true;
+
+                }
+
+                
+
+                ngModel.$validators.biinvalid = function(modelValue, viewValue){
+
+                    return true;
+
+                }
+
+            }
+
+        
+
+        }
+
+                    
+
+           
+
+         );
+
+
+
+        }
+
+    }
+
+
+
+    
+
+                
+
+   
+
+});   
+
+
+
+app.directive('cpostalpasses', ['db','$mdDialog', function(db,$mdDialog){
+
+    return {
+
+        require: 'ngModel',
+
+   //     transclude: true,
+
+        scope: {
+
+            postalCode: '=',
+
+            toDisable: '=?',
+
+            ngModel: '=',
+
+            details: '=?'
+
+        },
+
+        link: function(scope, element, attrs, model) {
+
+            
+
+            scope.confirm = function(){
+
+               $mdDialog.hide();
+
+               
+
+                if(scope.toDisable=='morada')
+
+                    {
+
+                        scope.details.ee.morada = scope.morada.arteria;
+
+                    }
+
+
+
+                    else if(scope.toDisable=='moradaal'){
+
+
+
+                        scope.details.aluno.morada = scope.morada.arteria;
+
+                    }
+
+                    else{
+
+
+
+                        scope.details.ee.morada = scope.morada.arteria+', '+scope.morada.designacao_postal;
+
+                        scope.details.aluno.morada = scope.morada.arteria+', '+scope.morada.designacao_postal;
+
+                    }
+
+            };
+
+            
+
+            scope.closemddialog = function(){
+
+                $mdDialog.cancel();
+
+            };
+
+            
+
+            scope.$watch("postalCode", function(value){
+
+                if(value){
+
+                    if(scope.toDisable){
+
+                        document.getElementById(scope.toDisable).disabled = true;
+
+                    }
+
+                    //console.log(model.NgModelController);
+
+                    db.r('getcpdetails', {
+
+                            cp: value
+
+                    }).then(function(data){
+
+                        if (data.length > 1)
+
+                        {
+
+                            scope.data = data;
+
+                            $mdDialog.show({
+
+                                templateUrl :'templates/frontoffice/commerce/dialogs/moradas.html',
+
+                                scope:scope,
+
+                                preserveScope:true,
+
+                                escapeToClose:false,
+
+                                clickOutsideToClose:false
+
+                            });
+
+                            
+
+                            scope.moradaoptions = data;
+
+                           
+
+                        }
+
+                        else
+
+                        {
+
+                            
+
+                            if(scope.toDisable=='morada')
+
+                            {
+
+                                scope.details.ee.morada = data[0].arteria;
+
+                            }
+
+                            
+
+                            else if(scope.toDisable=='moradaal'){
+
+                                
+
+                                scope.details.aluno.morada = data[0].arteria;
+
+                            }
+
+                            
+
+                            else{
+
+                                scope.details.ee.morada = data[0].arteria+', '+ data[0].designacao_postal;
+
+                                scope.details.aluno.morada = data[0].arteria+', '+ data[0].designacao_postal;
+
+                            }
+
+                        }
+
+                        if(scope.toDisable){
+
+                            document.getElementById(scope.toDisable).disabled = false;
+
+                        }
+
+                    });
+
+
+
+                }
+
+            })
+
+
+
+          
+
+        }
+
+    };
+
+}]);
+
+
+
+
+
+
+
+app.directive('cpostal', ['db','$mdDialog', function(db,$mdDialog){
+
+    return {
+
+        require: 'ngModel',
+
+   //     transclude: true,
+
+        scope: {
+
+            postalCode: '=',
+
+            toDisable: '=?',
+
+            ngModel: '=',
+
+            details: '=?'
+
+        },
+
+        link: function(scope, element, attrs, model) {
+
+            
+
+            scope.confirm = function(){
+
+               $mdDialog.hide();
+
+               
+
+                if(scope.toDisable=='moradacasa')
+
+                    {
+
+                        scope.details.moradacasa = scope.morada.arteria;
+
+                    }
+
+
+
+                    else if(scope.toDisable=='moradatrabalho'){
+
+
+
+                        scope.details.moradatrabalho = scope.morada.arteria;
+
+                    }
+
+                    else{
+
+
+
+                        scope.details.morada = scope.morada.arteria+', '+scope.morada.designacao_postal;
+
+                        scope.details.moradaaluno = scope.morada.arteria+', '+scope.morada.designacao_postal;
+
+                    }
+
+            };
+
+            
+
+            scope.closemddialog = function(){
+
+                $mdDialog.cancel();
+
+            };
+
+            
+
+            scope.$watch("postalCode", function(value,old){
+
+                
+
+           //LiSa / Linked Horizon / Egoist / Baby Metal
+
+                  
+
+                if(value && ((!scope.details.morada && !scope.details.moradaaluno)  || value != old && old)){
+
+                    if(scope.toDisable && !scope.details.morada ){
+
+                        document.getElementById(scope.toDisable).disabled = true;
+
+                    }
+
+                    //console.log(model.NgModelController);
+
+                     db.r('getcpdetails', {
+
+
+
+                            cp: value
+
+
+
+                    }).then(function(data){
+
+
+
+                                            
+
+                      
+
+                            if (data.length > 1)
+
+                            {
+
+                                scope.data = data;
+
+                                $mdDialog.show({
+
+                                    templateUrl :'templates/frontoffice/commerce/dialogs/moradas.html',
+
+                                    scope:scope,
+
+                                    preserveScope:true,
+
+                                    escapeToClose:false,
+
+                                    clickOutsideToClose:false
+
+                                });
+
+
+
+                                scope.moradaoptions = data;
+
+
+
+                            }
+
+                            else
+
+                            {
+
+
+
+                                if(scope.toDisable=='moradacasa')
+
+                                {
+
+                                    scope.details.moradacasa = data[0].arteria;
+
+                                }
+
+
+
+                                else if(scope.toDisable=='moradatrabalho'){
+
+
+
+                                    scope.details.moradatrabalho = data[0].arteria;
+
+                                }
+
+
+
+                                else{
+
+                                    scope.details.morada = data[0].arteria+', '+ data[0].designacao_postal;
+
+                                    scope.details.moradaaluno = data[0].arteria+', '+ data[0].designacao_postal;
+
+                                }
+
+                            }
+
+                            if(scope.toDisable){
+
+                                document.getElementById(scope.toDisable).disabled = false;
+
+                            }
+
+                        
+
+                        
+
+                     
+
+                        
+
+                        
+
+                    });
+
+
+
+                }
+
+                
+
+                
+
+            })
+
+
+
+          
+
+        }
+
+    };
+
+}]);
+
+
+
+
+
+
+
+
+
+
+
+app.directive('nifExists', function(db,$q){
+
+    return {
+
+        require: "ngModel",
+
+        link: function(scope, element, attributes, ngModel){
+
+            
+
+          ngModel.$asyncValidators.nifexists = function(modelValue, viewValue){
+
+              var value = modelValue || viewValue;
+
+                if (ngModel.$isEmpty(viewValue)){
+
+                    return $q.resolve();
+
+                }
+
+                return db.cr('verifynif',null,{nif:value},null,null,true).then(function(data){
+
+                    if(data.Nome){
+
+                        scope.register.enterprise = data.Nome;
+
+                    }
+
+                    if(data.CPostal){
+
+                        scope.register.postalcode = data.CPostal;
+
+                    }
+
+                   return true; 
+
+                },function(){
+
+                    return $q.reject();
+
+                        
+
+                    });
+
+            };
+
+        }
+
+    };
+
+});
+
+
+
+
+
+
+
+
+
+
+
+app.directive('ngRightClick', function($parse) {
+
+    return function(scope, element, attrs) {
+
+        var fn = $parse(attrs.ngRightClick);
+
+        element.bind('contextmenu', function(event) {
+
+            scope.$apply(function() {
+
+                event.preventDefault();
+
+                fn(scope, {$event:event});
+
+            });
+
+        });
+
+    };
+
+});
+
+
+
+app.directive('jsonText', function() {
+
+  return {
+
+    restrict: 'A', // only activate on element attribute
+
+    require: 'ngModel', // get a hold of NgModelController
+
+    link: function(scope, element, attrs, ngModelCtrl) {
+
+
+
+      var lastValid;
+
+
+
+      // push() if faster than unshift(), and avail. in IE8 and earlier (unshift isn't)
+
+      ngModelCtrl.$parsers.push(fromUser);
+
+      ngModelCtrl.$formatters.push(toUser);
+
+
+
+      // clear any invalid changes on blur
+
+      element.bind('blur', function () {
+
+        element.val(toUser(scope.$eval(attrs.ngModel)));
+
+      });
+
+
+
+      // $watch(attrs.ngModel) wouldn't work if this directive created a new scope;
+
+      // see http://stackoverflow.com/questions/14693052/watch-ngmodel-from-inside-directive-using-isolate-scope how to do it then
+
+      scope.$watch(attrs.ngModel, function(newValue, oldValue) {
+
+        lastValid = lastValid || newValue;
+
+
+
+        if (newValue != oldValue) {
+
+          ngModelCtrl.$setViewValue(toUser(newValue));
+
+
+
+          // TODO avoid this causing the focus of the input to be lost..
+
+          ngModelCtrl.$render();
+
+        }
+
+      }, true); // MUST use objectEquality (true) here, for some reason..
+
+
+
+      function fromUser(text) {
+
+        // Beware: trim() is not available in old browsers
+
+        if (!text || text.trim() === '') {
+
+          return {};
+
+        } else {
+
+          try {
+
+            lastValid = angular.fromJson(text);
+
+            ngModelCtrl.$setValidity('invalidJson', true);
+
+          } catch(e) {
+
+            ngModelCtrl.$setValidity('invalidJson', false);
+
+          }
+
+          return lastValid;
+
+        }
+
+      }
+
+
+
+      function toUser(object) {
+
+        // better than JSON.stringify(), because it formats + filters $$hashKey etc.
+
+        return angular.toJson(object, true);
+
+      }
+
+    }
+
+  };
+
+});
+
+
+
+
+
+
+
+app.directive('top',function(TEMPLATE) {
+
+    return {
+
+    restrict: 'E',
+
+    templateUrl: 'templates/'+TEMPLATE+'/tpl/widget/top.html'
+
+  };
+
+});
+
+
+
+
+
+app.directive('kpis', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/' + TEMPLATE +  '/tpl/widget/kpi.html'
+
+  };
+
+});
+
+
+
+
+
+app.directive('fileupload', function() {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl: 'modules/files/tpl/partial_filemanager.html'
+
+  };
+
+});
+
+
+
+
+
+app.directive('getOptionsVr', function(TEMPLATE){
+
+	return {
+
+    restrict: 'E',
+
+    scope: {
+
+      sref: '=route',
+
+      options: '=options',
+
+      fields: '=fields',
+
+      tags: '=tags',
+
+      inits: '=inits'
+
+    },
+
+    templateUrl:'templates/' + TEMPLATE +  '/tpl/widget/virtualrepeat.html',
+
+    controller: ['$scope','$state','$rootScope', function($scope,$state,$rootScope){
+
+
+
+        var sref= $scope.sref;
+
+        $scope.search = {};
+
+    	$scope.goto = function(id){
+
+            $state.go(sref,{id:id});
+
+        };
+
+
+
+
+
+
+
+        angular.forEach($scope.options, function(o){
+
+            angular.forEach($scope.inits, function(i){
+
+                var name = i.substring(2);
+
+                o[name] = $scope.tags[i][o[i]][1];
+
+            });
+
+        });
+
+        console.log($scope.options);
+
+        $scope.broad = function(action,id,ob){
+
+            $rootScope.$broadcast(action,id,ob);
+
+        };
+
+    }]
+
+  };
+
+});
+
+
+
+
+
+
+
+
+
+app.directive('listisolated', function(TEMPLATE,$q) {
+
+  return {
+
+    restrict: 'E',
+
+    scope: {
+
+      listaction: '=listaction',
+
+      cactions: '=cactions',
+
+      sref: '=route',
+
+      maintable: '=maintable',
+
+      filtrosparams: '=filtrosparams'
+
+    },
+
+    templateUrl:'templates/' + TEMPLATE +  '/tpl/widget/listisolated.html',
+
+    controller: ['$scope','$state','$rootScope','db','paging', function($scope,$state,$rootScope,db,paging){
+
+           var filtrosparams = $scope.filtrosparams;
+
+           var listaction = $scope.listaction;
+
+           var maintable = $scope.maintable;
+
+           $scope.filtros = {};
+
+           $scope.filtros.values = [];
+
+            
+
+            
+
+            
+
+            
+
+            $scope.goto = function(sref,id){
+
+                $state.go(sref,{id:id});
+
+            };
+
+            
+
+            $scope.broad = function(action,id,ob){
+
+                $rootScope.$broadcast(action,id,ob);
+
+            };
+
+            
+
+            
+
+            
+
+            
+
+var params = {};
+
+
+
+    function getparams(){
+
+        /* PARAMS Pagination 
+
+        INT Offset = Page || Required
+
+        INT Limit = Number of Rows || Required 
+
+        Array Field = Fields for Sorting
+
+        Array Sort = Type of Sorting Sort[0] sorting of Fields[0] 
+
+        Array Fields = Fields for Searching
+
+        String Filter = Search value
+
+        */
+
+   
+
+        if (params.offset){
+
+            params.offset = parseInt(params.offset);
+
+            $scope.offsetpag = parseInt(params.offset);
+
+        } else {
+
+            params.offset = 1;
+
+        };
+
+        if (params.limit){
+
+            params.limit = parseInt(params.limit);
+
+        } else {
+
+            params.limit = 10;
+
+        };
+
+        if (params.field){
+
+            if (angular.isArray(params.field))
+
+                params.field = params.field;
+
+            else
+
+                params.field = [params.field];
+
+        }
+
+
+
+        if (params.sort){
+
+            if (angular.isArray(params.sort))
+
+                params.sort = params.sort;
+
+            else
+
+                params.sort = [params.sort];
+
+        }
+
+
+
+        if (params.fields){
+
+            if (angular.isArray(params.fields))
+
+                params.fields = params.fields;
+
+            else
+
+                params.fields = [params.fields];
+
+        }
+
+        if (params.filter){
+
+            if (angular.isArray(params.filter))
+
+                params.filter = params.filter;
+
+            else
+
+                params.filter = [params.filter];
+
+        }
+
+        return params;
+
+    };
+
+
+
+
+
+
+
+    function returnparams(params){
+
+        if (params.offset){
+
+            params.offset = parseInt(params.offset);
+
+            $scope.offsetpag = parseInt(params.offset);
+
+        } else {
+
+            params.offset = 1;
+
+        };
+
+        if (params.limit){
+
+            params.limit = parseInt(params.limit);
+
+        } else {
+
+            params.limit = 10;
+
+        };
+
+
+
+
+
+
+
+
+
+        if (params.field != undefined) {
+
+            if (angular.isArray(params.field[0]))
+
+                params.field = params.field[0];
+
+        };
+
+
+
+        if (params.sort != undefined) {
+
+            if (angular.isArray(params.sort[0]))
+
+                params.sort = params.sort[0];
+
+        };
+
+
+
+        if (params.fields != undefined) {
+
+            if (angular.isArray(params.fields[0]))
+
+                params.fields = params.fields[0];
+
+        };
+
+
+
+        if (params.filter != undefined) {
+
+            if (angular.isArray(params.filter[0]))
+
+                params.filter = params.filter[0];
+
+        };
+
+        return params;
+
+    };
+
+
+
+      function updatefield(f, fd) {
+
+        if (params.field == undefined) {
+
+            params.field = [];
+
+            params.sort = [];
+
+        };
+
+        if (params.field.indexOf(fd) == -1) {
+
+            params.field.push(fd);
+
+            params.sort.push(f);
+
+        } else {
+
+            var i = params.field.indexOf(fd);
+
+            params.sort[i] = f;
+
+        };
+
+
+
+        $scope.list(paging.page(1, params.limit, params.field, params.sort, params.fields, params.filter));
+
+    }
+
+
+
+
+
+    $scope.gotopage = function(p, l, f, s, fd, fil){
+
+       $scope.list(paging.page(p, l, f, s, fd, fil));
+
+    };
+
+
+
+
+
+      function updatefieldsearch(fd, f){
+
+        if (params.fields == undefined){
+
+            params.fields = [];
+
+            params.filter = [];
+
+        };
+
+        if (params.fields.indexOf(fd) == -1) {
+
+            params.fields.push(fd);
+
+            params.filter.push(f);
+
+        }
+
+
+
+         $scope.list(paging.page(1, params.limit, params.field, params.sort, params.fields, params.filter));
+
+    };
+
+
+
+
+
+     $scope.pushchip = function(t, n, f, fd, rld){
+
+        if (t == 'sort' && rld != 0) {
+
+            updatefield(f, fd);
+
+        }
+
+        if (t == 'search' && rld != 0) {
+
+            updatefieldsearch(fd, f)
+
+        }
+
+        var ob = {
+
+            type: t,
+
+            name: n,
+
+            fl: f
+
+        };
+
+        var add = true;
+
+        angular.forEach($scope.filtros.values, function(v) {
+
+            if (v.type == t && v.name == n) {
+
+                add = false;
+
+                v.fl = f;
+
+            }
+
+        });
+
+        if (add)
+
+            $scope.filtros.values.push(ob);
+
+    };
+
+
+
+
+
+      $scope.deleteChip = function(x) {
+
+        getparams();
+
+        var isort = 0;
+
+        var isearch = 0;
+
+        console.log($scope.filtros.values);
+
+        angular.forEach($scope.filtros.values, function(v, i) {
+
+            if (v.fl == x.fl && v.name == x.name && v.type == x.type) {
+
+                console.log('teste');
+
+                if (v.type == 'sort') {
+
+                    params.field.splice(isort, 1);
+
+                    params.sort.splice(isort, 1);
+
+                }
+
+                if (v.type == 'search') {
+
+                    params.fields.splice(isearch, 1);
+
+                    params.filter.splice(isearch, 1);
+
+                }
+
+                $scope.filtros.values.splice(i, 1);
+
+                $scope.list(paging.page( 1, params.limit, params.field, params.sort, params.fields, params.filter));
+
+            }
+
+            if (v.type == 'sort')
+
+                isort++;
+
+            if (v.type == 'search')
+
+                isearch++;
+
+        });
+
+
+
+
+
+    };
+
+
+
+
+
+     $scope.returnsort = function(field){
+
+        var params = getparams();
+
+        if (params.field != undefined){
+
+            var index = params.field.indexOf(field);
+
+            if (index != -1){
+
+                if(params.sort[index] == 'ASC'){
+
+                    return 'DESC';
+
+                }
+
+                else
+
+                    return 'ASC';
+
+                    
+
+            }
+
+            else
+
+                return 'ASC';
+
+        }
+
+        else
+
+            return 'ASC';
+
+            
+
+    };
+
+
+
+
+
+        function handlefiltros(field, sort, fields, filter, data) {
+
+            if (!$scope.filtros.values.length) {
+
+                if (field != undefined && field != null) {
+
+                    console.log('teste')
+
+                    angular.forEach(field, function(f, i) {
+
+                       // var name = angular.copy($scope.returnlabel(f, data));
+
+                        $scope.pushchip('sort',f, sort[i], null, 0);
+
+                    });
+
+
+
+                }
+
+                if (fields) {
+
+                    angular.forEach(fields, function(f, i) {
+
+                        //var name = angular.copy($scope.returnlabel(f, data));
+
+                      // console.log(field, sort, fields, filter, data);
+
+                        $scope.pushchip('search', f, filter[i], null, 0);
+
+                    });
+
+                }
+
+
+
+            }
+
+        };
+
+
+
+
+
+
+
+         $scope.returnlabel = function(x, ob) {
+
+        label = null;
+
+        angular.forEach(ob, function(f) {
+
+            if (f.field == x) {
+
+                label = f.label;
+
+            }
+
+        })
+
+        return label;
+
+    };
+
+
+
+
+
+    $scope.returndata = function(data){
+
+        if (data == null || data == '0000-00-00 00:00:00'){
+
+            return 'Não Atribuido';
+
+        }
+
+        else {
+
+            return new Date(data);
+
+        }
+
+    };
+
+    
+
+    
+
+    $scope.filterdata = function($item, $model, $label, $event, table, field, flds) {
+
+            var substring2 = field.substring(0,2);
+
+            var fields = table != undefined ? (substring2 == 'id'? field.substring(2, field.length):flds[0].name) : field;
+
+            $scope.pushchip('search', field, $model, fields);
+
+        
+
+    }
+
+
+
+    
+
+    
+
+    $scope.returnsfield =  function(field, table) {
+
+        field = table != undefined ? field.substring(2, field.length) : field;
+
+        console.log(field);
+
+        return field;
+
+    };
+
+    
+
+    
+
+     function returnsfield(field, table) {
+
+        field = table != undefined ? field.substring(2, field.length) : field;
+
+        return field;
+
+    }
+
+    
+
+    
+
+//    function returnsfield(field, table, fields){
+
+//        var substring2 = field.substring(0,2);
+
+//        field = table != undefined ? (substring2 == 'id'? field.substring(2, field.length):fields[0].name) : field;
+
+//        return field;
+
+//    }
+
+
+
+
+
+     $scope.getfs = function(field, value, table) {
+
+        var params = getparams();
+
+        if (value != undefined){
+
+            if(value.length < 1){
+
+                $scope.deleteChip({fl:params.filter[params.fields.indexOf(returnsfield(field,table))],type:'search',name:returnsfield(field,table)});   
+
+            }
+
+            else {
+
+                var deferred = $q.defer();
+
+                field = table != undefined ? field.substring(2, field.length) : field;
+
+
+
+                var params = {
+
+                    table: table != undefined ? table : maintable,
+
+                    filter: field,
+
+                    fields: [field],
+
+                    id: value,
+
+                    like: true,
+
+                    array: true
+
+                };
+
+
+
+                db.r('getterms', params).then(function(data){
+
+                    deferred.resolve(data);
+
+                });
+
+                return deferred.promise;
+
+            }
+
+        }
+
+    };
+
+
+
+
+
+   
+
+
+
+    
+
+ 
+
+    $scope.ft = false;
+
+    $scope.list = function(pa) {
+
+        params = pa != undefined ? returnparams(pa) : returnparams(params);
+
+        if (filtrosparams != undefined){
+
+            params.listfilterby = filtrosparams;
+
+        }
+
+        console.log(params);
+
+        db.r(listaction, params).then(function(data) {
+
+             if (!$scope.ft){
+
+                $scope.ft = true;
+
+                $scope.fieldssearch = angular.copy(data.fields);
+
+            };
+
+            $scope.params = getparams();
+
+            $scope.data = data;
+
+            $scope.offsetpag = params.offset;
+
+            //$scope.arraystoupdate.push('data');
+
+            handlefiltros(params.field, params.sort, params.fields, params.filter, data.fields);
+
+        });
+
+    }; 
+
+
+
+    $scope.list();
+
+    
+
+            
+
+    
+
+            
+
+    }]
+
+  };
+
+});
+
+
+
+
+
+
+
+app.directive('homeSidemenu', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    transclude: true,
+
+    templateUrl:'templates/frontoffice/_structure/blocks/sidemenu.html'
+
+  };
+
+});
+
+app.directive('sidebar', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    transclude: true,
+
+    templateUrl:'templates/frontoffice/_structure/widget/sidebar.html'
+
+  };
+
+});
+
+
+
+
+
+app.directive('list', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    transclude: true,
+
+    templateUrl:'templates/' + TEMPLATE +  '/tpl/widget/list1.html'
+
+  };
+
+});
+
+
+
+
+
+app.directive('edit', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+	transclude: true,
+
+    templateUrl:'templates/' + TEMPLATE +  '/tpl/widget/edit.html'
+
+  };
+
+});
+
+
+
+
+
+app.directive('create', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/' + TEMPLATE +  '/tpl/widget/create.html'
+
+  };
+
+});
+
+
+
+app.directive('dateInput', function(){
+
+    return {
+
+        restrict : 'A',
+
+        scope : {
+
+            ngModel : '='
+
+        },
+
+        link: function (scope) {
+
+            if (scope.ngModel) scope.ngModel = new Date(scope.ngModel);
+
+        }
+
+    }
+
+});
+
+
+
+app.directive('pagination', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/backoffice/_structure/block/pagination.html'
+
+  };
+
+});
+
+
+
+app.directive('topbar', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/backoffice/_structure/block/topbar.html'
+
+  };
+
+});
+
+
+
+app.directive('sidemenu', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/backoffice/_structure/block/sidemenu.html'
+
+  };
+
+});
+
+
+
+
+
+app.directive('topbarminhafreguesia', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/backoffice/_structure/block/topbarminhafreguesia.html'
+
+  };
+
+});
+
+
+
+app.directive('bottombar', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/backoffice/_structure/block/footer.html'
+
+  };
+
+});
+
+
+
+
+
+app.directive('bottombarminhafreguesia', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/backoffice/_structure/block/footerminhafreguesia.html'
+
+  };
+
+});
+
+
+
+
+
+app.directive('mainmenu', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/backoffice/_structure/block/mainmenu.html'
+
+  };
+
+});
+
+
+
+app.directive('pageheader', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/backoffice/_structure/block/pageheader.html'
+
+  };
+
+});
+
+
+
+app.directive('buttong', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    scope: {
+
+      group: '=',
+
+      actions: '='
+
+    },
+
+    templateUrl:'templates/backoffice/_structure/block/button.html'
+
+  };
+
+});
+
+
+
+
+
+app.directive('button1', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/backoffice/_structure/block/button1.html'
+
+  };
+
+});
+
+
+
+
+
+
+
+app.directive('button2', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/backoffice/_structure/block/button2.html'
+
+  };
+
+});
+
+
+
+app.directive('button3', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/backoffice/_structure/block/button3.html'
+
+  };
+
+});
+
+
+
+app.directive('button4', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/backoffice/_structure/block/button4.html'
+
+  };
+
+});
+
+
+
+app.directive('button5', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/backoffice/_structure/block/button5.html'
+
+  };
+
+});
+
+
+
+app.directive('button6', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/backoffice/_structure/block/button6.html'
+
+  };
+
+});
+
+
+
+
+
+
+
+
+
+app.directive('button1pc', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/' + TEMPLATE +  '/tpl/block/button1pc.html'
+
+  };
+
+});
+
+
+
+
+
+
+
+app.directive('button2pc', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/' + TEMPLATE +  '/tpl/block/button2pc.html'
+
+  };
+
+});
+
+
+
+app.directive('button3pc', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/' + TEMPLATE +  '/tpl/block/button3pc.html'
+
+  };
+
+});
+
+
+
+app.directive('button4pc', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/' + TEMPLATE +  '/tpl/block/button4pc.html'
+
+  };
+
+});
+
+
+
+app.directive('button5pc', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/' + TEMPLATE +  '/tpl/block/button5pc.html'
+
+  };
+
+});
+
+
+
+app.directive('button6pc', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/' + TEMPLATE +  '/tpl/block/button6pc.html'
+
+  };
+
+});
+
+app.directive('taskbar', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/' + TEMPLATE +  '/tpl/widget/taskbar.html'
+
+  };
+
+});
+
+app.directive('gaugebar', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/' + TEMPLATE +  '/tpl/widget/gaugebar.html'
+
+  };
+
+});
+
+app.directive('frontendHeader', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/frontoffice/_structure/blocks/header.html'
+
+  };
+
+});
+
+app.directive('frontendFooter', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/frontoffice/_structure/blocks/footer.html'
+
+  };
+
+});
+
+app.directive('contentCard', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    scope: {
+
+        img:'=',
+
+        id:'=',
+
+        timestamp:'=',
+
+       articleTitle: '='
+
+    },
+
+    templateUrl:'templates/frontoffice/_structure/blocks/partials/contentcard.html'
+
+  };
+
+});
+
+app.directive('pageTitle', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    scope: {
+
+        pageTitle:'@',
+
+        icon:'@',
+
+        link:'@',
+
+        linkdesc:'@'
+
+    },
+
+    templateUrl:'templates/frontoffice/_structure/blocks/partials/pagetitle.html'
+
+  };
+
+});
+
+app.directive('pageHeader', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    scope: {
+
+        pageTitle:'@',
+
+        link:'@',
+
+        linkdesc:'@'
+
+    },
+
+    templateUrl:'templates/frontoffice/_structure/blocks/partials/pageheader.html'
+
+  };
+
+});
+
+app.directive('searchInput', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    scope: {
+
+        filter:'=',
+
+        placeholder:'@'
+
+    },
+
+    templateUrl:'templates/frontoffice/_structure/blocks/partials/searchinput.html'
+
+  };
+
+});
+
+app.directive('routeCard', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    //transclude:true,
+
+    scope: {
+
+        model:'=',
+
+        affected:'=',
+
+        favorites:'='
+
+    },
+
+    templateUrl:'templates/frontoffice/_structure/blocks/partials/routecard.html',
+
+     link: function($scope) {  
+
+        
+
+        
+
+        $scope.tooglefav = function (id,favorites)
+
+        {
+
+            var type = 'routes';
+
+            var i = favorites[type].indexOf(id);
+
+            if (i == -1)
+
+            {
+
+
+
+                favorites[type].push(id);
+
+                localStorage.favorites = angular.toJson(favorites);
+
+             
+
+
+
+            } else
+
+            {
+
+                favorites[type].splice(i, 1);
+
+                localStorage.favorites = angular.toJson(favorites);
+
+           
+
+            }
+
+        };
+
+        
+
+        
+
+     }
+
+  };
+
+});
+
+app.directive('loadingContent', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    scope: {
+
+        height:'@'
+
+    },
+
+    templateUrl:'templates/frontoffice/_structure/blocks/partials/loading-content.html'
+
+  };
+
+});
+
+
+
+
+
+//REALTIME
+
+app.directive('realtimeHeader', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/real/real_header.html'
+
+  };
+
+});
+
+app.directive('realtimeMap', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/real/real_map.html'
+
+  };
+
+});
+
+app.directive('realtimeSidemenu', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/real/real_sidemenu.html'
+
+  };
+
+});
+
+app.directive('realtimeMenu', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/real/real_menu.html'
+
+  };
+
+});
+
+app.directive('realtimeBottomSheet', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/real/real_bottomsheet.html'
+
+  };
+
+});
+
+app.directive('mainSearchShow', [
+
+        '$rootScope',
+
+        '$window',
+
+        '$timeout',
+
+        function ($rootScope, $window, variables, $timeout){
+
+            return {
+
+                restrict: 'E',
+
+                template: '<a id="main_search_btn" class="user_action_icon" ng-click="showSearch()"><i class="material-icons md-24 md-light">&#xE8B6;</i></a>',
+
+                replace: true,
+
+                scope: true,
+
+                link: function(scope,el,attr) {
+
+                    scope.showSearch = function() {
+
+
+
+                        $('#header_main')
+
+                            .children('.header_main_content')
+
+                            .velocity("transition.slideUpBigOut", {
+
+                                duration: 280,
+
+                                begin: function() {
+
+                                    $rootScope.mainSearchActive = true;
+
+                                },
+
+                                complete: function() {
+
+                                    $('#header_main')
+
+                                        .children('#pusquisa')
+
+                                        .velocity("transition.slideDownBigIn", {
+
+                                            duration: 280,
+
+                                            complete: function() {
+
+                                                $('.header_main_search_input').focus();
+
+                                            }
+
+                                        })
+
+                                }
+
+                            });
+
+                    };
+
+                }
+
+            };
+
+        }
+
+    ])
+
+    // main search hide
+
+    app.directive('mainSearchHide', [
+
+        '$rootScope',
+
+        '$window',
+
+        function ($rootScope, $window, variables) {
+
+            return {
+
+                restrict: 'E',
+
+                template: '<i class="md-icon header_main_search_close material-icons" ng-click="hideSearch()" style="padding: 10px;">close</i>',
+
+                replace: true,
+
+                scope: true,
+
+                link: function(scope,el,attr) {
+
+                    scope.hideSearch = function () {
+
+
+
+                        var $header_main = $('#header_main');
+
+
+
+                        $header_main
+
+                            .children('#pusquisa')
+
+                            .velocity("transition.slideUpBigOut", {
+
+                                duration: 280,
+
+                                transition: "bounceIn",
+
+                                begin: function() {
+
+                                    $header_main.velocity("reverse");
+
+                                    $rootScope.mainSearchActive = false;
+
+                                },
+
+                                complete: function(){
+
+                                    $header_main
+
+                                        .children('.header_main_content')
+
+                                        .velocity("transition.slideDownBigIn", {
+
+                                            duration: 280,
+
+                                            transition: "bounceIn",
+
+                                            complete: function() {
+
+                                                $('#pusquisa').blur().val('');
+
+                                            }
+
+                                        })
+
+                                }
+
+                            });
+
+
+
+                    };
+
+                }
+
+            };
+
+        }
+
+    ]);
+
+    
+
+    
+
+    
+
+    app.directive('onScrollToBottom', function ($document){
+
+    //This function will fire an event when the container/document is scrolled to the bottom of the page
+
+    return {
+
+        restrict: 'A',
+
+        link: function (scope, element, attrs) {
+
+          
+
+            var raw = element[0];
+
+            
+
+            element.bind('scroll', function (){
+
+                if (raw.scrollHeight - (raw.scrollTop + raw.offsetHeight) < 200 ) { //at the bottom
+
+                    scope.$apply(attrs.onScrollToBottom);
+
+                }
+
+            });
+
+        }
+
+    };
+
+});
+
+app.directive('atividadeRecente', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/backoffice/qualidade/atividaderecente.html'
+
+  };
+
+});
+
+
+
+app.directive('intervenientes', function(TEMPLATE) {
+
+  return {
+
+    restrict: 'E',
+
+    templateUrl:'templates/backoffice/qualidade/intervenientes.html'
+
+  };
+
+});

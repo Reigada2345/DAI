@@ -1,0 +1,516 @@
+app.filter('nospace', function () {
+
+      return function (value) {
+
+        return (!value) ? '' : value.replace(/ /g, '');
+
+      };
+
+    })
+
+    
+
+    
+
+ app.filter('toDate', function() {
+
+    return function(input) {
+
+        return new Date(input);
+
+    }
+
+})   
+
+    
+
+app.filter('dateRange', function() {
+
+    return function( items, fromDate, toDate ) {
+
+        var filtered = [];
+
+        var granularity = 'hour'
+
+        var from_date, to_date;
+
+        
+
+        if(fromDate){
+
+            from_date = moment(fromDate);
+
+        }
+
+        if(toDate){
+
+            to_date = moment(toDate);
+
+        }
+
+        
+
+ 
+
+        
+
+        if(from_date && to_date){  
+
+             filtered = items.filter(item => moment(item.timestamp).isBetween(from_date, to_date, granularity, '[]'));
+
+        }
+
+        
+
+        else if(from_date){  
+
+             filtered = items.filter(item => moment(item.timestamp).isAfter(from_date, 'hour'));
+
+         
+
+        }
+
+        
+
+        else if(to_date){  
+
+            filtered = items.filter(item => moment(item.timestamp).isBefore(from_date, 'hour'));
+
+           
+
+        }
+
+        else{
+
+            filtered = items;
+
+        }
+
+        
+
+        return filtered;
+
+    };
+
+});    
+
+
+
+
+
+app.filter('dateRangelost', function() {
+
+    return function( items, fromDate, toDate ) {
+
+        var filtered = [];
+
+        var granularity = 'hour'
+
+        var from_date, to_date;
+
+        
+
+        if(fromDate){
+
+            from_date = moment(fromDate);
+
+        }
+
+        if(toDate){
+
+            to_date = moment(toDate);
+
+        }
+
+        
+
+ 
+
+        
+
+        if(from_date && to_date){  
+
+             filtered = items.filter(item => moment(item.date).isBetween(from_date, to_date, granularity, '[]'));
+
+        }
+
+        
+
+        else if(from_date){  
+
+             filtered = items.filter(item => moment(item.date).isAfter(from_date, 'hour'));
+
+         
+
+        }
+
+        
+
+        else if(to_date){  
+
+            filtered = items.filter(item => moment(item.date).isBefore(from_date, 'hour'));
+
+           
+
+        }
+
+        else{
+
+            filtered = items;
+
+        }
+
+        
+
+        return filtered;
+
+    };
+
+});    
+
+    
+
+app.filter('apenasabertas', function () {
+
+    return function (objects, valor) {
+
+      
+
+        if(valor)
+
+            return objects.filter(x=>moment(new Date()).isBetween(new Date(x.datainicio), new Date(x.datafim), undefined, '[]') && x.datainicio != null ) ;
+
+        else
+
+            return objects;
+
+            
+
+    
+
+        
+
+    };
+
+});
+
+
+
+app.filter('fases', function () {
+
+    return function (objects, valor) {
+
+        
+
+        var inc = valor + 1;
+
+        
+
+        if(valor)
+
+            return objects.filter(x=>(x['fase'+valor]==1 && x['fase'+inc]!=1));
+
+        else
+
+            return objects;
+
+            
+
+        
+
+     
+
+        
+
+    };
+
+});
+
+
+
+app.filter('apenasfav', function () {
+
+    return function (objects, valor) {
+
+        
+
+       
+
+        
+
+        if(valor)
+
+            return objects.filter(x=>x.fav==1);
+
+        else
+
+            return objects;
+
+            
+
+        
+
+     
+
+        
+
+    };
+
+}); 
+
+
+app.filter('mostrartodos', function () {
+    return function (objects, valor) {
+        
+        
+        if(objects){
+
+       
+            if(valor == false || valor == undefined){
+                return objects.filter(function(x){
+                    if(x.idvaga == null || x.idvaga == '0'){
+                        return x;
+                    }
+
+                });
+            }
+            else{
+                return objects;
+
+            }
+
+        }
+        else
+            return [];
+            
+        
+     
+        
+    };
+});     
+
+
+
+app.filter('unique', function() {
+
+   // we will return a function which will take in a collection
+
+   // and a keyname
+
+   return function(collection) {
+
+      var output = [],  keys = [];
+
+      angular.forEach(collection, function(item) {
+
+          if(keys[item[2]] == undefined){
+
+              keys[item[2]] = item; 
+
+              output.push(item);
+
+          }
+
+      });
+
+      // return our array which should be devoid of
+
+      // any duplicates
+
+      return output;
+
+   };
+
+});
+
+
+
+
+
+
+
+    //replace uppercase to regular case
+
+app.filter('humanizeDoc', function () {
+
+      return function (doc) {
+
+        if (!doc) return;
+
+        if (doc.type === 'directive') {
+
+          return doc.name.replace(/([A-Z])/g, function ($1) {
+
+            return '-' + $1.toLowerCase();
+
+          });
+
+        }
+
+        
+
+        return doc.label || doc.name;
+
+      };
+
+  });
+
+
+
+app.filter('toTrusted', function ($sce) {
+
+    return function (value) {
+
+        return $sce.trustAsHtml(value);
+
+    };
+
+});
+
+
+
+
+
+
+
+app.filter('thisweek', function (){
+
+  
+
+    return function (objects){
+
+        var items = [];
+
+        var d = new Date();
+
+        angular.forEach(objects, function (value) {
+
+            var timedif = new Date(value.deadline).getTime() - d,
+
+                dif = Math.ceil(timedif / (1000 * 3600 * 24));
+
+            if (dif >= 1 && dif <= 7){
+
+                this.push(value);
+
+            }
+
+        }, items);
+
+        return items;
+
+    };
+
+}); 
+
+
+
+app.filter('expired', function (){
+
+  
+
+    return function (objects){
+
+        var items = [];
+
+        var d = new Date();
+
+        angular.forEach(objects, function (value) {
+
+            var timedif = new Date(value.deadline).getTime() - d,
+
+                dif = Math.ceil(timedif / (1000 * 3600 * 24));
+
+            if (dif <= 0){
+
+                this.push(value);
+
+            }
+
+        }, items);
+
+        return items;
+
+    };
+
+}); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.filter('byndays', function (){
+
+    return function (objects, days) {
+
+        var x = new Date()
+
+        var d = new Date();
+
+        var nday = d.setDate(d.getDate());
+
+        var items = [];
+
+        angular.forEach(objects, function (value) {
+
+            var timedif = new Date(value.deadline).getTime() - nday,
+
+                dif = Math.ceil(timedif / (1000 * 3600 * 24));
+
+                if (dif < 0){
+
+                    dif = 0
+
+                }
+
+                    
+
+            //new Date(value.deadline)
+
+            if (dif == days){
+
+                this.push(value);
+
+            }
+
+        }, items);
+
+        return items;
+
+    };
+
+});
+
+
+
+
+
+app.filter('byspecialidades', function (){
+
+    return function (objects,id) {
+
+        var items = [];
+
+        angular.forEach(objects, function (value) {
+
+            if (value.especialidades.indexOf(id) != -1){
+
+                this.push(value);
+
+            }
+
+        }, items);
+
+        return items;
+
+    };
+
+});

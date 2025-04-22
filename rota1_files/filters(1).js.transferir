@@ -1,0 +1,66 @@
+app.filter('bystatus', function () {
+    return function (objects, status) {
+        var items = {
+            status: status,
+            out: []
+        };
+        angular.forEach(objects, function (value, key) {
+            if (this.status[value.idstatus] === true) {
+                this.out.push(value);
+            }
+        }, items);
+        return items.out;
+    };
+});
+
+
+app.filter('bypriority', function () {
+    return function (objects, pri) {
+        var items = {
+            pri: pri,
+            out: []
+        };
+        angular.forEach(objects, function (value, key) {
+            if (this.pri[value.idpriority] === true) {
+                this.out.push(value);
+            }
+        }, items);
+        return items.out;
+    };
+});
+
+
+app.filter('bytype', function () {
+    return function (objects, types) {
+        var items = {
+            types: types,
+            out: []
+        };
+        angular.forEach(objects, function (value, key) {
+            if (this.types[value.idcategory] === true) {
+                this.out.push(value);
+            }
+        }, items);
+        return items.out;
+    };
+});
+
+app.filter('bypoi', function () {
+    return function (objects, types) {
+        var items = {
+            types: types,
+            out: []
+        };
+        angular.forEach(objects, function (value, key) {
+            if (this.types[value.idtype] === true) {
+                this.out.push(value);
+            }
+        }, items);
+        return items.out;
+    };
+});
+
+
+
+
+
