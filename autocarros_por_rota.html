@@ -51,8 +51,17 @@
         }
     </style>
 </head>
+<!-- Área para exibir as informações do autocarro -->
+<div id="informacoes-autocarro" style="display: none; margin-top: 20px; border: 1px solid #ddd; padding: 20px; background-color: #fff;">
+    <h2>Informações do Autocarro</h2>
+    <p><strong>Rota:</strong> <span id="rota"></span></p>
+    <p><strong>Número do Autocarro:</strong> <span id="numero"></span></p>
+    <p><strong>Horário:</strong> <span id="horario"></span></p>
+    <p><strong>Estado:</strong> <span id="estado"></span></p>
+    <button onclick="voltarParaLista()">Voltar</button>
+</div>
 <body>
-    <h1>Autocarros por Rota</h1>
+    <h1 id="titulo-autocarros">Autocarros por Rota</h1>
     <table>
         <thead>
             <tr>
@@ -72,7 +81,7 @@
                 <td>08:00 - 09:00</td>
                 <td>Em manutenção</td>
                 <td>
-                    <a href="autocarros.html?busName=Autocarro%20103&temperature=25°C&occupancy=70%&schedule=08:00%20-%2009:00&departure=Estaçao%20Central&destination=Universidade%20">Ver</a>
+                    <button onclick="mostrarInformacoesAutocarro('Rota 1', '101', '08:00 - 09:00', 'Em manutenção')">Ver</button>
                 </td>
             </tr>
             <tr>
@@ -81,7 +90,7 @@
                 <td>09:30 - 10:30</td>
                 <td>Em operação</td>
                 <td>
-                    <a href="autocarros.html?busName=Autocarro%20202&temperature=22°C&occupancy=50%&schedule=09:30%20-%2010:30&departure=Praça da%20Liberdade&destination=Shopping%20Center">Ver</a>
+                    <button onclick="mostrarInformacoesAutocarro('Rota 2', '202', '09:30 - 10:30', 'Em operação')">Ver</button>
                 </td>
             </tr>
             <tr>
@@ -90,7 +99,7 @@
                 <td>09:30 - 10:30</td>
                 <td>Em operação</td>
                 <td>
-                    <a href="autocarros.html?busName=Autocarro%20202&temperature=20°C&occupancy=30%&schedule=10:00%20-%2011:00&departure=Estação%20E&destination=Estação%20F">Ver</a>
+                    <button onclick="mostrarInformacoesAutocarro('Rota 1', '101', '09:30 - 10:30', 'Em operação')">Ver</button>
                 </td>
             </tr>
             <tr>
@@ -99,10 +108,41 @@
                 <td>07:00 - 08:00</td>
                 <td>Em operação</td>
                 <td>
-                    <a href="autocarros.html?busName=Autocarro%20303&temperature=20°C&occupancy=90%&schedule=07:00%20-%2008:00&departure=Aeroporto%20&destination=Centro%20Histórico">Ver</a>
+                    <button onclick="mostrarInformacoesAutocarro('Rota 3', '303', '07:00 - 08:00', 'Em operação')">Ver</button>
                 </td>
             </tr>
         </tbody>
     </table>
+    <script>
+        function mostrarInformacoesAutocarro(rota, numero, horario, estado) {
+            // Esconde a tabela
+            const tabela = document.querySelector('table');
+            tabela.style.display = 'none';
+            // Esconde o título
+        const titulo = document.getElementById('titulo-autocarros');
+        titulo.style.display = 'none';
+    
+            // Preenche os dados do autocarro selecionado
+            document.getElementById('rota').textContent = rota;
+            document.getElementById('numero').textContent = numero;
+            document.getElementById('horario').textContent = horario;
+            document.getElementById('estado').textContent = estado;
+    
+            // Mostra a área de informações do autocarro
+            document.getElementById('informacoes-autocarro').style.display = 'block';
+        }
+    
+        function voltarParaLista() {
+            // Esconde a área de informações do autocarro
+            document.getElementById('informacoes-autocarro').style.display = 'none';
+    
+            // Mostra novamente a tabela
+            const tabela = document.querySelector('table');
+            tabela.style.display = 'table';
+            // Mostra o título
+        const titulo = document.getElementById('titulo-autocarros');
+        titulo.style.display = 'block';
+        }
+    </script>
 </body>
 </html>
