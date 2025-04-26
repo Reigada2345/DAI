@@ -49,6 +49,41 @@
         tr:hover {
             background-color: #f1f1f1;
         }
+        #informacoes-autocarro {
+            display: none;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            background-color: #fff;
+            width: 90%; /* Aumenta a largura */
+            font-size: 35px; /* Aumenta o tamanho do texto */
+            text-align: center; /* Alinha o texto à esquerda */
+        }
+
+        #informacoes-autocarro h2 {
+            font-size: 37px; /* Aumenta o tamanho do título */
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        #informacoes-autocarro p {
+            font-size: 26px; /* Aumenta o tamanho dos parágrafos */
+            margin: 10px 0;
+        }
+
+        #informacoes-autocarro button {
+            font-size: 18px; /* Aumenta o tamanho do botão */
+            padding: 10px 20px;
+            background-color: #2c72b7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #informacoes-autocarro button:hover {
+            background-color: #1a436c; /* Cor ao passar o mouse */
+        }
     </style>
 </head>
 <!-- Área para exibir as informações do autocarro -->
@@ -77,38 +112,30 @@
     
             <tr>
                 <td>Rota 1</td>
-                <td>101</td>
+                <td>1</td>
                 <td>08:00 - 09:00</td>
                 <td>Em manutenção</td>
                 <td>
-                    <button onclick="mostrarInformacoesAutocarro('Rota 1', '101', '08:00 - 09:00', 'Em manutenção')">Ver</button>
+                    <button onclick="mostrarInformacoesAutocarro('Rota 1', '1', '08:00 - 09:00', 'Em manutenção')">Ver</button>
                 </td>
             </tr>
             <tr>
                 <td>Rota 2</td>
-                <td>202</td>
+                <td>2</td>
                 <td>09:30 - 10:30</td>
                 <td>Em operação</td>
                 <td>
-                    <button onclick="mostrarInformacoesAutocarro('Rota 2', '202', '09:30 - 10:30', 'Em operação')">Ver</button>
+                    <button onclick="mostrarInformacoesAutocarro('Rota 2', '2', '09:30 - 10:30', 'Em operação')">Ver</button>
                 </td>
             </tr>
-            <tr>
-                <td>Rota 2</td>
-                <td>203</td>
-                <td>09:30 - 10:30</td>
-                <td>Em operação</td>
-                <td>
-                    <button onclick="mostrarInformacoesAutocarro('Rota 1', '101', '09:30 - 10:30', 'Em operação')">Ver</button>
-                </td>
-            </tr>
+        
             <tr>
                 <td>Rota 3</td>
-                <td>303</td>
+                <td>3</td>
                 <td>07:00 - 08:00</td>
                 <td>Em operação</td>
                 <td>
-                    <button onclick="mostrarInformacoesAutocarro('Rota 3', '303', '07:00 - 08:00', 'Em operação')">Ver</button>
+                    <button onclick="mostrarInformacoesAutocarro('Rota 3', '3', '07:00 - 08:00', 'Em operação')">Ver</button>
                 </td>
             </tr>
         </tbody>

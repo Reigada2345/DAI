@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <style>
+    <title>Mapa em Tempo Real</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+ 
+<style>
         * {
             margin: 0;
             padding: 0;
@@ -132,7 +135,11 @@
         tr:hover {
             background-color: #f1f1f1;
         }
-
+        #map {
+            height: 400px; /* Define a altura do mapa */
+            width: 100%; /* Define a largura do mapa */
+            margin-bottom: 20px;
+        }
 
 
     </style>
@@ -152,31 +159,57 @@
 
     <!-- Conteúdo principal -->
     <div class="main-content">
+
+        <!-- Mapa -->
+        <div id="map"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Inicializa o mapa
+            const map = L.map('map').setView([41.545448, -8.426507], 13); // Coordenadas iniciais (Braga)
+
+            // Adiciona o tile layer (camada de mapa)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            // Exemplo: Adiciona um marcador no mapa
+            const marker = L.marker([41.545448, -8.426507]).addTo(map);
+            marker.bindPopup("<b>Bem-vindo!</b><br>Este é o mapa em tempo real.").openPopup();
+        });
+    </script>
+
+        <!-- Rotas -->
         <div class="header">Escolha uma Rota</div>
         <div class="bus-container">
             <div class="bus-card">
                 <img src="rota1.jpg" alt="Linha 1">
                 <h2>Linha 1</h2>
-                <p>Lugares ocupados: 70%</p>
+                <p>Estação Central - Universidade</p>
+               <!--<p>Lotação ocupada: 70%</p>-->
                 <button onclick=" mostrarTabela('linha1')">Ver Informações</button>
             </div>
             <div class="bus-card">
                 <img src="rota1.jpg" alt="Linha 2">
                 <h2>Linha 2</h2>
-                <p>Lugares ocupados: 50%</p>
+                <p>Praça da Liberdade - Shopping Center</p>
+                <!--<p>Lotação ocupada: 50%</p>-->
                 <button onclick="mostrarTabela('linha2')">Ver Informações</button>
             </div>
             <!-- Adiciona mais autocarros conforme necessário -->
             <div class="bus-card">
                 <img src="rota1.jpg" alt="Linha 3">
                 <h2>Linha 3</h2>
-                <p>Lugares ocupados: 90%</p>
+                <p>Aeroporto - Centro Histórico</p>
+                <!--<p>Lotação ocupada: 90%</p>-->
                 <button onclick="mostrarTabela('linha3')">Ver Informações</button>
             </div>
             <div class="bus-card">
                 <img src="rota1.jpg" alt="Linha 4">
                 <h2>Linha 4</h2>
-                <p>Lugares ocupados: 20%</p>
+                <p>Estação Central - Universidade</p>
+                <!--<p>Lotação ocupada: 20%</p>-->
                 <button onclick="mostrarTabela('linha4')">Ver Informações</button>
             </div>
         </div>
@@ -195,19 +228,19 @@
                 <tbody>
                     <tr>
                         <td>Rota 1</td>
-                        <td>101</td>
+                        <td>1</td>
                         <td>08:00 - 09:00</td>
                         <td>Em operação</td>
-                        <button onclick="mostrarInformacoesAutocarro('Rota 1', '101', '08:00 - 09:00', 'Em operação')">Ver</button>
+                        <button onclick="mostrarInformacoesAutocarro('Rota 1', '1', '08:00 - 09:00', 'Em operação')">Ver</button>
                          </td>
                     </tr>
                     <tr>
                         <td>Rota 1</td>
-                        <td>102</td>
+                        <td>6</td>
                         <td>09:00 - 10:00</td>
                         <td>Em operação</td>
                         <td>
-                            <button onclick="mostrarInformacoesAutocarro('Rota 1', '102', '09:00 - 10:00', 'Em operação')">Ver</button>
+                            <button onclick="mostrarInformacoesAutocarro('Rota 1', '6', '09:00 - 10:00', 'Em operação')">Ver</button>
                         </td>
                     </tr>
                 </tbody>
@@ -223,20 +256,27 @@
                         <th>Horário</th>
                         <th>Estado</th>
                         
+                        
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>Rota 2</td>
-                        <td>201</td>
+                        <td>2</td>
                         <td>08:30 - 09:30</td>
                         <td>Em operação</td>
+                        <td>
+                            <button onclick="mostrarInformacoesAutocarro('Rota 2', '2', '08:30 - 09:30', 'Em operação')">Ver</button>
+                        </td>
                     </tr>
                     <tr>
                         <td>Rota 2</td>
-                        <td>202</td>
+                        <td>7</td>
                         <td>09:30 - 10:30</td>
                         <td>Em operação</td>
+                        <td>
+                            <button onclick="mostrarInformacoesAutocarro('Rota 2', '7', '09:30 - 10:30', 'Em operação')">Ver</button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -256,15 +296,21 @@
                 <tbody>
                     <tr>
                         <td>Rota 3</td>
-                        <td>303</td>
+                        <td>3</td>
                         <td>07:00 - 08:00</td>
                         <td>Em operação</td>
+                        <td>
+                            <button onclick="mostrarInformacoesAutocarro('Rota 3', '3', '07:00 - 08:00', 'Em operação')">Ver</button>
+                        </td>
                     </tr>
                     <tr>
                         <td>Rota 2</td>
-                        <td>304</td>
+                        <td>8</td>
                         <td>09:30 - 10:30</td>
                         <td>Em operação</td>
+                        <td>
+                            <button onclick="mostrarInformacoesAutocarro('Rota 2', '8', '09:30 - 10:30', 'Em operação')">Ver</button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -320,6 +366,7 @@
             const tabelas = document.querySelectorAll('.bus-table');
             tabelas.forEach(tabela => tabela.style.display = 'block');
         }
-    </script>
+   
+</script>
 </body>
 </html>
