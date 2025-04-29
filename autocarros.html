@@ -68,19 +68,19 @@
         <!-- Cada autocarro é um item clicável -->
         <div class="bus-item" onclick="verInformacoes('1')">
             <h3>Autocarro 1</h3>
-            <span>Rota: Estação Central - Universidade do Minho</span>
+            <span>Rota: Estação - Universidade do Minho</span>
         </div>
         <div class="bus-item" onclick="verInformacoes('2')">
             <h3>Autocarro 2</h3>
-            <span>Rota: Praça da Liberdade - Shopping Center</span>
+            <span>Rota: Nova Arcada - Minho Center</span>
         </div>
         <div class="bus-item" onclick="verInformacoes('3')">
             <h3>Autocarro 3</h3>
-            <span>Rota: Aeroporto - Centro Histórico</span>
+            <span>Rota: Hospital - Avenida Central </span>
         </div>
         <div class="bus-item" onclick="verInformacoes('4')">
             <h3>Autocarro 4</h3>
-            <span>Rota: Universidade do Minho - </span>
+            <span>Rota: Universidade do Minho - Estação </span>
         </div>
     </div>
 
@@ -88,29 +88,29 @@
         function verInformacoes(busId) {
             // Dados simulados para cada autocarro
             const busData = {
-                "101": {
+                "43": {
                     busName: "Autocarro 1",
                     temperature: "25°C",
                     occupancy: "70%",
                     schedule: "08:00 - 09:00",
-                    departure: "Estação Central",
+                    departure: "Estação",
                     destination: "Universidade"
                 },
-                "202": {
+                "95": {
                     busName: "Autocarro 2",
                     temperature: "22°C",
                     occupancy: "50%",
                     schedule: "09:30 - 10:30",
-                    departure: "Praça da Liberdade",
-                    destination: "Shopping Center"
+                    departure: "Nova Arcada",
+                    destination: "Minho Center"
                 },
-                "303": {
+                "900": {
                     busName: "Autocarro 3",
                     temperature: "20°C",
                     occupancy: "90%",
                     schedule: "07:00 - 08:00",
-                    departure: "Aeroporto",
-                    destination: "Centro Histórico"
+                    departure: "Hospital",
+                    destination: "Avenida Central"
                 }
             };
 
