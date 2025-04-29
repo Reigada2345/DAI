@@ -1,5 +1,5 @@
 package models;
-
+import Cliente;
 public class Administrador extends Cliente {
 
     public Administrador(String nome) {
