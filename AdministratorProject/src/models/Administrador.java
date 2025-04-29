@@ -1,9 +1,11 @@
 package models;
-import Cliente;
-public class Administrador extends Cliente {
 
-    public Administrador(String nome) {
-        super(nome);
+public class Administrador extends Cliente {
+    private String nome;
+
+    public Administrador(String nome, String email, String password) {
+        super(email, password);
+        this.nome = nome; // Default password for admin
     }
 
     public Paragem criarParagem(String nome, String localizacao, boolean variasRotas, int lotacao) {
