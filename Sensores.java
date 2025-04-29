@@ -1,31 +1,32 @@
 import java.util.*;
+import java.sql.Connection;
 
 public class Sensores {
-    private Autocarro bus;
+    private AutocarroDAO busDAO;
+    private int autocarroId;  // Para saber qual autocarro estamos monitorando
     private Random random;
 
-    public Sensores(Autocarro bus) {
-        random = new Random();
-        this.bus = bus; 
+    public Sensores(AutocarroDAO busDAO, int autocarroId) {
+        this.random = new Random();
+        this.busDAO = busDAO;
+        this.autocarroId = autocarroId;
         
-        // INICIALIZAR DADOS
         atualizarSensores();
     }
 
     public void atualizarSensores() {
+        Connection conn = busDAO.getConnection();  // Você precisará adicionar este método em AutocarroDAO
+        
         // GERAR TEMPERATURA
         float temperaturaAleatoria = -10 + random.nextFloat() * (40 - (-10));
-        bus.setTemperatura(temperaturaAleatoria);
+        AutocarroDAO.atualizarTemperatura(conn, autocarroId, temperaturaAleatoria);
 
         // GERAR LOTACAO
-        int lotacaoAleatoria = random.nextInt(bus.getCapacidade() + 1);
-        bus.setLotacao(lotacaoAleatoria);
+        // Você precisará de um método para obter a capacidade primeiro
+        int capacidade = busDAO.getCapacidade(autocarroId);  // Adicionar este método em AutocarroDAO
+        int lotacaoAleatoria = random.nextInt(capacidade + 1);
+        AutocarroDAO.atualizarLotacao(conn, autocarroId, lotacaoAleatoria);
     }
 
-    public void exibirDados() {
-        System.out.println("Temperatura: " + bus.getTemperatura() + "°C");
-        System.out.println("Capacidade: " + bus.getCapacidade());
-        System.out.println("Lotação: " + bus.getLotacao());
-        System.out.println("Ocupação: " + bus.percentagem_lotacao() + "%");
-    }
+    
 }
