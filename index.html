@@ -69,11 +69,6 @@
     <div class="login-container">
         <h2>Login</h2>
         <form id="loginForm">  <!-- Adicionado ID ao formulário -->
-            <select id="userType" name="userType" required>
-                <option value="" disabled selected>Selecione o tipo de utilizador</option>
-                <option value="admin">Administrador</option>
-                <option value="cliente">Cliente</option>
-            </select>
             <input type="email" id="email" name="email" placeholder="E-mail" required>
             <input type="password" id="password" name="password" placeholder="Senha" required>
             <button type="submit">Entrar</button>
@@ -83,21 +78,22 @@
     <script>
         document.getElementById("loginForm").addEventListener("submit", function(event) {
             event.preventDefault(); // Evita o envio padrão do formulário
-    
+            
             let userType = document.getElementById("userType").value;
             let email = document.getElementById("email").value;
             let password = document.getElementById("password").value;
     
+           
+
             if (userType === "admin" && email === "admin@email.com" && password === "1234") {
                 window.location.href = "dashboard.html"; // Redireciona para o painel do administrador
             } else if (userType === "cliente" && email === "cliente@email.com" && password === "5678") {
-                window.location.href = "dashboard.html"; // Redireciona para a página do cliente
+                window.location.href = "cliente.html"; // Redireciona para a página do cliente
             } else {
                 alert("Tipo de utilizador, e-mail ou senha incorretos!");
             }
-
+            
         });
     </script>
 </body>
 </html>
-/
