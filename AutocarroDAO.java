@@ -9,6 +9,24 @@ public class AutocarroDAO {
         this.conn = DatabaseConnection.connect();
     }
 
+    public Connection getConnection() {
+        return this.conn;
+    }
+
+    public int getCapacidade(int autocarroId) {
+        String sql = "SELECT capacidade FROM autocarros WHERE id = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, autocarroId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("capacidade");
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao obter capacidade: " + e.getMessage());
+        }
+        return 0;
+    }
+
     // Método para adicionar um autocarro
     public void adicionarAutocarro(String matricula, String modelo, int capacidade) {
         String sql = "INSERT INTO autocarros (matricula, modelo, capacidade) VALUES (?, ?, ?)";
@@ -34,11 +52,14 @@ public class AutocarroDAO {
             while (rs.next()) {
                 Autocarro a = new Autocarro(
                         rs.getInt("id"),
-                        rs.getString("matricula"),
-                        rs.getString("modelo"),
+                        rs.getInt("lotacao"),
                         rs.getFloat("temperatura"),
+                        rs.getString("numero"),
                         rs.getInt("capacidade"),
-                        rs.getInt("lotacao")
+                        rs.getString("modelo"),
+                        rs.getString("rota"),
+                        rs.getString("matricula"),
+                        rs.getBoolean("ativo")
                 );
                 lista.add(a);
             }
