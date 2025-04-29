@@ -2,29 +2,13 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import models.Autocarro;
+
 public class AutocarroDAO {
     private Connection conn;
 
     public AutocarroDAO() {
         this.conn = DatabaseConnection.connect();
-    }
-
-    public Connection getConnection() {
-        return this.conn;
-    }
-
-    public int getCapacidade(int autocarroId) {
-        String sql = "SELECT capacidade FROM autocarros WHERE id = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, autocarroId);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("capacidade");
-            }
-        } catch (SQLException e) {
-            System.err.println("Erro ao obter capacidade: " + e.getMessage());
-        }
-        return 0;
     }
 
     // Método para adicionar um autocarro
