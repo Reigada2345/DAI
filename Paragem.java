@@ -64,14 +64,6 @@ public class Paragem {
     public void setLotacao(int lotacao) {
         this.lotacao = lotacao;
     }
-
-    public void editarParagem(String novoNome, String novaLocalizacao, boolean novasRotas, int novaLotacao) {
-        this.nome = novoNome;
-        this.localizacao = novaLocalizacao;
-        this.variasRotas = novasRotas;
-        this.lotacao = novaLotacao;
-    }
-
      public void desativarParagem() {
         this.ativa = false; // Marca a paragem como desativada
     }
