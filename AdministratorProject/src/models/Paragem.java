@@ -36,7 +36,7 @@ public class Paragem {
         return localizacao;
     }
 
-    public boolean isVariasRotas() {
+    public boolean getVariasRotas() {
         return variasRotas;
     }
 
@@ -67,11 +67,12 @@ public class Paragem {
         this.lotacao = lotacao;
     }
 
-    public void editarParagem(String novoNome, String novaLocalizacao, boolean novasRotas, int novaLotacao) {
-        this.nome = novoNome;
-        this.localizacao = novaLocalizacao;
-        this.variasRotas = novasRotas;
-        this.lotacao = novaLotacao;
+    public void editarParagem(String nome, String localizacao, boolean variasRotas, int lotacao, boolean ativa) {
+        this.nome = nome;
+        this.localizacao = localizacao;
+        this.variasRotas = variasRotas;
+        this.lotacao = lotacao;
+        this.ativa = ativa;
     }
 
      public void desativarParagem() {

@@ -29,6 +29,6 @@ public class Administrador extends Cliente {
     }
 
     public void atualizarPassageiro(Passageiro passageiro, String novoNome, int novaIdade, String novoBilhete) {
-        passageiro.atualizarInformacao(novoNome, novaIdade, novoBilhete);
+        passageiro.atualizarInformacoes(novoNome, novaIdade, novoBilhete);
     }
 }
