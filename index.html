@@ -81,71 +81,93 @@
     <p id="toggleForm" style="cursor: pointer; color: #2c72b7; text-decoration: underline;">Criar uma conta</p>
     </div>
     
+
+
     <script>
         const formTitle = document.getElementById("formTitle");
-const loginForm = document.getElementById("loginForm");
-const toggleForm = document.getElementById("toggleForm");
-const submitButton = document.getElementById("submitButton");
+        const loginForm = document.getElementById("loginForm");
+        const toggleForm = document.getElementById("toggleForm");
+        const submitButton = document.getElementById("submitButton");
 
-let isLogin = true; // Estado inicial: Login
+        let isLogin = true; // Estado inicial: Login
 
-toggleForm.addEventListener("click", () => {
-    isLogin = !isLogin;
+    toggleForm.addEventListener("click", () => {
+        isLogin = !isLogin;
 
-    if (isLogin) {
-        formTitle.textContent = "Login";
-        submitButton.textContent = "Entrar";
-        toggleForm.textContent = "Criar uma conta";
-    } else {
-        formTitle.textContent = "Criar Conta";
-        submitButton.textContent = "Registrar";
-        toggleForm.textContent = "Já tem uma conta? Login";
-    }
-});
-
-loginForm.addEventListener("submit", function(event) {
-    event.preventDefault(); // Evita o envio padrão do formulário
-
-    const userType = document.getElementById("userType").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    if (isLogin) {
-        // Lógica de login
-        const storedUser = JSON.parse(localStorage.getItem(email));
-        if (storedUser && storedUser.password === password && storedUser.userType === userType) {
-            if (userType === "admin") {
-                window.location.href = "dashboard.html"; // Redireciona para o painel do administrador
-            } else if (userType === "cliente") {
-                window.location.href = "dashboard.html"; // Redireciona para a página do cliente
-            }
-        } else {
-            alert("Tipo de utilizador, e-mail ou senha incorretos!");
-        }
-    } else {
-        // Lógica de criação de conta
-        if (userType === "cliente") {
-            const newUser = {
-                email: email,
-                password: password,
-                userType: userType
-            };
-
-            // Salva os dados no localStorage
-            localStorage.setItem(email, JSON.stringify(newUser));
-            alert(`Conta criada com sucesso para o cliente: ${email}`);
-
-            // Volta para o estado de login
-            isLogin = true;
+        if (isLogin) {
             formTitle.textContent = "Login";
             submitButton.textContent = "Entrar";
             toggleForm.textContent = "Criar uma conta";
         } else {
-            alert("Apenas clientes podem criar contas neste momento.");
+            formTitle.textContent = "Criar Conta";
+            submitButton.textContent = "Registrar";
+            toggleForm.textContent = "Já tem uma conta? Login";
         }
+    });
+    loginForm.addEventListener("submit", function(event) {
+    event.preventDefault(); // Evita o envio padrão do formulário
+
+    const userType = document.getElementById("userType").value;
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    // Validação: Verifica se o e-mail é válido
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regex para validar e-mails
+    if (!emailRegex.test(email)) {
+        alert("Por favor, insira um e-mail válido.");
+        return;
     }
 
-});
+    // Validação: Verifica se todos os campos estão preenchidos
+    if (!userType) {
+        alert("Por favor, selecione o tipo de utilizador.");
+        return;
+    }
+    if (!email) {
+        alert("Por favor, insira o e-mail.");
+        return;
+    }
+    if (!password) {
+        alert("Por favor, insira a senha.");
+        return;
+    }
+    
+        if (isLogin) {
+        // Lógica de login
+            const storedUser = JSON.parse(localStorage.getItem(email));
+            if (storedUser && storedUser.password === password && storedUser.userType === userType) {
+                if (userType === "admin") {
+                    window.location.href = "dashboard.html"; // Redireciona para o painel do administrador
+                } else if (userType === "cliente") {
+                    window.location.href = "dashboard.html"; // Redireciona para a página do cliente
+                }
+            } else {
+                alert("Tipo de utilizador, e-mail ou senha incorretos!");
+            }
+        } else {
+        // Lógica de criação de conta
+            if (userType === "cliente") {
+                const newUser = {
+                    email: email,
+                    password: password,
+                    userType: userType
+                };
+
+                // Salva os dados no localStorage
+                localStorage.setItem(email, JSON.stringify(newUser));
+                alert(`Conta criada com sucesso para o cliente: ${email}`);
+
+                // Volta para o estado de login
+                isLogin = true;
+                formTitle.textContent = "Login";
+                submitButton.textContent = "Entrar";
+                toggleForm.textContent = "Criar uma conta";
+            } else {
+                alert("Apenas clientes podem criar contas neste momento.");
+            }
+        }
+
+    });
     </script>
 </body>
 </html>
