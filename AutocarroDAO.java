@@ -116,7 +116,7 @@ public class AutocarroDAO {
             pstmt.setInt(2, id);
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
-                System.out.println("Lotação do autocarro atualizada com sucesso!");
+       
             }
         } catch (SQLException e) {
             System.err.println("Erro ao atualizar lotação: " + e.getMessage());

@@ -134,16 +134,20 @@
     
         if (isLogin) {
         // Lógica de login
+            if (email === "admin@email.com" && password === "1234" && userType === "admin") {
+        // Login fixo para o administrador
+                window.location.href = "dashboard.html"; // Redireciona para o painel do administrador
+            } else {
+        // Verifica se o utilizador está no localStorage
             const storedUser = JSON.parse(localStorage.getItem(email));
             if (storedUser && storedUser.password === password && storedUser.userType === userType) {
-                if (userType === "admin") {
-                    window.location.href = "dashboard.html"; // Redireciona para o painel do administrador
-                } else if (userType === "cliente") {
-                    window.location.href = "dashboard.html"; // Redireciona para a página do cliente
-                }
-            } else {
-                alert("Tipo de utilizador, e-mail ou senha incorretos!");
-            }
+                if (userType === "cliente") {
+                    window.location.href = "cliente_dashboard.html"; // Redireciona para a página do cliente
+             }
+        } else {
+            alert("Tipo de utilizador, e-mail ou senha incorretos!");
+        }
+    }
         } else {
         // Lógica de criação de conta
             if (userType === "cliente") {

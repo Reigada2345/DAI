@@ -1,8 +1,7 @@
 
 package models;
 public class Cliente {
-    private String email;
-    private String password;
+  
 
     public Cliente(String email, String password) {
         this.email = email;
