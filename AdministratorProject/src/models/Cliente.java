@@ -1,4 +1,5 @@
 
+package models;
 public class Cliente {
     private String email;
     private String password;
