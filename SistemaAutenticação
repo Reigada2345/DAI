@@ -1,0 +1,18 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public class SistemaAutenticacao {
+    private Map<String, Cliente> clientes = new HashMap<>();
+
+    public boolean registarCliente(String email, String password) {
+        if (clientes.containsKey(email)) return false;
+        clientes.put(email, new Cliente(email, password));
+        return true;
+    }
+
+    public Cliente loginCliente(String email, String password) {
+        Cliente c = clientes.get(email);
+        if (c != null && c.autenticar(password)) return c;
+        return null;
+    }
+}

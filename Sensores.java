@@ -1,31 +1,32 @@
-import java.util.*;
-
 public class Sensores {
     private Autocarro bus;
-    private Random random;
 
     public Sensores(Autocarro bus) {
-        random = new Random();
-        this.bus = bus; 
-        
-        // INICIALIZAR DADOS
-        atualizarSensores();
+        this.bus = bus;
     }
 
-    public void atualizarSensores() {
-        // GERAR TEMPERATURA
-        float temperaturaAleatoria = -10 + random.nextFloat() * (40 - (-10));
-        bus.setTemperatura(temperaturaAleatoria);
+    public void registarEntrada() {
+        if (bus.getLotacao() < bus.getCapacidade()) {
+            bus.setLotacao(bus.getLotacao() + 1);
+            System.out.println("Entrada registada.");
+        } else {
+            System.out.println("Autocarro cheio!");
+        }
+    }
 
-        // GERAR LOTACAO
-        int lotacaoAleatoria = random.nextInt(bus.getCapacidade() + 1);
-        bus.setLotacao(lotacaoAleatoria);
+    public void registarSaida() {
+        if (bus.getLotacao() > 0) {
+            bus.setLotacao(bus.getLotacao() - 1);
+            System.out.println("Saída registada.");
+        } else {
+            System.out.println("O autocarro está vazio!");
+        }
     }
 
     public void exibirDados() {
         System.out.println("Temperatura: " + bus.getTemperatura() + "°C");
         System.out.println("Capacidade: " + bus.getCapacidade());
-        System.out.println("Lotação: " + bus.getLotacao());
+        System.out.println("Lotação atual: " + bus.getLotacao());
         System.out.println("Ocupação: " + bus.percentagem_lotacao() + "%");
     }
 }
