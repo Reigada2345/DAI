@@ -5,7 +5,7 @@ public class Paragem {
     private int lotacao;
     private boolean ativa = true;
 
-    public Paragem (boolean variasRotas, int lotacao) {
+    public Paragem (String nome, String localizacao, boolean variasRotas, int lotacao) {
         this.nome = nome;
         this.localizacao = localizacao;
         this.lotacao = lotacao;
@@ -13,10 +13,18 @@ public class Paragem {
         this.ativa = true;
     }
 
-    public static Paragem criarParagem(boolean variasRotas, int lotacao) {
+    public static Paragem criarParagem(String nome, String localizacao, boolean variasRotas, int lotacao) {
         return new Paragem(nome, localizacao, variasRotas, lotacao);
     }
 
+    public void editarParagem(String novoNome, String novaLocalizacao, boolean novasRotas, int novaLotacao) {
+        this.nome = novoNome;
+        this.localizacao = novaLocalizacao;
+        this.variasRotas = novasRotas;
+        this.lotacao = novaLotacao;
+    }
+
+    
 //GETTERS------
     public String getNome() {
         return nome;
@@ -33,7 +41,13 @@ public class Paragem {
     public int getLotacao() {
         return lotacao;
     }
+
+    public boolean isAtiva() {
+        return ativa;
+    }
+
 //-------------
+
 //SETTERS------
     public void setNome(String nome) {
         this.nome = nome;
@@ -50,13 +64,16 @@ public class Paragem {
     public void setLotacao(int lotacao) {
         this.lotacao = lotacao;
     }
-//-------------
 
-    public void desativarParagem() {
+    public void editarParagem(String novoNome, String novaLocalizacao, boolean novasRotas, int novaLotacao) {
+        this.nome = novoNome;
+        this.localizacao = novaLocalizacao;
+        this.variasRotas = novasRotas;
+        this.lotacao = novaLotacao;
+    }
+
+     public void desativarParagem() {
         this.ativa = false; // Marca a paragem como desativada
     }
-
-    public boolean isAtiva() {
-        return ativa; // Retorna o estado da paragem
-    }
+//-------------
 }
