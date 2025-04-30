@@ -68,42 +68,81 @@
     
     <div class="login-container">
         <h2 id="formTitle">Login</h2>
-    <form id="loginForm">
-        <select id="userType" name="userType" required>
-            <option value="" disabled selected>Selecione o tipo de utilizador</option>
-            <option value="admin">Administrador</option>
-            <option value="cliente">Cliente</option>
-        </select>
-        <input type="email" id="email" name="email" placeholder="E-mail" required>
-        <input type="password" id="password" name="password" placeholder="Senha" required>
-        <button type="submit" id="submitButton">Entrar</button>
-    </form>
-    <p id="toggleForm" style="cursor: pointer; color: #2c72b7; text-decoration: underline;">Criar uma conta</p>
+
+        <form id="loginForm">
+            <select id="userType" name="userType" style="display: none;" required>
+                <option value="" disabled selected>Selecione o tipo de utilizador</option>
+                <option value="admin">Administrador</option>
+                <option value="cliente">Cliente</option>
+            </select>
+            <input type="text" id="firstName" name="firstName" placeholder="Primeiro Nome" style="display: none;" required>
+            <input type="text" id="lastName" name="lastName" placeholder="Último Nome" style="display: none;" required>
+            <input type="text" id="contact" name="contact" placeholder="Contacto" style="display: none;" required>
+            <select id="disability" name="disability" style="display: none;" required>
+                <option value="" disabled selected>Selecione a condição de deficiência</option>
+                <option value="nenhuma">Nenhuma</option>
+                <option value="visual">Deficiência Visual</option>
+                <option value="auditiva">Deficiência Auditiva</option>
+                <option value="motora">Deficiência Motora</option>
+                <option value="outra">Outra</option>
+            </select>
+            <input type="email" id="email" name="email" placeholder="E-mail" required>
+            <input type="password" id="password" name="password" placeholder="Senha" required>
+            <button type="submit" id="submitButton">Entrar</button>
+        </form>
+
+        <p id="toggleForm" style="cursor: pointer; color: #2c72b7; text-decoration: underline;">Criar uma conta</p>
+
     </div>
     
 
 
     <script>
-        const formTitle = document.getElementById("formTitle");
-        const loginForm = document.getElementById("loginForm");
-        const toggleForm = document.getElementById("toggleForm");
-        const submitButton = document.getElementById("submitButton");
 
-        let isLogin = true; // Estado inicial: Login
+    const formTitle = document.getElementById("formTitle");
+    const loginForm = document.getElementById("loginForm");
+    const toggleForm = document.getElementById("toggleForm");
+    const submitButton = document.getElementById("submitButton");
+
+    const userTypeField = document.getElementById("userType");
+    const firstNameField = document.getElementById("firstName");
+    const lastNameField = document.getElementById("lastName");
+    const contactField = document.getElementById("contact");
+    const disabilityField = document.getElementById("disability");
+
+    let isLogin = true; // Estado inicial: Login
 
     toggleForm.addEventListener("click", () => {
-        isLogin = !isLogin;
+    isLogin = !isLogin;
 
         if (isLogin) {
+            // Modo Login
             formTitle.textContent = "Login";
             submitButton.textContent = "Entrar";
             toggleForm.textContent = "Criar uma conta";
+
+            // Esconde os campos adicionais
+            userTypeField.style.display = "none";
+            firstNameField.style.display = "none";
+            lastNameField.style.display = "none";
+            contactField.style.display = "none";
+            disabilityField.style.display = "none";
         } else {
+            // Modo Criar Conta
             formTitle.textContent = "Criar Conta";
             submitButton.textContent = "Registrar";
             toggleForm.textContent = "Já tem uma conta? Login";
+
+            // Mostra os campos adicionais
+            userTypeField.style.display = "block";
+            firstNameField.style.display = "block";
+            lastNameField.style.display = "block";
+            contactField.style.display = "block";
+            disabilityField.style.display = "block";
         }
     });
+
+    
     loginForm.addEventListener("submit", function(event) {
     event.preventDefault(); // Evita o envio padrão do formulário
 
