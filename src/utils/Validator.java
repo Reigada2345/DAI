@@ -1,4 +1,3 @@
-import java.util.regex.Pattern;
 public class Validator {
 
     public static boolean isValidNome(String nome) {
