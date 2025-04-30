@@ -1,3 +1,5 @@
+import models.Passageiro;
+
 public class PassageiroService {
 
     public void atualizarInformacaoPassageiro(Passageiro passageiro, String novoNome, int novaIdade, String novoBilhete) {
