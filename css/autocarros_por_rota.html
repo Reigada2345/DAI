@@ -93,6 +93,7 @@
     <p><strong>Número do Autocarro:</strong> <span id="numero"></span></p>
     <p><strong>Horário:</strong> <span id="horario"></span></p>
     <p><strong>Estado:</strong> <span id="estado"></span></p>
+    <p><strong>Lotação:</strong> <span id="lotacao"></span></p>
     <button onclick="voltarParaLista()">Voltar</button>
 </div>
 <body>
@@ -104,6 +105,7 @@
                 <th>Número do Autocarro</th>
                 <th>Horário</th>
                 <th>Estado</th>
+                <th>Lotação</th>
                 <th>Informações do Autocarro</th>
             </tr>
         </thead>
@@ -115,8 +117,9 @@
                 <td>1</td>
                 <td>08:00 - 09:00</td>
                 <td>Em manutenção</td>
+                <td>50%</td>
                 <td>
-                    <button onclick="mostrarInformacoesAutocarro('Rota 1', '1', '08:00 - 09:00', 'Em manutenção')">Ver</button>
+                    <button onclick="mostrarInformacoesAutocarro('Rota 1', '1', '08:00 - 09:00', 'Em manutenção', '50%')">Ver</button>
                 </td>
             </tr>
             <tr>
@@ -124,8 +127,9 @@
                 <td>2</td>
                 <td>09:30 - 10:30</td>
                 <td>Em operação</td>
+                <td>80%</td>
                 <td>
-                    <button onclick="mostrarInformacoesAutocarro('Rota 2', '2', '09:30 - 10:30', 'Em operação')">Ver</button>
+                    <button onclick="mostrarInformacoesAutocarro('Rota 2', '2', '09:30 - 10:30', 'Em operação', '80%')">Ver</button>
                 </td>
             </tr>
         
@@ -134,14 +138,15 @@
                 <td>3</td>
                 <td>07:00 - 08:00</td>
                 <td>Em operação</td>
+                <td>30%</td>
                 <td>
-                    <button onclick="mostrarInformacoesAutocarro('Rota 3', '3', '07:00 - 08:00', 'Em operação')">Ver</button>
+                    <button onclick="mostrarInformacoesAutocarro('Rota 3', '3', '07:00 - 08:00', 'Em operação', '30%')">Ver</button>
                 </td>
             </tr>
         </tbody>
     </table>
     <script>
-        function mostrarInformacoesAutocarro(rota, numero, horario, estado) {
+        function mostrarInformacoesAutocarro(rota, numero, horario, estado, lotacao) {
             // Esconde a tabela
             const tabela = document.querySelector('table');
             tabela.style.display = 'none';
@@ -154,6 +159,7 @@
             document.getElementById('numero').textContent = numero;
             document.getElementById('horario').textContent = horario;
             document.getElementById('estado').textContent = estado;
+            document.getElementById('lotacao').textContent = lotacao;
     
             // Mostra a área de informações do autocarro
             document.getElementById('informacoes-autocarro').style.display = 'block';
