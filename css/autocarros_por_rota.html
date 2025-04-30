@@ -94,6 +94,7 @@
     <p><strong>Horário:</strong> <span id="horario"></span></p>
     <p><strong>Estado:</strong> <span id="estado"></span></p>
     <p><strong>Lotação:</strong> <span id="lotacao"></span></p>
+    <p><strong>Temperatura:</strong> <span id="temperatura"></span></p>
     <button onclick="voltarParaLista()">Voltar</button>
 </div>
 <body>
@@ -119,7 +120,7 @@
                 <td>Em manutenção</td>
                 <td>50%</td>
                 <td>
-                    <button onclick="mostrarInformacoesAutocarro('Rota 1', '1', '08:00 - 09:00', 'Em manutenção', '50%')">Ver</button>
+                    <button onclick="mostrarInformacoesAutocarro('Rota 1', '1', '08:00 - 09:00', 'Em manutenção', '50%', '22°C')">Ver</button>
                 </td>
             </tr>
             <tr>
@@ -129,7 +130,7 @@
                 <td>Em operação</td>
                 <td>80%</td>
                 <td>
-                    <button onclick="mostrarInformacoesAutocarro('Rota 2', '2', '09:30 - 10:30', 'Em operação', '80%')">Ver</button>
+                    <button onclick="mostrarInformacoesAutocarro('Rota 2', '2', '09:30 - 10:30', 'Em operação', '80%', '25°C')">Ver</button>
                 </td>
             </tr>
         
@@ -140,7 +141,7 @@
                 <td>Em operação</td>
                 <td>30%</td>
                 <td>
-                    <button onclick="mostrarInformacoesAutocarro('Rota 3', '3', '07:00 - 08:00', 'Em operação', '30%')">Ver</button>
+                    <button onclick="mostrarInformacoesAutocarro('Rota 3', '3', '07:00 - 08:00', 'Em operação', '30%', '20°C')">Ver</button>
                 </td>
             </tr>
         </tbody>
@@ -160,6 +161,7 @@
             document.getElementById('horario').textContent = horario;
             document.getElementById('estado').textContent = estado;
             document.getElementById('lotacao').textContent = lotacao;
+            document.getElementById('temperatura').textContent = temperatura; 
     
             // Mostra a área de informações do autocarro
             document.getElementById('informacoes-autocarro').style.display = 'block';
