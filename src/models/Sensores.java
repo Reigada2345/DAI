@@ -1,6 +1,6 @@
+package models;
 import java.util.*;
 import java.sql.Connection;
-
 
 public class Sensores {
     private AutocarroDAO busDAO;

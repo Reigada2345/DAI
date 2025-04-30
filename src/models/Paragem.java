@@ -1,3 +1,4 @@
+package models;
 
 public class Paragem {
     private String nome;
