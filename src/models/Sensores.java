@@ -23,7 +23,6 @@ public class Sensores {
         AutocarroDAO.atualizarTemperatura(conn, autocarroId, temperaturaAleatoria);
 
         // GERAR LOTACAO    
-        // Você precisará de um método para obter a capacidade primeiro
         int capacidade = busDAO.getCapacidade(autocarroId);  
         int lotacaoAleatoria = random.nextInt(capacidade + 1);
         AutocarroDAO.atualizarLotacao(conn, autocarroId, lotacaoAleatoria);
