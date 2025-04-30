@@ -3,9 +3,7 @@ package models;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import databate.DatabaseConnection; // Ensure the DatabaseConnection class is correctly imported
- // Ensure the DatabaseConnection class is correctly imported
-// Ensure the Capacidade class is correctly imported
+import database.DatabaseConnection; 
 
 public class AutocarroDAO {
     private Connection conn;
