@@ -1,15 +1,25 @@
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+// Ensure the Capacidade class is correctly imported
+import models.Capacidade; // Replace with the correct package if necessary
 
 import models.Autocarro;
 
 public class AutocarroDAO {
     private Connection conn;
+    private Capacidade capacidade;
 
     public AutocarroDAO() {
         this.conn = DatabaseConnection.connect();
     }
+    public Connection getConnection() {
+        return conn;
+    }
+    public Capacidade getCapacidade() {
+        return capacidade;
+    }
+
 
     // Método para adicionar um autocarro
     public void adicionarAutocarro(String matricula, String modelo, int capacidade) {
