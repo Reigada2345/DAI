@@ -6,10 +6,11 @@ public class Administrador extends Cliente {
 public String getNome() { // Método para acessar o valor de nome
         return nome;
     }
-    public Administrador(String nome, String email, String password) {
-        super(email, password);
-        this.nome = nome; // Default password for admin
-    }
+    public Administrador(String nome, String nomeProprio, String apelido, String contacto, 
+                   boolean utilizadorPrioritario, String email, String password) {
+    super(nomeProprio, apelido, contacto, utilizadorPrioritario, email, password);
+    this.nome = nome;
+}
 
     public Paragem criarParagem(String nome, String localizacao, boolean variasRotas, int lotacao) {
         return new Paragem(nome, localizacao, variasRotas, lotacao);
