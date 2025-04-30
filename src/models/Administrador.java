@@ -1,4 +1,4 @@
-
+package models;
 
 public class Administrador extends Cliente {
     private String nome;

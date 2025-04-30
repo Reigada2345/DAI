@@ -1,6 +1,7 @@
 import java.util.*;
 import java.sql.Connection;
 
+
 public class Sensores {
     private AutocarroDAO busDAO;
     private int autocarroId;  // Para saber qual autocarro estamos monitorando
@@ -21,7 +22,7 @@ public class Sensores {
         float temperaturaAleatoria = -10 + random.nextFloat() * (40 - (-10));
         AutocarroDAO.atualizarTemperatura(conn, autocarroId, temperaturaAleatoria);
 
-        // GERAR LOTACAO
+        // GERAR LOTACAO    
         // Você precisará de um método para obter a capacidade primeiro
         int capacidade = busDAO.getCapacidade(autocarroId);  // Adicionar este método em AutocarroDAO
         int lotacaoAleatoria = random.nextInt(capacidade + 1);

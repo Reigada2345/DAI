@@ -181,7 +181,7 @@
             const storedUser = JSON.parse(localStorage.getItem(email));
             if (storedUser && storedUser.password === password && storedUser.userType === userType) {
                 if (userType === "cliente") {
-                    window.location.href = "cliente_dashboard.html"; // Redireciona para a página do cliente
+                    window.location.href = "dashboard.html"; // Redireciona para a página do cliente
              }
         } else {
             alert("Tipo de utilizador, e-mail ou senha incorretos!");
