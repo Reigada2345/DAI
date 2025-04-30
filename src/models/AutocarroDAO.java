@@ -126,4 +126,34 @@ public class AutocarroDAO {
             System.err.println("Erro ao atualizar lotação: " + e.getMessage());
         }
     }
+    // Retorna a temperatura atual de um autocarro
+public float getTemperatura(Connection conn, int autocarroId) {
+    String query = "SELECT temperatura FROM autocarros WHERE id = ?";
+    try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setInt(1, autocarroId);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return rs.getFloat("temperatura");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return 0.0f; // Retorna 0.0 se não encontrar ou der erro
+}
+
+// Retorna a lotação atual de um autocarro
+public int getLotacao(Connection conn, int autocarroId) {
+    String query = "SELECT lotacao FROM autocarros WHERE id = ?";
+    try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setInt(1, autocarroId);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return rs.getInt("lotacao");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return 0; // Retorna 0 se não encontrar ou der erro
+}
+
 }

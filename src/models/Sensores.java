@@ -28,6 +28,17 @@ public class Sensores {
         int lotacaoAleatoria = random.nextInt(capacidade + 1);
         AutocarroDAO.atualizarLotacao(conn, autocarroId, lotacaoAleatoria);
     }
+    public void exibirDados() {
+        System.out.println("Sensores do Autocarro ID: " + autocarroId);
+        Connection conn = busDAO.getConnection();
+        
+        float temperatura = busDAO.getTemperatura(conn, autocarroId); // você precisa ter esse método no DAO
+        int lotacao = busDAO.getLotacao(conn, autocarroId); // e este também
+        
+        System.out.println("Temperatura: " + temperatura + " °C");
+        System.out.println("Lotação: " + lotacao + " passageiros");
+    }
+    
 
     
 }
