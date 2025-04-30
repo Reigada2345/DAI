@@ -1,14 +1,15 @@
+package models;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import databate.DatabaseConnection; // Ensure the DatabaseConnection class is correctly imported
+ // Ensure the DatabaseConnection class is correctly imported
 // Ensure the Capacidade class is correctly imported
-import models.Capacidade; // Replace with the correct package if necessary
-
-import models.Autocarro;
 
 public class AutocarroDAO {
     private Connection conn;
-    private Capacidade capacidade;
+   
 
     public AutocarroDAO() {
         this.conn = DatabaseConnection.connect();
@@ -16,8 +17,18 @@ public class AutocarroDAO {
     public Connection getConnection() {
         return conn;
     }
-    public Capacidade getCapacidade() {
-        return capacidade;
+    public int getCapacidade(int autocarroId) {
+        String query = "SELECT capacidade FROM autocarros WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, autocarroId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("capacidade");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0; // Retorna 0 se não encontrar o autocarro
     }
 
 
