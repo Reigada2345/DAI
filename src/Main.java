@@ -35,7 +35,7 @@ public class Main {
 
         // Here you can add code to handle user interactions
         // For example, creating an instance of Administrador and using its methods
-        Administrador admin = new Administrador("Admin Name", "admin@example.com", "password123");
+        Administrador admin = new Administrador("Admin", "Apelido", "912345678", false, "admin@email.com", "1234");
 Paragem paragem = admin.criarParagem("Central", "Main St", true, 50);
         System.out.println("Paragem created: " + paragem.getNome());
 
