@@ -1,31 +1,25 @@
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+// Ensure the Capacidade class is correctly imported
+import models.Capacidade; // Replace with the correct package if necessary
+
+import models.Autocarro;
 
 public class AutocarroDAO {
     private Connection conn;
+    private Capacidade capacidade;
 
     public AutocarroDAO() {
         this.conn = DatabaseConnection.connect();
     }
-
     public Connection getConnection() {
-        return this.conn;
+        return conn;
+    }
+    public Capacidade getCapacidade() {
+        return capacidade;
     }
 
-    public int getCapacidade(int autocarroId) {
-        String sql = "SELECT capacidade FROM autocarros WHERE id = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, autocarroId);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("capacidade");
-            }
-        } catch (SQLException e) {
-            System.err.println("Erro ao obter capacidade: " + e.getMessage());
-        }
-        return 0;
-    }
 
     // Método para adicionar um autocarro
     public void adicionarAutocarro(String matricula, String modelo, int capacidade) {
@@ -124,4 +118,3 @@ public class AutocarroDAO {
         }
     }
 }
-

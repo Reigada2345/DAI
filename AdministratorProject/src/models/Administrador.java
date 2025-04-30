@@ -1,8 +1,11 @@
-package models;
+
 
 public class Administrador extends Cliente {
     private String nome;
 
+public String getNome() { // Método para acessar o valor de nome
+        return nome;
+    }
     public Administrador(String nome, String email, String password) {
         super(email, password);
         this.nome = nome; // Default password for admin
