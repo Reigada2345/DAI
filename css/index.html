@@ -8,6 +8,158 @@
 
 
     <style> 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        /* Estilo do menu no topo */
+        .navbar {
+            width: 100%;
+            background-color: #2c72b7;
+            color: white;
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            margin: 0;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+        }
+
+        .navbar ul li {
+            padding: 10px 20px;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .navbar ul li:hover {
+            background-color: #1a436c;
+            border-radius: 5px;
+        }
+
+        /* Estilo do conteúdo principal */
+        .main-content {
+            margin-top: 70px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .button-link {
+    display: inline-block;
+    background-color: #2c72b7;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.button-link:hover {
+    background-color: #1a436c;
+}
+ /* Estilo dos cartões de autocarros */
+ .bus-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .bus-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            width: 300px;
+            text-align: center;
+            padding: 20px;
+        }
+        .bus-card img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .bus-card button {
+            background-color: #2c72b7;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .bus-card button:hover {
+            background-color: #1a436c;
+        }
+
+        .bus-table {
+            display: none;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #2c72b7;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        #map {
+            height: 400px; /* Define a altura do mapa */
+            width: 100%; /* Define a largura do mapa */
+            margin-bottom: 20px;
+        }
+        .main-content {
+        margin-top: 70px; /* Ajuste para compensar a altura da navbar */
+        padding: 20px;
+        text-align: center;
+    }
         body {
             font-family: Montserrat, sans-serif;
             ;
@@ -65,7 +217,16 @@
 </head>
 <body>
    <h1>TUB</h1>
-    
+   <div class="navbar">
+    <h2>TUB</h2>
+    <ul>
+        <li><a href="dashboard.html"> Início</a></li>
+        <li><a href="autocarros_por_rota.html"> Autocarros</a></li>
+        <li><a href="paragem.html"> Paragens</a></li>
+        <li><a href="perfil.html"> Perfil</a></li>
+        <li><a href="index.html"> Sair</a></li>
+    </ul>
+</div>
     <div class="login-container">
         <h2 id="formTitle">Login</h2>
 
@@ -75,16 +236,13 @@
                 <option value="admin">Administrador</option>
                 <option value="cliente">Cliente</option>
             </select>
-            <input type="text" id="firstName" name="firstName" placeholder="Primeiro Nome" style="display: none;" required>
-            <input type="text" id="lastName" name="lastName" placeholder="Último Nome" style="display: none;" required>
+            <input type="text" id="firstName" name="firstName" placeholder="Nome Próprio" style="display: none;" required>
+            <input type="text" id="lastName" name="lastName" placeholder="Apelido" style="display: none;" required>
             <input type="text" id="contact" name="contact" placeholder="Contacto" style="display: none;" required>
             <select id="disability" name="disability" style="display: none;" required>
-                <option value="" disabled selected>Selecione a condição de deficiência</option>
-                <option value="nenhuma">Nenhuma</option>
-                <option value="visual">Deficiência Visual</option>
-                <option value="auditiva">Deficiência Auditiva</option>
-                <option value="motora">Deficiência Motora</option>
-                <option value="outra">Outra</option>
+                <option value="" disabled selected>É utilizador prioritário?</option>
+                <option value="sim">Sim</option>
+                <option value="nao">Não</option>
             </select>
             <input type="email" id="email" name="email" placeholder="E-mail" required>
             <input type="password" id="password" name="password" placeholder="Senha" required>
