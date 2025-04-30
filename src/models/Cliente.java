@@ -1,3 +1,4 @@
+package models;
 
 public class Cliente {
     private String email;
@@ -15,4 +16,13 @@ public class Cliente {
     public boolean autenticar(String senha) {
         return this.password.equals(senha);
     }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 }
