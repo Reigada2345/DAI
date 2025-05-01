@@ -1,3 +1,5 @@
+import models.Autocarro;
+
 public class AutocarroService {
 
     public Autocarro criarAutocarro(String numero, int capacidade, String rota) {

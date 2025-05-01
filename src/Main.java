@@ -2,6 +2,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import models.Administrador;
+import models.Autocarro;
+import models.AutocarroDAO;
+import models.Passageiro;
+import models.Paragem;
+import models.Sensores;
+
+
 public class Main {
     public static void main(String[] args) {
         // Criar instâncias de autocarro corretamente
@@ -9,7 +17,8 @@ public class Main {
        // Autocarro bus2 = new Autocarro(2, "56-78-CD", "Volvo B7R", 22.5f, 120, 0);
         //Autocarro bus3 = new Autocarro(3, "90-12-EF", "MAN Lion's Coach", 19.8f, 40, 0);
         
-        Sensores sensor1 = new Sensores(bus1);
+        AutocarroDAO dao = new AutocarroDAO(); // já tem essa instância abaixo
+        Sensores sensor1 = new Sensores(dao, bus1.getId()); // ✅ Correto
         //Sensores sensor2 = new Sensores(bus2);
         //Sensores sensor3 = new Sensores(bus3);
         
@@ -26,7 +35,7 @@ public class Main {
 
         // Here you can add code to handle user interactions
         // For example, creating an instance of Administrador and using its methods
-        Administrador admin = new Administrador("Admin Name", "admin@example.com", "password123");
+        Administrador admin = new Administrador("Admin", "Apelido", "912345678", false, "admin@email.com", "1234");
 Paragem paragem = admin.criarParagem("Central", "Main St", true, 50);
         System.out.println("Paragem created: " + paragem.getNome());
 
@@ -56,7 +65,6 @@ Paragem paragem = admin.criarParagem("Central", "Main St", true, 50);
         String password = "1234";
         
         try (Connection conn = DriverManager.getConnection(url, user, password)) {
-            AutocarroDAO dao = new AutocarroDAO();
     
             // Adicionar um autocarro
             dao.adicionarAutocarro("12-34-AC", "Mercedes AAA", 30);
