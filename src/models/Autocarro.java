@@ -9,45 +9,22 @@ public class Autocarro {
     private String modelo;
     private String rota;
     private String matricula;
-    private boolean ativo = true; // O autocarro está ativo por padrão
+    private boolean ativo = true;
 
+    // Construtor
     public Autocarro(int id, int lotacao, float temperatura, String numero, int capacidade, String modelo, String rota, String matricula, boolean ativo) {
         this.id = id;
         this.lotacao = lotacao;
-        this.numero = numero;
-        this.rota = rota;
-        this.ativo = ativo;
-        this.matricula = matricula;
-        this.modelo = modelo;
         this.temperatura = temperatura;
-        this.capacidade = capacidade;
-    }
-
-    public Autocarro(String numero, int capacidade, String rota) {
         this.numero = numero;
         this.capacidade = capacidade;
+        this.modelo = modelo;
         this.rota = rota;
-        this.ativo = true; // Ativo por padrão
+        this.matricula = matricula;
+        this.ativo = ativo;
     }
 
-    // Método estático para criar um autocarro
-    public static Autocarro criarAutocarro(String numero, int capacidade, String rota) {
-        return new Autocarro(numero, capacidade, rota);
-    }
-
-    // Método para editar os detalhes do autocarro
-    public void editarAutocarro(String novoNumero, int novaCapacidade, String novaRota) {
-        this.numero = novoNumero;
-        this.capacidade = novaCapacidade;
-        this.rota = novaRota;
-    }
-
-    // Método para desativar o autocarro
-    public void desativarAutocarro() {
-        this.ativo = false;
-    }
-
-    // GETTERS
+    // Getters
     public int getId() {
         return id;
     }
@@ -84,17 +61,29 @@ public class Autocarro {
         return ativo;
     }
 
-    // SETTERS
-    public void setNumero(String numero) {
-        this.numero = numero;
+    // Setters
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setLotacao(int lotacao) {
         this.lotacao = lotacao;
     }
 
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    public void setRota(String rota) {
+        this.rota = rota;
+    }
+
     public void setMatricula(String matricula) {
         this.matricula = matricula;
+    }
+
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
     }
 
     public void setTemperatura(float temperatura) {
@@ -105,16 +94,23 @@ public class Autocarro {
         this.capacidade = capacidade;
     }
 
-    public void setRota(String rota) {
-        this.rota = rota;
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
     }
 
-//------------------------------------------
-
-public float percentagem_lotacao() {
-        if (capacidade == 0) {
-            return 0; // Evitar divisão por zero
-        }
-        return ((float) lotacao / capacidade) * 100;
+    // Método toString opcional para visualização do objeto
+    @Override
+    public String toString() {
+        return "Autocarro{" +
+                "id=" + id +
+                ", lotacao=" + lotacao +
+                ", temperatura=" + temperatura +
+                ", numero='" + numero + '\'' +
+                ", capacidade=" + capacidade +
+                ", modelo='" + modelo + '\'' +
+                ", rota='" + rota + '\'' +
+                ", matricula='" + matricula + '\'' +
+                ", ativo=" + ativo +
+                '}';
     }
 }

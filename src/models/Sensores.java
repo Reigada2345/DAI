@@ -1,42 +1,41 @@
 package models;
-import java.util.*;
+
+
+
 import java.sql.Connection;
+import java.util.Random;
 
 public class Sensores {
-    private AutocarroDAO busDAO;
-    private int autocarroId;  
-    private Random random;
+    private final AutocarroDAO busDAO;
+    private final int autocarroId;  
+    private final Random random;
 
     public Sensores(AutocarroDAO busDAO, int autocarroId) {
         this.random = new Random();
         this.busDAO = busDAO;
         this.autocarroId = autocarroId;
-        
-        atualizarSensores();
+     
     }
 
     public void atualizarSensores() {
-        Connection conn = busDAO.getConnection();  
-        
-        // GERAR TEMPERATURA
+        // trocar para api 
         float temperaturaAleatoria = -10 + random.nextFloat() * (40 - (-10));
-        AutocarroDAO.atualizarTemperatura(conn, autocarroId, temperaturaAleatoria);
+        busDAO.atualizarTemperatura(autocarroId, temperaturaAleatoria);
 
-        // GERAR LOTACAO    
+        // GERAR LOTAÇÃO    
         int capacidade = busDAO.getCapacidade(autocarroId);  
         int lotacaoAleatoria = random.nextInt(capacidade + 1);
-        AutocarroDAO.atualizarLotacao(conn, autocarroId, lotacaoAleatoria);
+        Connection connection = busDAO.getConnection(); // Assuming getConnection() provides the required Connection object
+        busDAO.atualizarLotacao(connection, autocarroId, lotacaoAleatoria);
     }
+
     public void exibirDados() {
         System.out.println("Sensores do Autocarro ID: " + autocarroId);
-        Connection conn = busDAO.getConnection();
-        
-        float temperatura = busDAO.getTemperatura(conn, autocarroId); 
-        int lotacao = busDAO.getLotacao(conn, autocarroId); 
+
+        float temperatura = busDAO.getTemperatura(autocarroId); 
+        int lotacao = busDAO.getLotacao(autocarroId); 
+
         System.out.println("Temperatura: " + temperatura + " °C");
         System.out.println("Lotação: " + lotacao + " passageiros");
     }
-    
-
-    
 }

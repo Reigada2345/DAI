@@ -216,20 +216,21 @@
     </style>
 </head>
 <body>
+   
    <h1>TUB</h1>
     <div class="login-container">
         <h2 id="formTitle">Login</h2>
 
         <form id="loginForm">
-            <select id="userType" name="userType" style="display: none;" required>
+            <select id="userType" name="userType" style="display: none;" >
                 <option value="" disabled selected>Selecione o tipo de utilizador</option>
                 <option value="admin">Administrador</option>
                 <option value="cliente">Cliente</option>
             </select>
-            <input type="text" id="firstName" name="firstName" placeholder="Nome Próprio" style="display: none;" required>
-            <input type="text" id="lastName" name="lastName" placeholder="Apelido" style="display: none;" required>
-            <input type="text" id="contact" name="contact" placeholder="Contacto" style="display: none;" required>
-            <select id="disability" name="disability" style="display: none;" required>
+            <input type="text" id="firstName" name="firstName" placeholder="Nome Próprio" style="display: none;" >
+            <input type="text" id="lastName" name="lastName" placeholder="Apelido" style="display: none;" >
+            <input type="text" id="contact" name="contact" placeholder="Contacto" style="display: none;" >
+            <select id="disability" name="disability" style="display: none;" >
                 <option value="" disabled selected>É utilizador prioritário?</option>
                 <option value="sim">Sim</option>
                 <option value="nao">Não</option>
@@ -244,9 +245,8 @@
     </div>
     
 
-
     <script>
-
+  
     const formTitle = document.getElementById("formTitle");
     const loginForm = document.getElementById("loginForm");
     const toggleForm = document.getElementById("toggleForm");
@@ -258,107 +258,143 @@
     const contactField = document.getElementById("contact");
     const disabilityField = document.getElementById("disability");
 
-    let isLogin = true; // Estado inicial: Login
+    let isLogin = true;
+    toggleForm.addEventListener
+    ("click", () => 
+        {
+                isLogin = !isLogin;
 
-    toggleForm.addEventListener("click", () => {
-    isLogin = !isLogin;
+                formTitle.textContent = isLogin ? "Login" : "Criar Conta";
+                submitButton.textContent = isLogin ? "Entrar" : "Registrar";
+                toggleForm.textContent = isLogin ? "Criar uma conta" : "Já tem uma conta? Login";
 
-        if (isLogin) {
-            // Modo Login
-            formTitle.textContent = "Login";
-            submitButton.textContent = "Entrar";
-            toggleForm.textContent = "Criar uma conta";
+                // Mostrar ou esconder os campos do registo
+                const display = isLogin ? "none" : "block";
+                userTypeField.style.display = display;
+                firstNameField.style.display = display;
+                lastNameField.style.display = display;
+                contactField.style.display = display;
+                disabilityField.style.display = display;
 
-            // Esconde os campos adicionais
-            userTypeField.style.display = "none";
-            firstNameField.style.display = "none";
-            lastNameField.style.display = "none";
-            contactField.style.display = "none";
-            disabilityField.style.display = "none";
-        } else {
-            // Modo Criar Conta
-            formTitle.textContent = "Criar Conta";
-            submitButton.textContent = "Registrar";
-            toggleForm.textContent = "Já tem uma conta? Login";
-
-            // Mostra os campos adicionais
-            userTypeField.style.display = "block";
-            firstNameField.style.display = "block";
-            lastNameField.style.display = "block";
-            contactField.style.display = "block";
-            disabilityField.style.display = "block";
+                // Torna os campos obrigatórios só quando for registo
+                userTypeField.required = !isLogin;
+                firstNameField.required = !isLogin;
+                lastNameField.required = !isLogin;
+                contactField.required = !isLogin;
+                disabilityField.required = !isLogin;
         }
-    });
+    );
 
-    
-    loginForm.addEventListener("submit", function(event) {
-    event.preventDefault(); // Evita o envio padrão do formulário
 
-    const userType = document.getElementById("userType").value;
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
+    loginForm.addEventListener
+    (   "submit", function (event) 
+        {
+            event.preventDefault();
 
-    // Validação: Verifica se o e-mail é válido
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regex para validar e-mails
-    if (!emailRegex.test(email)) {
-        alert("Por favor, insira um e-mail válido.");
-        return;
-    }
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const userType = document.getElementById("userType").value;
 
-    // Validação: Verifica se todos os campos estão preenchidos
-    if (!userType) {
-        alert("Por favor, selecione o tipo de utilizador.");
-        return;
-    }
-    if (!email) {
-        alert("Por favor, insira o e-mail.");
-        return;
-    }
-    if (!password) {
-        alert("Por favor, insira a senha.");
-        return;
-    }
-    
-        if (isLogin) {
-        // Lógica de login
-            if (email === "admin@email.com" && password === "1234" && userType === "admin") {
-        // Login fixo para o administrador
-                window.location.href = "dashboard.html"; // Redireciona para o painel do administrador
-            } else {
-        // Verifica se o utilizador está no localStorage
-            const storedUser = JSON.parse(localStorage.getItem(email));
-            if (storedUser && storedUser.password === password && storedUser.userType === userType) {
-                if (userType === "cliente") {
-                    window.location.href = "dashboard.html"; // Redireciona para a página do cliente
-             }
-        } else {
-            alert("Tipo de utilizador, e-mail ou senha incorretos!");
-        }
-    }
-        } else {
-        // Lógica de criação de conta
-            if (userType === "cliente") {
-                const newUser = {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) 
+            {
+                alert("Por favor, insira um e-mail válido.");
+                return;
+            }
+
+            if (!password) {
+                alert("Por favor, insira a senha.");
+                return;
+            }
+
+            if (isLogin) 
+            {
+                // --- LOGIN ---
+                if (userType === "admin" && email === "admin@email.com" && password === "1234") 
+                {
+                   window.location.href = "dashboard.html";
+                   //window.location.href = "www.kiubo.pt"
+                    return;
+                }
+
+                // Tenta login no backend
+                fetch
+                ("https://apptub-hac2fta6afcsdqhq.northeurope-01.azurewebsites.net/login", 
+                    {  
+                        method: 'POST',
+                        mode: 'cors',
+                        headers: 
+                        {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: new URLSearchParams
+                        (
+                            {
+                            'email': email,
+                            'password': password
+                            }
+                        )
+                    }
+                )
+                .then(response => response.text())
+                .then
+                (data =>    
+                    {
+                        if (data === "Sucesso") 
+                        {
+                            // Login bem-sucedido
+                            window.location.href = "dashboard.html";
+                            return;
+                        } 
+                        else if (data === "Erro") 
+                        {
+                            // E-mail ou senha incorretos
+                            alert("E-mail ou senha incorretos.");
+                            return;
+                        
+                        }
+
+                    }
+                )
+
+
+            } 
+            else 
+            {
+                // --- REGISTO ---
+                if (!userType || userType !== "cliente") 
+                {
+                    alert("Apenas clientes podem criar conta.");
+                    return;
+                }
+
+                const newUser = 
+                {
                     email: email,
                     password: password,
-                    userType: userType
+                    userType: userType,
+                    firstName: document.getElementById("firstName").value.trim(),
+                    lastName: document.getElementById("lastName").value.trim(),
+                    contact: document.getElementById("contact").value.trim(),
+                    disability: document.getElementById("disability").value
                 };
 
-                // Salva os dados no localStorage
+                // Verifica campos
+                if (!newUser.firstName || !newUser.lastName || !newUser.contact || !newUser.disability) 
+                {
+                    alert("Preencha todos os campos obrigatórios.");
+                    return;
+                }
+
                 localStorage.setItem(email, JSON.stringify(newUser));
-                alert(`Conta criada com sucesso para o cliente: ${email}`);
+                
+                
+                
+                alert("Conta criada com sucesso!");
 
-                // Volta para o estado de login
+                // Volta para modo login
                 isLogin = true;
-                formTitle.textContent = "Login";
-                submitButton.textContent = "Entrar";
-                toggleForm.textContent = "Criar uma conta";
-            } else {
-                alert("Apenas clientes podem criar contas neste momento.");
+                toggleForm.click();
             }
-        }
-
     });
-    </script>
-</body>
-</html>
+</script>
