@@ -151,9 +151,9 @@
     <div class="navbar">
         <h2>TUB</h2>
         <ul>
-            <li><a href="dashboard.html"> Início</a></li>
-            <li><a href="autocarros_por_rota.html"> Autocarros</a></li>
-            <li><a href="paragem.html"> Paragens</a></li>
+            <li><a href="dashboard_admin.html"> Início</a></li>
+            <li><a href="autocarros_por_rota_admin.html"> Autocarros</a></li>
+            <li><a href="paragem_admin.html"> Paragens</a></li>
             <li><a href="perfil.html"> Perfil</a></li>
             <li><a href="index.html"> Sair</a></li>
         </ul>
@@ -225,6 +225,7 @@
                         <th>Número do Autocarro</th>
                         <th>Horário</th>
                         <th>Estado</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -235,6 +236,8 @@
                         <td>Em operação</td>
                         <td>
                             <button onclick="mostrarInformacoesAutocarro('Rota 1', '1', '08:00 - 09:00', 'Em operação')">Ver</button>
+                            <button onclick="editarAutocarro('1')">Editar</button>
+                            <button onclick="removerAutocarro('1')">Remover</button>
                         </td>
                     </tr>
                     <tr>
@@ -244,6 +247,8 @@
                         <td>Em operação</td>
                         <td>
                             <button onclick="mostrarInformacoesAutocarro('Rota 1', '6', '09:00 - 10:00', 'Em operação')">Ver</button>
+                            <button onclick="editarAutocarro('6')">Editar</button>
+                            <button onclick="removerAutocarro('6')">Remover</button>
                         </td>
                     </tr>
                 </tbody>
@@ -270,6 +275,8 @@
                         <td>Em operação</td>
                         <td>
                             <button onclick="mostrarInformacoesAutocarro('Rota 2', '2', '08:30 - 09:30', 'Em operação')">Ver</button>
+                            <button onclick="editarAutocarro('2')">Editar</button>
+                            <button onclick="removerAutocarro('2')">Remover</button>
                         </td>
                     </tr>
                     <tr>
@@ -279,7 +286,9 @@
                         <td>Em operação</td>
                         <td>
                             <button onclick="mostrarInformacoesAutocarro('Rota 2', '7', '09:30 - 10:30', 'Em operação')">Ver</button>
-                        </td>
+                            <button onclick="editarAutocarro('7')">Editar</button>
+                            <button onclick="removerAutocarro('7')">Remover</button>
+                    </td>
                     </tr>
                 </tbody>
             </table>
@@ -304,19 +313,24 @@
                         <td>Em operação</td>
                         <td>
                             <button onclick="mostrarInformacoesAutocarro('Rota 3', '3', '07:00 - 08:00', 'Em operação')">Ver</button>
-                        </td>
+                            <button onclick="editarAutocarro('3')">Editar</button>
+                            <button onclick="removerAutocarro('3')">Remover</button>
+                    </td>
                     </tr>
                     <tr>
                         <td>Rota 3</td>
                         <td>8</td>
                         <td>09:30 - 10:30</td>
                         <td>Em operação</td>
-                        <td>
+                        <td> 
                             <button onclick="mostrarInformacoesAutocarro('Rota 4', '8', '09:30 - 10:30', 'Em operação')">Ver</button>
-                        </td>
+                            <button onclick="editarAutocarro('8')">Editar</button>
+                            <button onclick="removerAutocarro('8')">Remover</button>
+                    </td>
                     </tr>
                 </tbody>
             </table>
+            <button onclick="criarAutocarro()">Criar Autocarro</button>
         </div>
     <!-- Área para exibir as informações do autocarro -->
     <div id="informacoes-autocarro" style="display: none; margin-top: 20px; border: 1px solid #ddd; padding: 20px; background-color: #fff;">
