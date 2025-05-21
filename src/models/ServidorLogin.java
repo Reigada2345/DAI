@@ -79,7 +79,7 @@ public class ServidorLogin {
                 }
 
                 try {
-                    boolean valido = false;
+                    boolean valido = false; // Inicializando a variável 'valido'
                     ClienteDAO clienteDAO = new ClienteDAO(); // Instanciando o ClienteDAO
 
                     // Usando o ClienteDAO para validar o login

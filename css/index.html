@@ -293,7 +293,7 @@
 
             const email = document.getElementById("email").value.trim();
             const password = document.getElementById("password").value.trim();
-            const userType = document.getElementById("userType").value;
+            const userType = isLogin ? document.getElementById("userType").value : null;
 
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) 
@@ -310,52 +310,65 @@
             if (isLogin) 
             {
                 // --- LOGIN ---
-                if (userType === "admin" && email === "admin@email.com" && password === "1234") 
+                if (isLogin && email === "admin@email.com" && password === "1234") 
                 {
                    window.location.href = "dashboard.html";
-                   //window.location.href = "www.kiubo.pt"
+                 
                     return;
                 }
 
                 // Tenta login no backend
-                fetch
-                ("https://apptub-hac2fta6afcsdqhq.northeurope-01.azurewebsites.net/login", 
-                    {  
-                        method: 'POST',
-                        mode: 'cors',
-                        headers: 
-                        {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: new URLSearchParams
-                        (
-                            {
-                            'email': email,
-                            'password': password
-                            }
-                        )
+                fetch("https://apptub-hac2fta6afcsdqhq.northeurope-01.azurewebsites.net/login", {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json' // Definindo que estamos enviando JSON
+                    },
+                    body: JSON.stringify({
+                        'email': email,
+                        'password': password
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro na requisição: ' + response.status);
                     }
-                )
-                .then(response => response.text())
-                .then
-                (data =>    
+                    return response.text(); // A resposta será tratada como texto
+                })
+                .then(data => {
+                    if (data === "Sucesso") {
+                        // Login bem-sucedido
+                        window.location.href = "dashboard.html";
+                    } else if (data === "Erro") {
+                        // E-mail ou senha incorretos
+                        alert("E-mail ou senha incorretos.");
+                    } else {
+                        // Caso o servidor retorne algo inesperado
+                        alert("Resposta inesperada do servidor.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro ao fazer login:", error);
+                    alert("Houve um erro ao tentar fazer login. Tente novamente.");
+                });
+    
+                    // Verifica se o utilizador existe
+                    const user = JSON.parse(localStorage.getItem(email));
+                    if (!user || user.password !== password) 
                     {
-                        if (data === "Sucesso") 
-                        {
-                            // Login bem-sucedido
-                            window.location.href = "dashboard.html";
-                            return;
-                        } 
-                        else if (data === "Erro") 
-                        {
-                            // E-mail ou senha incorretos
-                            alert("E-mail ou senha incorretos.");
-                            return;
-                        
-                        }
-
+                        alert("E-mail ou senha incorretos.");
+                        return;
                     }
-                )
+    
+                    // Verifica se o utilizador é cliente
+                    if (user.userType !== "cliente") 
+                    {
+                        alert("Apenas clientes podem fazer login.");
+                        return;
+                    }
+    
+                    // Login bem-sucedido
+                    window.location.href = "dashboard.html";
 
 
             } 

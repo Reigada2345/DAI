@@ -9,10 +9,10 @@
             "name": "ServidorLogin",
             "request": "launch",
             "mainClass": "models.ServidorLogin",
-            "projectName": "app_37d7c52b"
-          //  "classPaths": [
-          //      "lib/mysql-connector-java-8.0.33.jar"
-          //  ]
+            "projectName": "app_37d7c52b",
+            "classPaths": [
+                "lib/mysql-connector-java-8.0.33.jar"
+          ]
         
         },
         {
