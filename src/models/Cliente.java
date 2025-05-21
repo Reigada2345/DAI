@@ -1,5 +1,6 @@
 package models;
 
+
 public class Cliente {
     private String nomeProprio;
     private String apelido;
@@ -8,8 +9,7 @@ public class Cliente {
     private String email;
     private String password;
 
-    public Cliente(String nomeProprio, String apelido, String contacto, 
-                   boolean utilizadorPrioritario, String email, String password) {
+    public Cliente(String nomeProprio, String apelido, String contacto, boolean utilizadorPrioritario, String email, String password) {
         this.nomeProprio = nomeProprio;
         this.apelido = apelido;
         this.contacto = contacto;
@@ -83,4 +83,6 @@ public class Cliente {
                 ", email='" + email + '\'' +
                 '}';
     }
+
+  
 }

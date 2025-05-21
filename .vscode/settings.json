@@ -1,0 +1,8 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/b24e68cd-5d63-49eb-9ef8-9aeba38e6db5/resourceGroups/DAITUB/providers/Microsoft.Web/sites/AppTubDai",
+    "appService.deploySubpath": "app.jar",
+    "java.project.referencedLibraries": [
+      "lib/**/*.jar"
+    ]
+  }
+  

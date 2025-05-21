@@ -207,6 +207,33 @@
 </div>
     <script>
         
-    </script>
+  async function carregarPerfil() {
+    try {
+      const resposta = await fetch('/api/perfil', {
+        method: 'GET',
+        credentials: 'include' // importante se usares cookies/sessão
+      });
+
+      if (!resposta.ok) {
+        throw new Error('Erro ao carregar perfil');
+      }
+
+      const dados = await resposta.json();
+
+      // Preencher tabela com os dados recebidos
+      document.querySelector('table tr:nth-child(1) td').textContent = dados.tipoUtilizador;
+      document.querySelector('table tr:nth-child(2) td').textContent = dados.nome;
+      document.querySelector('table tr:nth-child(3) td').textContent = dados.apelido;
+      document.querySelector('table tr:nth-child(4) td').textContent = dados.contacto;
+      document.querySelector('table tr:nth-child(5) td').textContent = dados.email;
+      document.querySelector('table tr:nth-child(6) td').textContent = dados.prioritario;
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  // Carregar perfil quando a página carregar
+  window.onload = carregarPerfil;
+</script>
 </body>
 </html>

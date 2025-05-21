@@ -6,20 +6,20 @@ public class Paragem {
     private String localizacao;
     private boolean variasRotas;
     private int lotacao;
-    private boolean ativa = true;
+    private boolean ativa = true; // Paragem is active by default
 
-    public Paragem (String nome, String localizacao, boolean variasRotas, int lotacao) {
+    public Paragem(String nome, String localizacao, boolean variasRotas, int lotacao) {
         this.nome = nome;
         this.localizacao = localizacao;
-        this.lotacao = lotacao;
         this.variasRotas = variasRotas;
-        this.ativa = true; // Paragem is active by default
+        this.lotacao = lotacao;
     }
 
     public static Paragem criarParagem(String nome, String localizacao, boolean variasRotas, int lotacao) {
         return new Paragem(nome, localizacao, variasRotas, lotacao);
     }
 
+    // Método para editar a paragem
     public void editarParagem(String novoNome, String novaLocalizacao, boolean novasRotas, int novaLotacao) {
         this.nome = novoNome;
         this.localizacao = novaLocalizacao;
@@ -27,8 +27,7 @@ public class Paragem {
         this.lotacao = novaLotacao;
     }
 
-    
-//GETTERS------
+    // GETTERS
     public String getNome() {
         return nome;
     }
@@ -49,9 +48,7 @@ public class Paragem {
         return ativa;
     }
 
-//-------------
-
-//SETTERS------
+    // SETTERS
     public void setNome(String nome) {
         this.nome = nome;
     }
@@ -68,16 +65,12 @@ public class Paragem {
         this.lotacao = lotacao;
     }
 
-    public void editarParagem(String nome, String localizacao, boolean variasRotas, int lotacao, boolean ativa) {
-        this.nome = nome;
-        this.localizacao = localizacao;
-        this.variasRotas = variasRotas;
-        this.lotacao = lotacao;
+    public void setAtiva(boolean ativa) {
         this.ativa = ativa;
     }
 
-     public void desativarParagem() {
+    // Método para desativar a paragem
+    public void desativarParagem() {
         this.ativa = false; // Marca a paragem como desativada
     }
-//-------------
 }

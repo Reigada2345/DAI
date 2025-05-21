@@ -1,252 +1,241 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TUB</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TUB</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-
-    <style> 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            background-color: #f4f4f4;
-        }
-
-        /* Estilo do menu no topo */
-        .navbar {
-            width: 100%;
-            background-color: #2c72b7;
-            color: white;
-            padding: 15px 20px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar h2 {
-            margin: 0;
-        }
-
-        .navbar ul {
-            list-style: none;
-            display: flex;
-        }
-
-        .navbar ul li {
-            padding: 10px 20px;
-        }
-
-        .navbar ul li a {
-            color: white;
-            text-decoration: none;
-            font-size: 16px;
-        }
-
-        .navbar ul li:hover {
-            background-color: #1a436c;
-            border-radius: 5px;
-        }
-
-        /* Estilo do conteúdo principal */
-        .main-content {
-            margin-top: 70px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .header {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .button-link {
-    display: inline-block;
-    background-color: #2c72b7;
-    color: white;
-    text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 16px;
-    text-align: center;
-    transition: background-color 0.3s ease;
-}
-
-.button-link:hover {
-    background-color: #1a436c;
-}
- /* Estilo dos cartões de autocarros */
- .bus-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .bus-card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin: 10px;
-            width: 300px;
-            text-align: center;
-            padding: 20px;
-        }
-        .bus-card img {
-            width: 100%;
-            border-radius: 10px;
-        }
-        .bus-card button {
-            background-color: #2c72b7;
-            color: white;
-            border: none;
-            padding: 10px;
-            width: 100%;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-        }
-        .bus-card button:hover {
-            background-color: #1a436c;
-        }
-
-        .bus-table {
-            display: none;
-            margin-top: 20px;
-        }
-
-        table {
-            width: 80%;
-            border-collapse: collapse;
-            margin: 20px auto;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #2c72b7;
-            color: white;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        #map {
-            height: 400px; /* Define a altura do mapa */
-            width: 100%; /* Define a largura do mapa */
-            margin-bottom: 20px;
-        }
-        .main-content {
-        margin-top: 70px; /* Ajuste para compensar a altura da navbar */
-        padding: 20px;
-        text-align: center;
+  <style>
+    /* Reset e fontes */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
     }
-        body {
-            font-family: Montserrat, sans-serif;
-            ;
-            display: flex;
-            justify-content: center;
-            align-items: center;      
-            height: 100vh;
-            background-color: #f4f4f4;
-            flex-direction: column;
-            margin: 0;    
-        } 
-        
-        h1 {
-            
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700; /* Deixa a fonte mais parecida com o logótipo */
-            position: absolute;
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-        }
 
-        .login-container {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 320px;
-            text-align: center;
-            margin: 0 auto;
-        }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #2c72b7;
-            color: white;
-            border: none;
-            padding: 10px;
-            width: 100%;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #1a436c;
-        }
-    </style>
+    body {
+      background: linear-gradient(135deg, #2c72b7, #3a9bdc);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: #333;
+      flex-direction: column;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 70vw;
+      height: 155vh;
+      background-image: url('https://seeklogo.com/images/T/tub-logo-6FFE9528E5-seeklogo.com.png');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.1;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    h1 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      color: #fff;
+      font-size: 3rem;
+      margin-bottom: 40px;
+      text-align: center;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .login-container {
+      background: rgba(255, 255, 255, 0.95);
+      width: 360px;
+      padding: 40px 35px;
+      border-radius: 15px;
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #formTitle {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 25px;
+      color: #2c72b7;
+      text-align: center;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    .input-group i {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      color: #aaa;
+    }
+
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 14px 15px 14px 40px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: #2c72b7;
+      outline: none;
+      box-shadow: 0 0 8px rgba(44, 114, 183, 0.5);
+    }
+
+    button {
+      background-color: #2c72b7;
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      width: 100%;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 20px;
+      box-shadow: 0 6px 12px rgba(44, 114, 183, 0.4);
+    }
+
+    button:hover {
+      background-color: #1a436c;
+      box-shadow: 0 8px 16px rgba(26, 67, 108, 0.6);
+    }
+
+    #toggleForm {
+      margin-top: 18px;
+      display: block;
+      color: #2c72b7;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      user-select: none;
+      transition: color 0.3s ease;
+    }
+
+    #toggleForm:hover {
+      color: #1a436c;
+      text-decoration: underline;
+    }
+
+    /* Ocultar campos inicialmente */
+    #userType,
+    #firstName,
+    #lastName,
+    #contact,
+    #disability {
+      display: none;
+    }
+
+    /* Placeholder estilizado */
+    input::placeholder {
+      color: #999;
+      font-weight: 500;
+    }
+
+    select option[disabled] {
+      color: #aaa;
+    }
+
+    @media (max-width: 420px) {
+      .login-container {
+        width: 100%;
+        padding: 30px 25px;
+      }
+
+      h1 {
+        font-size: 2.2rem;
+        margin-bottom: 30px;
+      }
+    }
+  </style>
 </head>
 <body>
-   <h1>TUB</h1>
-    <div class="login-container">
-        <h2 id="formTitle">Login</h2>
 
-        <form id="loginForm">
-            <select id="userType" name="userType" style="display: none;" required>
-                <option value="" disabled selected>Selecione o tipo de utilizador</option>
-                <option value="admin">Administrador</option>
-                <option value="cliente">Cliente</option>
-            </select>
-            <input type="text" id="firstName" name="firstName" placeholder="Nome Próprio" style="display: none;" required>
-            <input type="text" id="lastName" name="lastName" placeholder="Apelido" style="display: none;" required>
-            <input type="text" id="contact" name="contact" placeholder="Contacto" style="display: none;" required>
-            <select id="disability" name="disability" style="display: none;" required>
-                <option value="" disabled selected>É utilizador prioritário?</option>
-                <option value="sim">Sim</option>
-                <option value="nao">Não</option>
-            </select>
-            <input type="email" id="email" name="email" placeholder="E-mail" required>
-            <input type="password" id="password" name="password" placeholder="Senha" required>
-            <button type="submit" id="submitButton">Entrar</button>
-        </form>
+  <div class="login-container" id="loginContainer">
+    <h2 id="formTitle">Login</h2>
 
-        <p id="toggleForm" style="cursor: pointer; color: #2c72b7; text-decoration: underline;">Criar uma conta</p>
+    <form id="loginForm">
 
-    </div>
-    
+      <div class="input-group" id="userType" style="display: none;">
+        <i class="fas fa-user-tag"></i>
+        <select id="userTypeInput">
+          <option disabled selected>Tipo de utilizador</option>
+          <option value="cliente">Cliente</option>
+          <option value="motorista">Motorista</option>
+          <!-- Poderia adicionar mais tipos aqui -->
+        </select>
+      </div>
 
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="email" name="email" placeholder="E-mail" required>
+      </div>
 
-    <script>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="password" name="password" placeholder="Senha" required>
+      </div>
 
+      <div class="input-group" id="firstName" style="display: none;">
+        <i class="fas fa-user"></i>
+        <input type="text" id="firstNameInput" placeholder="Nome próprio">
+      </div>
+
+      <div class="input-group" id="lastName" style="display: none;">
+        <i class="fas fa-user"></i>
+        <input type="text" id="lastNameInput" placeholder="Apelido">
+      </div>
+
+      <div class="input-group" id="contact" style="display: none;">
+        <i class="fas fa-phone"></i>
+        <input type="text" id="contactInput" placeholder="Contacto">
+      </div>
+
+      <div class="input-group" id="disability" style="display: none;">
+        <i class="fas fa-wheelchair"></i>
+        <select id="disabilityInput">
+          <option disabled selected>Utilizador prioritário?</option>
+          <option value="sim">Sim</option>
+          <option value="nao">Não</option>
+        </select>
+      </div>
+
+      <button type="submit" id="submitButton">Entrar</button>
+    </form>
+
+    <p id="toggleForm" style="cursor:pointer; color: blue; text-decoration: underline;">Criar uma conta</p>
+  </div>
+
+  <script>
     const formTitle = document.getElementById("formTitle");
     const loginForm = document.getElementById("loginForm");
     const toggleForm = document.getElementById("toggleForm");
@@ -258,107 +247,121 @@
     const contactField = document.getElementById("contact");
     const disabilityField = document.getElementById("disability");
 
-    let isLogin = true; // Estado inicial: Login
+    const userTypeInput = document.getElementById("userTypeInput");
+    const firstNameInput = document.getElementById("firstNameInput");
+    const lastNameInput = document.getElementById("lastNameInput");
+    const contactInput = document.getElementById("contactInput");
+    const disabilityInput = document.getElementById("disabilityInput");
+
+    let isLogin = true;
 
     toggleForm.addEventListener("click", () => {
-    isLogin = !isLogin;
+      isLogin = !isLogin;
 
-        if (isLogin) {
-            // Modo Login
-            formTitle.textContent = "Login";
-            submitButton.textContent = "Entrar";
-            toggleForm.textContent = "Criar uma conta";
+      formTitle.textContent = isLogin ? "Login" : "Criar Conta";
+      submitButton.textContent = isLogin ? "Entrar" : "Registrar";
+      toggleForm.textContent = isLogin ? "Criar uma conta" : "Já tem uma conta? Login";
 
-            // Esconde os campos adicionais
-            userTypeField.style.display = "none";
-            firstNameField.style.display = "none";
-            lastNameField.style.display = "none";
-            contactField.style.display = "none";
-            disabilityField.style.display = "none";
-        } else {
-            // Modo Criar Conta
-            formTitle.textContent = "Criar Conta";
-            submitButton.textContent = "Registrar";
-            toggleForm.textContent = "Já tem uma conta? Login";
-
-            // Mostra os campos adicionais
-            userTypeField.style.display = "block";
-            firstNameField.style.display = "block";
-            lastNameField.style.display = "block";
-            contactField.style.display = "block";
-            disabilityField.style.display = "block";
-        }
+      const display = isLogin ? "none" : "block";
+      userTypeField.style.display = display;
+      firstNameField.style.display = display;
+      lastNameField.style.display = display;
+      contactField.style.display = display;
+      disabilityField.style.display = display;
     });
 
-    
-    loginForm.addEventListener("submit", function(event) {
-    event.preventDefault(); // Evita o envio padrão do formulário
+    loginForm.addEventListener("submit", function (event) {
+      event.preventDefault();
 
-    const userType = document.getElementById("userType").value;
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
 
-    // Validação: Verifica se o e-mail é válido
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regex para validar e-mails
-    if (!emailRegex.test(email)) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
         alert("Por favor, insira um e-mail válido.");
         return;
-    }
+      }
 
-    // Validação: Verifica se todos os campos estão preenchidos
-    if (!userType) {
-        alert("Por favor, selecione o tipo de utilizador.");
-        return;
-    }
-    if (!email) {
-        alert("Por favor, insira o e-mail.");
-        return;
-    }
-    if (!password) {
+      if (!password) {
         alert("Por favor, insira a senha.");
         return;
-    }
-    
-        if (isLogin) {
-        // Lógica de login
-            if (email === "admin@email.com" && password === "1234" && userType === "admin") {
-        // Login fixo para o administrador
-                window.location.href = "dashboard.html"; // Redireciona para o painel do administrador
-            } else {
-        // Verifica se o utilizador está no localStorage
-            const storedUser = JSON.parse(localStorage.getItem(email));
-            if (storedUser && storedUser.password === password && storedUser.userType === userType) {
-                if (userType === "cliente") {
-                    window.location.href = "dashboard.html"; // Redireciona para a página do cliente
-             }
-        } else {
-            alert("Tipo de utilizador, e-mail ou senha incorretos!");
-        }
-    }
-        } else {
-        // Lógica de criação de conta
-            if (userType === "cliente") {
-                const newUser = {
-                    email: email,
-                    password: password,
-                    userType: userType
-                };
+      }
 
-                // Salva os dados no localStorage
-                localStorage.setItem(email, JSON.stringify(newUser));
-                alert(`Conta criada com sucesso para o cliente: ${email}`);
-
-                // Volta para o estado de login
-                isLogin = true;
-                formTitle.textContent = "Login";
-                submitButton.textContent = "Entrar";
-                toggleForm.textContent = "Criar uma conta";
+      if (isLogin) {
+        // LOGIN
+        fetch("http://localhost:8000/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+        })
+          .then(response => {
+            if (!response.ok) throw new Error("Resposta do servidor: " + response.status);
+            return response.text();
+          })
+          .then(data => {
+            if (data === "success") {
+              
+              // Redireciona para dashboard, ou faz outra ação
+              window.location.href = "dashboard.html";
+            } else if (data === "erro") {
+              alert("E-mail ou senha incorretos.");
             } else {
-                alert("Apenas clientes podem criar contas neste momento.");
+              alert("Resposta inesperada do servidor: " + data);
             }
-        }
+          })
+          .catch(error => {
+            console.error("Erro ao fazer login:", error);
+            alert("Erro ao conectar com o servidor.");
+          });
+      } else {
+        // REGISTO
+        const newUser = {
+          email: email,
+          password: password,
+          firstName: firstNameInput.value.trim(),
+          lastName: lastNameInput.value.trim(),
+          contact: contactInput.value.trim(),
+          utilizadorPrioritario: (disabilityInput.value === "sim").toString()
+        };
 
+        const formBody = 
+          `email=${encodeURIComponent(newUser.email)}&` +
+          `password=${encodeURIComponent(newUser.password)}&` +
+          `firstName=${encodeURIComponent(newUser.firstName)}&` +
+          `lastName=${encodeURIComponent(newUser.lastName)}&` +
+          `contact=${encodeURIComponent(newUser.contact)}&` +
+          `utilizadorPrioritario=${encodeURIComponent(newUser.utilizadorPrioritario)}`;
+
+        fetch("http://localhost:8000/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: formBody
+        })
+          .then(response => {
+            if (!response.ok) throw new Error("Erro ao criar conta: " + response.status);
+            return response.text();
+          })
+          .then(data => {
+            if (data === "success") {
+              alert("Conta criada com sucesso!");
+              isLogin = true;
+              toggleForm.click();
+            } else if (data === "existe") {
+              alert("Este e-mail já está registado.");
+            } else {
+              alert("Erro inesperado ao criar conta: " + data);
+            }
+          })
+          .catch(error => {
+            console.error("Erro no registo:", error);
+            alert("Erro ao conectar com o servidor.");
+          });
+      }
     });
-    </script>
+  </script>
 </body>
 </html>

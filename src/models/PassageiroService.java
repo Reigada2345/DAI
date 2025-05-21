@@ -1,4 +1,5 @@
-import models.Passageiro;
+package models;
+
 
 public class PassageiroService {
 
