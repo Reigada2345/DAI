@@ -3,13 +3,10 @@ package models;
 import java.util.List;
 
 public class Administrador extends Cliente {
-    private String nome;
     private AutocarroDAO autocarroDAO;
 
     public Administrador(String nome, String email, String password, String endereco, boolean ativo, String telefone) {
         super(email, password, endereco, ativo, telefone, nome);
-        this.nome = nome;
-        this.autocarroDAO = new AutocarroDAO(); // Inicializa a conexão com o DAO
     }
 
     // Método para criar uma paragem

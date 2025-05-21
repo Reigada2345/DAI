@@ -6,14 +6,17 @@
     "configurations": [
         {
             "type": "java",
+            "name": "TestDBConnection",
+            "request": "launch",
+            "mainClass": "models.TestDBConnection",
+            "projectName": "app_37d7c52b"
+        },
+        {
+            "type": "java",
             "name": "ServidorLogin",
             "request": "launch",
             "mainClass": "models.ServidorLogin",
-            "projectName": "app_37d7c52b",
-            "classPaths": [
-                "lib/mysql-connector-java-8.0.33.jar"
-          ]
-        
+            "projectName": "app_37d7c52b"
         },
         {
             "type": "java",

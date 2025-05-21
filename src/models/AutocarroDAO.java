@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AutocarroDAO {
-    private Connection conn;
+    private final Connection conn;
 
     public AutocarroDAO() {
         this.conn = DatabaseConnection.connect();

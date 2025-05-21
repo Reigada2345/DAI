@@ -34,13 +34,16 @@ public class ClienteDAO {
     public boolean validarLogin(String email, String password) {
         String sql = "SELECT * FROM clientes WHERE email = ? AND password = ?";
 
+
+
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, email);
             stmt.setString(2, password);
-
+      
             ResultSet rs = stmt.executeQuery();
+ 
             return rs.next();
 
         } catch (SQLException e) {
