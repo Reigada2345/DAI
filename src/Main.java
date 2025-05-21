@@ -24,12 +24,12 @@ public class Main {
         // Exemplo de testes de dados de passageiros e paragens (sem dados estáticos)
         System.out.println("Welcome to the Administrator Project!");
 
-        // Exemplo de como o administrador pode criar uma paragem (ligando à base de dados no futuro)
-        Administrador admin = new Administrador("Admin Name", "admin@example.com", "password123", "Admin Role", true, "Admin Department");
-        System.out.println("Administrador criado: " + admin.getNomeProprio());
-        // A seguir, criamos a paragem usando o método de administrador
-        // Paragem paragem = admin.criarParagem("Central", "Main St", true, 50);
-        // No futuro, podemos ajustar o método para interagir com a base de dados e criar paragens dinâmicas.
+
+        // Here you can add code to handle user interactions
+        // For example, creating an instance of Administrador and using its methods
+        Administrador admin = new Administrador("Admin Name", "admin@example.com", "password123");
+Paragem paragem = admin.criarParagem("Central", "Main St", true, 50);
+        System.out.println("Paragem created: " + paragem.getNome());
 
         // Testando Passageiro
         System.out.println("\nTesting Passageiro:");
