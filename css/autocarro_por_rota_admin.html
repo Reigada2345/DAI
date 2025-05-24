@@ -136,6 +136,16 @@
             padding: 8px;
             margin-bottom: 10px;
         }
+
+        .caixa-branca {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+    padding: 30px 25px;
+    margin: 40px auto;
+    max-width: 900px;
+}
+
     </style>
 </head>
 <body>
@@ -143,10 +153,10 @@
     <div class="navbar">
         <h2>TUB</h2>
         <ul>
-            <li><a href="dashboard.html">Início</a></li>
-            <li><a href="autocarros_por_rota.html">Autocarros</a></li>
-            <li><a href="paragem.html">Paragens</a></li>
-            <li><a href="perfil.html">Perfil</a></li>
+            <li><a href="dashboard_admin.html">Início</a></li>
+            <li><a href="autocarro_por_rota_admin.html">Autocarros</a></li>
+            <li><a href="paragem_admin.html">Paragens</a></li>
+            <li><a href="perfil_motorista.html">Perfil</a></li>
             <li><a href="index.html">Sair</a></li>
         </ul>
     </div>
@@ -154,6 +164,7 @@
     <div class="main-content">
         <h1 id="titulo-principal">Autocarros por Rota</h1>
 
+        <div class="caixa-branca">
         <!-- Botões -->
         <div style="margin: 20px 0;">
             <button onclick="mostrarFormularioAdicionar()">Adicionar Autocarro</button>
@@ -243,7 +254,7 @@
             <button onclick="voltarParaLista()">Voltar</button>
         </div>
     </div>
-
+    </div>
     <script>
         function mostrarFormularioAdicionar() {
             document.getElementById("form-adicionar").style.display = "block";
