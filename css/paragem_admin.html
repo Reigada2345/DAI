@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paragens</title>
     <style>
-        /* Estilo da navbar */
         * {
             margin: 0;
             padding: 0;
@@ -13,135 +12,110 @@
             font-family: 'Montserrat', sans-serif;
         }
 
+        body {
+            background-color: #f4f4f4;
+        }
+
+        .navbar {
+            width: 100%;
+            background-color: #2c72b7;
+            color: white;
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .navbar h2 {
+            margin: 0;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+        }
+
+        .navbar ul li {
+            padding: 10px 20px;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
         .navbar ul li:hover {
             background-color: #1a436c;
             border-radius: 5px;
         }
-        .header {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
 
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background-color: #f4f4f4;
+        .main-content {
+            margin-top: 100px;
             padding: 20px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        h1 {
+        h1, h2 {
             margin-bottom: 20px;
+            color: #2c72b7;
         }
 
-        table {
-            width: 80%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #2c72b7;
-            color: white;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        #informacoes-autocarro {
-            display: none;
-            margin-top: 20px;
-            border: 1px solid #ddd;
-            padding: 20px;
+        form {
             background-color: #fff;
-            width: 90%; /* Aumenta a largura */
-            font-size: 35px; /* Aumenta o tamanho do texto */
-            text-align: center; /* Alinha o texto à esquerda */
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
 
-        #informacoes-autocarro h2 {
-            font-size: 37px; /* Aumenta o tamanho do título */
-            margin-bottom: 20px;
-            text-align: left;
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
         }
 
-        #informacoes-autocarro p {
-            font-size: 26px; /* Aumenta o tamanho dos parágrafos */
-            margin: 10px 0;
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
 
-        #informacoes-autocarro button {
-            font-size: 18px; /* Aumenta o tamanho do botão */
-            padding: 10px 20px;
+        button {
             background-color: #2c72b7;
             color: white;
+            padding: 10px 15px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
 
-        #informacoes-autocarro button:hover {
-            background-color: #1a436c; /* Cor ao passar o mouse */
+        button:hover {
+            background-color: #1a436c;
         }
 
-    .navbar {
-        width: 100%;
-        background-color: #2c72b7;
-        color: white;
-        padding: 15px 20px;
-        position: fixed;
-        top: 0;
-        left: 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+        .paragem-card {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 6px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
 
-    .navbar h2 {
-        margin: 0;
-    }
-
-    .navbar ul {
-        list-style: none;
-        display: flex;
-    }
-
-    .navbar ul li {
-        padding: 10px 20px;
-    }
-
-    .navbar ul li a {
-        color: white;
-        text-decoration: none;
-        font-size: 16px;
-    }
-
-    .navbar ul li:hover {
-        background-color: #1a436c;
-        border-radius: 5px;
-    }
-
-    .main-content {
-        margin-top: 70px; /* Ajuste para compensar a altura da navbar */
-        padding: 20px;
-        text-align: center;
-    }
+        .paragem-card p {
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
     <div class="navbar">
         <h2>TUB</h2>
         <ul>
@@ -153,127 +127,143 @@
         </ul>
     </div>
 
-    <!-- Conteúdo principal -->
     <div class="main-content">
-        <h1>Paragens</h1>
-        <p></p>
+        <h1>Gerir Paragens</h1>
+
+        <!-- Formulário para adicionar paragem -->
+        <form id="addParagemForm">
+            <h2>Adicionar Paragem</h2>
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" placeholder="Nome da Paragem" required>
+
+            <label for="localizacao">Localização:</label>
+            <input type="text" id="localizacao" name="localizacao" placeholder="Localização da Paragem" required>
+
+            <label for="variasRotas">Várias Rotas:</label>
+            <select id="variasRotas" name="variasRotas" required>
+                <option value="true">Sim</option>
+                <option value="false">Não</option>
+            </select>
+
+            <button type="button" onclick="adicionarParagem()">Adicionar Paragem</button>
+        </form>
+
+        <!-- Formulário para editar paragem -->
+        <form id="editParagemForm" style="display: none;">
+            <h2>Editar Paragem</h2>
+            <label for="editNome">Nome:</label>
+            <input type="text" id="editNome" name="editNome" required>
+
+            <input type="hidden" id="editNomeOriginal" name="editNomeOriginal">
+
+            <label for="editLocalizacao">Localização:</label>
+            <input type="text" id="editLocalizacao" name="editLocalizacao" required>
+
+            <label for="editVariasRotas">Várias Rotas:</label>
+            <select id="editVariasRotas" name="editVariasRotas" required>
+                <option value="true">Sim</option>
+                <option value="false">Não</option>
+            </select>
+
+            <button type="button" onclick="editarParagem()">Salvar Alterações</button>
+        </form>
+
+        <!-- Lista de paragens -->
+        <div id="paragensList">
+            <h2>Lista de Paragens</h2>
+            <!-- Esta secção será preenchida dinamicamente -->
+        </div>
     </div>
 </body>
 </html>
-<body>
-    <h1>Gerir Paragens</h1>
 
-    <!-- Formulário para Adicionar Paragem -->
-    <form id="addParagemForm">
-        <h2>Adicionar Paragem</h2>
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" placeholder="Nome da Paragem" required>
-
-        <label for="localizacao">Localização:</label>
-        <input type="text" id="localizacao" name="localizacao" placeholder="Localização da Paragem" required>
-
-        <label for="variasRotas">Várias Rotas:</label>
-        <select id="variasRotas" name="variasRotas" required>
-            <option value="true">Sim</option>
-            <option value="false">Não</option>
-        </select>
-
-        <button type="button" onclick="adicionarParagem()">Adicionar Paragem</button>
-    </form>
-
-    <!-- Formulário para Editar Paragem -->
-    <form id="editParagemForm" style="display: none;">
-        <h2>Editar Paragem</h2>
-        <label for="editNome">Nome:</label>
-        <input type="text" id="editNome" name="editNome" required>
-
-        <input type="hidden" id="editNomeOriginal" name="editNomeOriginal">
-        <label for="editLocalizacao">Localização:</label>
-        <input type="text" id="editLocalizacao" name="editLocalizacao" required>
-
-        <label for="editVariasRotas">Várias Rotas:</label>
-        <select id="editVariasRotas" name="editVariasRotas" required>
-            <option value="true">Sim</option>
-            <option value="false">Não</option>
-        </select>
-
-        <button type="button" onclick="editarParagem()">Salvar Alterações</button>
-    </form>
-
-    <div id="paragensList">
-        <h2>Lista de Paragens</h2>
-        <!-- Aqui será exibida a lista de paragens -->
-    </div>
 
     <script>
-        // Simulação de armazenamento de paragens
-        let paragens = [];
+        
+    let paragens = [];
 
-        // Função para adicionar uma paragem
-        function adicionarParagem() {
-            const nome = document.getElementById("nome").value;
-            const localizacao = document.getElementById("localizacao").value;
-            const variasRotas = document.getElementById("variasRotas").value === "true";
+    function adicionarParagem() {
+        const nome = document.getElementById("nome").value;
+        const localizacao = document.getElementById("localizacao").value;
+        const variasRotas = document.getElementById("variasRotas").value === "true";
 
-            const novaParagem = { nome, localizacao, variasRotas, ativa: true };
-            paragens.push(novaParagem);
+        const novaParagem = { nome, localizacao, variasRotas, ativa: true };
+        paragens.push(novaParagem);
 
-            alert("Paragem adicionada com sucesso!");
+        alert("Paragem adicionada com sucesso!");
+        document.getElementById("addParagemForm").reset();
+        atualizarListaParagens();
+    }
+
+    function editarParagem() {
+        const nomeOriginal = document.getElementById("editNomeOriginal").value;
+        const nome = document.getElementById("editNome").value;
+        const localizacao = document.getElementById("editLocalizacao").value;
+        const variasRotas = document.getElementById("editVariasRotas").value === "true";
+
+        const paragem = paragens.find(p => p.nome === nomeOriginal);
+        if (paragem) {
+            paragem.nome = nome;
+            paragem.localizacao = localizacao;
+            paragem.variasRotas = variasRotas;
+
+            alert("Paragem editada com sucesso!");
+            document.getElementById("editParagemForm").style.display = "none";
+            atualizarListaParagens();
+        } else {
+            alert("Paragem não encontrada!");
+        }
+    }
+
+    function prepararEdicao(nome) {
+        const paragem = paragens.find(p => p.nome === nome);
+        if (paragem) {
+            document.getElementById("editNome").value = paragem.nome;
+            document.getElementById("editNomeOriginal").value = paragem.nome;
+            document.getElementById("editLocalizacao").value = paragem.localizacao;
+            document.getElementById("editVariasRotas").value = paragem.variasRotas.toString();
+            document.getElementById("editParagemForm").style.display = "block";
+        }
+    }
+
+    function desativarParagem(nome) {
+        const paragem = paragens.find(p => p.nome === nome);
+        if (paragem && paragem.ativa) {
+            paragem.ativa = false;
+            alert("Paragem desativada com sucesso!");
             atualizarListaParagens();
         }
-
-        // Função para editar uma paragem
-        function editarParagem() {
-    const nomeOriginal = document.getElementById("editNomeOriginal").value;
-    const nome = document.getElementById("editNome").value;
-    const localizacao = document.getElementById("editLocalizacao").value;
-    const variasRotas = document.getElementById("editVariasRotas").value === "true";
-
-    // Procura pela paragem usando o nome original
-    const paragem = paragens.find(p => p.nome === nomeOriginal);
-    if (paragem) {
-        paragem.nome = nome;
-        paragem.localizacao = localizacao;
-        paragem.variasRotas = variasRotas;
-
-        alert("Paragem editada com sucesso!");
-        atualizarListaParagens();
-        document.getElementById("editParagemForm").style.display = "none";
-    } else {
-        alert("Paragem não encontrada!");
     }
-}
 
-        // Função para atualizar a lista de paragens
-        function atualizarListaParagens() {
-            const paragensList = document.getElementById("paragensList");
-            paragensList.innerHTML = "<h2>Lista de Paragens</h2>";
-
-            paragens.forEach(paragem => {
-                const paragemDiv = document.createElement("div");
-                paragemDiv.innerHTML = `
-                    <p><strong>Nome:</strong> ${paragem.nome}</p>
-                    <p><strong>Localização:</strong> ${paragem.localizacao}</p>
-                    <p><strong>Várias Rotas:</strong> ${paragem.variasRotas ? "Sim" : "Não"}</p>
-                    <p><strong>Ativa:</strong> ${paragem.ativa ? "Sim" : "Não"}</p>
-                    <button onclick="prepararEdicao('${paragem.nome}')">Editar</button>
-                `;
-                paragensList.appendChild(paragemDiv);
-            });
+    function apagarParagem(nome) {
+        const paragem = paragens.find(p => p.nome === nome);
+        if (paragem && !paragem.ativa) {
+            paragens = paragens.filter(p => p.nome !== nome);
+            alert("Paragem apagada com sucesso!");
+            atualizarListaParagens();
+        } else {
+            alert("A paragem precisa estar desativada antes de ser apagada.");
         }
-
-        // Função para preparar a edição de uma paragem
-        function prepararEdicao(nome) {
-    const paragem = paragens.find(p => p.nome === nome);
-    if (paragem) {
-        document.getElementById("editNome").value = paragem.nome;
-        document.getElementById("editNomeOriginal").value = paragem.nome; // <-- aqui
-        document.getElementById("editLocalizacao").value = paragem.localizacao;
-        document.getElementById("editVariasRotas").value = paragem.variasRotas.toString();
-        document.getElementById("editParagemForm").style.display = "block";
     }
-}
 
-        </script>
-</body>
-</html>
+    function atualizarListaParagens() {
+        const paragensList = document.getElementById("paragensList");
+        paragensList.innerHTML = "<h2>Lista de Paragens</h2>";
+
+        paragens.forEach(paragem => {
+            const div = document.createElement("div");
+            div.className = "paragem-card";
+            div.innerHTML = `
+                <p><strong>Nome:</strong> ${paragem.nome}</p>
+                <p><strong>Localização:</strong> ${paragem.localizacao}</p>
+                <p><strong>Várias Rotas:</strong> ${paragem.variasRotas ? "Sim" : "Não"}</p>
+                <p><strong>Ativa:</strong> ${paragem.ativa ? "Sim" : "Não"}</p>
+                <button onclick="prepararEdicao('${paragem.nome}')">Editar</button>
+                ${paragem.ativa 
+                    ? `<button onclick="desativarParagem('${paragem.nome}')">Desativar</button>`
+                    : `<button onclick="apagarParagem('${paragem.nome}')">Apagar</button>`}
+            `;
+            paragensList.appendChild(div);
+        });
+    }
+</script>
