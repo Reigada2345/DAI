@@ -30,6 +30,34 @@ public class ClienteDAO {
         }
     }
 
+public Cliente buscarPorEmail(String email) throws SQLException {
+    String sql = "SELECT nome_proprio, apelido, contacto, utilizador_prioritario, email, password FROM clientes WHERE email = ?";
+
+    try (Connection conn = DatabaseConnection.connect();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setString(1, email);
+
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                String nomeProprio = rs.getString("nome_proprio");
+                String apelido = rs.getString("apelido");
+                String contacto = rs.getString("contacto");
+                boolean utilizadorPrioritario = rs.getBoolean("utilizador_prioritario");
+                String emailDB = rs.getString("email");
+                String password = rs.getString("password");
+
+                return new Cliente(nomeProprio, apelido, contacto, utilizadorPrioritario, emailDB, password);
+            } else {
+                return null; // cliente não encontrado
+            }
+        }
+    }
+}
+
+
+
+
     // VALIDAR LOGIN
     public boolean validarLogin(String email, String password) {
         String sql = "SELECT * FROM clientes WHERE email = ? AND password = ?";

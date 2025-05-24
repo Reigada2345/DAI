@@ -164,10 +164,10 @@
      <div class="navbar">
         <h2>TUB</h2>
         <ul>
-            <li><a href="dashboard.html"> Início</a></li>
-            <li><a href="autocarros_por_rota.html"> Autocarros</a></li>
+            <li><a href="dashboard_admin.html"> Início</a></li>
+            <li><a href="autocarros_por_rota_admin.html"> Autocarros</a></li>
             <li><a href="paragem.html"> Paragens</a></li>
-            <li><a href="perfil.html"> Perfil</a></li>
+            <li><a href="perfil_motorista.html"> Perfil</a></li>
             <li><a href="index.html"> Sair</a></li>
         </ul>
     </div>
@@ -177,58 +177,70 @@
     <table border="1">
         <tr>
             <th>Tipo de utilizador</th>
-            <td>Administrador</td>
+            <td>A carregar...</td>
           </tr>
         <tr>
           <th>Nome Proprio</th>
-          <td>David</td>
+          <td>A carregar...</td>
         </tr>
         <tr>
             <th>Apelido</th>
-            <td>Gonçalves</td>
+            <td>A carregar...</td>
           </tr>
           <tr>
             <th>Contacto</th>
-            <td>967097088</td>
+            <td>A carregar...</td>
           </tr>
           <tr>
           <th>E-mail</th>
-          <td>admin@email.com</td>
+          <td>A carregar...</td>
         </tr>
         <tr>
           <th>Prioritário</th>
-          <td>Não</td>
+          <td>A carregar...</td>
         </tr>
       </table>
       
-      <ul>
-        <li><a href="dashboard.html" class="button-link"> Alterar dados</a></li>
-    </ul>
 </div>
     <script>
         
   async function carregarPerfil() {
     try {
-      const resposta = await fetch('/api/perfil', {
-        method: 'GET',
-        credentials: 'include' // importante se usares cookies/sessão
-      });
+        const email = sessionStorage.getItem("email"); // ou localStorage
+        const resposta = await fetch(`/api/perfil?email=${encodeURIComponent(email)}`, {
+                method: 'GET',
+                credentials: 'include'
+        });
+
 
       if (!resposta.ok) {
-        throw new Error('Erro ao carregar perfil');
+        throw new Error(' ao carregar perfil');
       }
 
-      const dados = await resposta.json();
+      let dados;
+      try {
+        dados = await resposta.json();
+      } catch (e) {
+        throw new Error('Resposta inválida do servidor');
+      }
 
-      // Preencher tabela com os dados recebidos
-      document.querySelector('table tr:nth-child(1) td').textContent = dados.tipoUtilizador;
-      document.querySelector('table tr:nth-child(2) td').textContent = dados.nome;
-      document.querySelector('table tr:nth-child(3) td').textContent = dados.apelido;
-      document.querySelector('table tr:nth-child(4) td').textContent = dados.contacto;
-      document.querySelector('table tr:nth-child(5) td').textContent = dados.email;
-      document.querySelector('table tr:nth-child(6) td').textContent = dados.prioritario;
+      if (!dados || typeof dados !== 'object') {
+        throw new Error('Dados de perfil não encontrados');
+      }
+
+      // Preencher tabela com os dados recebidos, verificando se existem
+      const linhas = document.querySelectorAll('table tr');
+      if (linhas.length < 6) {
+        throw new Error('Tabela de perfil mal formatada');
+      }
+      linhas[0].querySelector('td').textContent = dados.tipoUtilizador ?? 'N/A';
+      linhas[1].querySelector('td').textContent = dados.nome ?? 'N/A';
+      linhas[2].querySelector('td').textContent = dados.apelido ?? 'N/A';
+      linhas[3].querySelector('td').textContent = dados.contacto ?? 'N/A';
+      linhas[4].querySelector('td').textContent = dados.email ?? 'N/A';
+      linhas[5].querySelector('td').textContent = dados.prioritario ?? 'N/A';
     } catch (error) {
-      alert(error.message);
+      alert('Erro: ' + error.message);
     }
   }
 

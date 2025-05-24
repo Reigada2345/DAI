@@ -1,5 +1,6 @@
-package models;
+/*package models;
 
+POR AQUI AQUELA EXTENSAO PARA FUNCIONAR
 
 
 import java.sql.Connection;
@@ -39,3 +40,4 @@ public class Sensores {
         System.out.println("Lotação: " + lotacao + " passageiros");
     }
 }
+*/

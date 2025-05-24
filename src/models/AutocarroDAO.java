@@ -15,7 +15,6 @@ public class AutocarroDAO {
         return this.conn;
     }
 
-    // Método genérico para obter valores a partir de uma query com um único resultado
     private float getFloatValue(String sql, int autocarroId) throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, autocarroId);
@@ -24,10 +23,9 @@ public class AutocarroDAO {
                 return rs.getFloat(1);
             }
         }
-        return 0.0f; // Retorna 0.0 caso não encontre ou ocorra erro
+        return 0.0f;
     }
 
-    // Método genérico para obter valores inteiros
     private int getIntValue(String sql, int autocarroId) throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, autocarroId);
@@ -36,10 +34,9 @@ public class AutocarroDAO {
                 return rs.getInt(1);
             }
         }
-        return 0; // Retorna 0 caso não encontre ou ocorra erro
+        return 0;
     }
 
-    // Método para adicionar um autocarro
     public void adicionarAutocarro(String matricula, String modelo, int capacidade, String numero, String rota, float temperatura, int lotacao, boolean ativo) {
         String sql = "INSERT INTO autocarros (matricula, modelo, capacidade, numero, rota, temperatura, lotacao, ativo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -58,7 +55,6 @@ public class AutocarroDAO {
         }
     }
 
-    // Método para listar todos os autocarros
     public List<Autocarro> listarAutocarros() {
         List<Autocarro> lista = new ArrayList<>();
         String sql = "SELECT * FROM autocarros";
@@ -84,7 +80,6 @@ public class AutocarroDAO {
         return lista;
     }
 
-    // Método para atualizar informações de um autocarro
     public void atualizarAutocarro(int id, String modelo, int capacidade, String numero, String rota, float temperatura, int lotacao, boolean ativo) {
         String sql = "UPDATE autocarros SET modelo = ?, capacidade = ?, numero = ?, rota = ?, temperatura = ?, lotacao = ?, ativo = ? WHERE id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -105,7 +100,6 @@ public class AutocarroDAO {
         }
     }
 
-    // Método para apagar um autocarro
     public void apagarAutocarro(int id) {
         String sql = "DELETE FROM autocarros WHERE id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -119,7 +113,6 @@ public class AutocarroDAO {
         }
     }
 
-    // Método para atualizar a temperatura de um autocarro
     public void atualizarTemperatura(int id, float novaTemperatura) {
         String sql = "UPDATE autocarros SET temperatura = ? WHERE id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -134,8 +127,7 @@ public class AutocarroDAO {
         }
     }
 
-    // Método para atualizar a lotação de um autocarro
-    public void atualizarLotacao(Connection conn1, int id, int novaLotacao) {
+    public void atualizarLotacao(int id, int novaLotacao) {
         String sql = "UPDATE autocarros SET lotacao = ? WHERE id = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, novaLotacao);
@@ -149,7 +141,6 @@ public class AutocarroDAO {
         }
     }
 
-    // Método para obter a temperatura de um autocarro
     public float getTemperatura(int autocarroId) {
         String sql = "SELECT temperatura FROM autocarros WHERE id = ?";
         try {
@@ -160,7 +151,6 @@ public class AutocarroDAO {
         return 0.0f;
     }
 
-    // Método para obter a lotação de um autocarro
     public int getLotacao(int autocarroId) {
         String sql = "SELECT lotacao FROM autocarros WHERE id = ?";
         try {
@@ -171,7 +161,6 @@ public class AutocarroDAO {
         return 0;
     }
 
-// Método para obter a capacidade de um autocarro
     public int getCapacidade(int autocarroId) {
         String sql = "SELECT capacidade FROM autocarros WHERE id = ?";
         try {

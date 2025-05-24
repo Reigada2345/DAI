@@ -273,7 +273,7 @@
     loginForm.addEventListener("submit", function (event) {
       event.preventDefault();
 
-      const email = document.getElementById("email").value.trim();
+      const email     = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -288,33 +288,34 @@
       }
 
       if (isLogin) {
-        // LOGIN
-        fetch("http://localhost:8000/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
-        })
-          .then(response => {
-            if (!response.ok) throw new Error("Resposta do servidor: " + response.status);
-            return response.text();
-          })
-          .then(data => {
-            if (data === "success") {
-              
-              // Redireciona para dashboard, ou faz outra ação
-              window.location.href = "dashboard.html";
-            } else if (data === "erro") {
-              alert("E-mail ou senha incorretos.");
-            } else {
-              alert("Resposta inesperada do servidor: " + data);
-            }
-          })
-          .catch(error => {
-            console.error("Erro ao fazer login:", error);
-            alert("Erro ao conectar com o servidor.");
-          });
+  // LOGIN
+  fetch("http://localhost:8000/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+  })
+    .then(response => {
+      if (!response.ok) throw new Error("Resposta do servidor: " + response.status);
+      return response.text();
+    })
+    .then(data => {
+      if (data === "success_cliente") {
+        localStorage.setItem("email", email);
+        window.location.href = "dashboard.html";  // cliente vai para dashboard.html
+      } else if (data === "success_motorista") {
+        window.location.href = "dashboard_admin.html";  // motorista vai para dashboard_admin.html
+      } else if (data === "erro_login" || data === "erro") {
+        alert("E-mail ou senha incorretos.");
+      } else {
+        alert("Resposta inesperada do servidor: " + data);
+      }
+    })
+    .catch(error => {
+      console.error("Erro ao fazer login:", error);
+      alert("Erro ao conectar com o servidor.");
+    });
       } else {
         // REGISTO
         const newUser = {
@@ -349,6 +350,7 @@
             if (data === "success") {
               alert("Conta criada com sucesso!");
               isLogin = true;
+              sessionStorage.setItem("email", dados.email);
               toggleForm.click();
             } else if (data === "existe") {
               alert("Este e-mail já está registado.");
