@@ -7,27 +7,27 @@ import java.sql.Types;
 
 public class ImportStops {
 public static void main(String[] args) throws Exception {
-        // Liga à base de dados (altera o utilizador e password!)
-        Connection conn = DriverManager.getConnection(
-            "jdbc:mysql://localhost:3306/bd_dai", "root", "root");
+    // Liga à base de dados (altera o utilizador e password!)
+    Connection conn = DriverManager.getConnection(
+    "jdbc:mysql://localhost:3306/bd_dai", "root", "root");
 
-        BufferedReader br = new BufferedReader(new FileReader("src/stops.txt"));
-        String linha;
-        br.readLine(); // Ignora o header
+    BufferedReader br = new BufferedReader(new FileReader("src/stops.txt"));
+    String linha;
+    br.readLine(); // Ignora o header
 
-        conn.setAutoCommit(false);
-        // Prepara a instrução SQL de INSERT para a nova estrutura da tabela 'stops'
-        // Inclui as colunas GTFS e as colunas adicionais que mantiveste
-        PreparedStatement ps = conn.prepareStatement(
-            "INSERT INTO stops (stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, varias_rotas, lotacao, ativa) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    conn.setAutoCommit(false);
+    // Prepara a instrução SQL de INSERT para a nova estrutura da tabela 'stops'
+    // Inclui as colunas GTFS e as colunas adicionais que mantiveste
+    PreparedStatement ps = conn.prepareStatement(
+    "INSERT INTO stops (stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, varias_rotas, lotacao, ativa) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 
-            int count = 0;
+    int count = 0;
 
-        while ((linha = br.readLine()) != null) {
-            String[] partes = linha.split(",", -1);
-            // Extrai os dados das partes, tratando campos opcionais e aspas
-            String stop_id = partes.length > 0 ? partes[0].trim() : null;
+    while ((linha = br.readLine()) != null) {
+        String[] partes = linha.split(",", -1);
+        // Extrai os dados das partes, tratando campos opcionais e aspas
+        String stop_id = partes.length > 0 ? partes[0].trim() : null;
             String stop_code = partes.length > 1 ? partes[1].trim() : null;
             // Remove as aspas do stop_name, se existirem
             String stop_name = partes.length > 2 ? partes[2].trim().replaceAll("^\"|\"$", "") : null;
