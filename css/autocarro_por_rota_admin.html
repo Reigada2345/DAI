@@ -356,7 +356,7 @@
                 function(gltf) {
                     busModel = gltf.scene;
                     busModel.scale.set(0.6, 0.6, 0.6);
-                    busModel.position.set(1.5, -0.45, 0);
+                    busModel.position.set(27, -0.55, );
                     busModel.rotation.y = Math.PI / 2;
                     scene.add(busModel);
                 },
@@ -366,13 +366,29 @@
                 }
             );
             
+            // Carregar paragem de autocarro
+            loader.load(
+                './models/bus_stop.glb',
+                function(gltf) {
+                    busStopModel = gltf.scene;
+                    busStopModel.scale.set(1.2, 1.2, 1.2);
+                    busStopModel.position.set(0, 0, 0);
+                    busStopModel.rotation.y = Math.PI / 2;
+                    scene.add(busStopModel);
+                },
+                undefined,
+                function(error) {
+                    console.error('Erro ao carregar paragem:', error);
+                }
+            );
+
             // Carregar personagem
             loader.load(
                 './models/male_character.glb',
                 function(gltf) {
                     characterModel = gltf.scene;
                     characterModel.scale.set(0.6, 0.6, 0.6);
-                    characterModel.position.set(1.5, -0.45, 0);
+                    characterModel.position.set(0.25, -0.45, 0);
                     characterModel.rotation.y = Math.PI / 2;
                     scene.add(characterModel);
                 },
