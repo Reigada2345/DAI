@@ -128,10 +128,15 @@
     </div>
 
     <div class="main-content">
-        <h1>Gerir Paragens</h1>
+    <h1>Gerir Paragens</h1>
 
-        <!-- Formulário para adicionar paragem -->
-        <form id="addParagemForm">
+    <!-- Botão para mostrar o formulário de adicionar -->
+    <button onclick="mostrarFormularioAdicionar()" id="btnMostrarAdd">+ Nova Paragem</button>
+    <br><br><br>   
+
+    <!-- Formulário para adicionar paragem (oculto inicialmente) -->
+    <div id="addParagemFormContainer" style="display: none;">
+        <form id="addParagemForm" onsubmit="event.preventDefault(); adicionarParagem();">
             <h2>Adicionar Paragem</h2>
             <label for="nome">Nome:</label>
             <input type="text" id="nome" name="nome" placeholder="Nome da Paragem" required>
@@ -145,61 +150,91 @@
                 <option value="false">Não</option>
             </select>
 
-            <button type="button" onclick="adicionarParagem()">Adicionar Paragem</button>
+            <button type="submit">Adicionar Paragem</button>
         </form>
-
-        <!-- Formulário para editar paragem -->
-        <form id="editParagemForm" style="display: none;">
-            <h2>Editar Paragem</h2>
-            <label for="editNome">Nome:</label>
-            <input type="text" id="editNome" name="editNome" required>
-
-            <input type="hidden" id="editNomeOriginal" name="editNomeOriginal">
-
-            <label for="editLocalizacao">Localização:</label>
-            <input type="text" id="editLocalizacao" name="editLocalizacao" required>
-
-            <label for="editVariasRotas">Várias Rotas:</label>
-            <select id="editVariasRotas" name="editVariasRotas" required>
-                <option value="true">Sim</option>
-                <option value="false">Não</option>
-            </select>
-
-            <button type="button" onclick="editarParagem()">Salvar Alterações</button>
-        </form>
-
-        <!-- Lista de paragens -->
-        <div id="paragensList">
-            <h2>Lista de Paragens</h2>
-            <!-- Esta secção será preenchida dinamicamente -->
-        </div>
     </div>
-</body>
-</html>
 
+    <!-- Formulário para editar paragem -->
+    <form id="editParagemForm" style="display: none;">
+        <h2>Editar Paragem</h2>
+        <label for="editNome">Nome:</label>
+        <input type="text" id="editNome" name="editNome" required>
 
-    <script>
-        
-    let paragens = [];
+        <input type="hidden" id="editNomeOriginal" name="editNomeOriginal">
+
+        <label for="editLocalizacao">Localização:</label>
+        <input type="text" id="editLocalizacao" name="editLocalizacao" required>
+
+        <label for="editVariasRotas">Várias Rotas:</label>
+        <select id="editVariasRotas" name="editVariasRotas" required>
+            <option value="true">Sim</option>
+            <option value="false">Não</option>
+        </select>
+
+        <button type="button" onclick="editarParagem()">Salvar Alterações</button>
+    </form>
+
+    <!-- Lista de paragens ativas -->
+    <div id="paragensList">
+        <h2>Lista de Paragens Ativas</h2>
+        <!-- Preenchido dinamicamente -->
+    </div>
+
+    <br><br>
+
+    <!-- Lista de paragens desativadas (separada) -->
+    <div id="paragensDesativadasList">
+        <h2>Paragens Desativadas</h2>
+        <!-- Preenchido dinamicamente -->
+    </div>
+</div>
+
+<script>
+    let paragens = [
+        { nome: "Av. Central", localizacao: "Braga - Centro", variasRotas: true, ativa: true },
+        { nome: "Universidade do Minho", localizacao: "Braga - Gualtar", variasRotas: true, ativa: true },
+        { nome: "Estação CP", localizacao: "Braga - Estação", variasRotas: false, ativa: true },
+        { nome: "Hospital de Braga", localizacao: "Braga - Lamaçães", variasRotas: true, ativa: true },
+        { nome: "Shopping Nova Arcada", localizacao: "Braga - Dume", variasRotas: false, ativa: true },
+        { nome: "Avenida da Liberdade", localizacao: "Braga - Centro", variasRotas: true, ativa: false }
+    ];
+
+    atualizarListaParagens();
+
+    function mostrarFormularioAdicionar() {
+        document.getElementById("addParagemFormContainer").style.display = "block";
+        document.getElementById("btnMostrarAdd").style.display = "none"; // Esconde o botão após mostrar o form
+    }
 
     function adicionarParagem() {
-        const nome = document.getElementById("nome").value;
-        const localizacao = document.getElementById("localizacao").value;
+        const nome = document.getElementById("nome").value.trim();
+        const localizacao = document.getElementById("localizacao").value.trim();
         const variasRotas = document.getElementById("variasRotas").value === "true";
 
-        const novaParagem = { nome, localizacao, variasRotas, ativa: true };
-        paragens.push(novaParagem);
+        if (!nome || !localizacao) {
+            alert("Por favor, preencha todos os campos.");
+            return;
+        }
+
+        paragens.push({ nome, localizacao, variasRotas, ativa: true });
 
         alert("Paragem adicionada com sucesso!");
         document.getElementById("addParagemForm").reset();
+        document.getElementById("addParagemFormContainer").style.display = "none";
+        document.getElementById("btnMostrarAdd").style.display = "inline-block";
         atualizarListaParagens();
     }
 
     function editarParagem() {
         const nomeOriginal = document.getElementById("editNomeOriginal").value;
-        const nome = document.getElementById("editNome").value;
-        const localizacao = document.getElementById("editLocalizacao").value;
+        const nome = document.getElementById("editNome").value.trim();
+        const localizacao = document.getElementById("editLocalizacao").value.trim();
         const variasRotas = document.getElementById("editVariasRotas").value === "true";
+
+        if (!nome || !localizacao) {
+            alert("Por favor, preencha todos os campos.");
+            return;
+        }
 
         const paragem = paragens.find(p => p.nome === nomeOriginal);
         if (paragem) {
@@ -235,6 +270,17 @@
         }
     }
 
+    // NOVA FUNÇÃO para ativar a paragem desativada
+    function ativarParagem(nome) {
+        const paragem = paragens.find(p => p.nome === nome);
+        if (paragem && !paragem.ativa) {
+            paragem.ativa = true;
+            alert("Paragem ativada com sucesso!");
+            atualizarListaParagens();
+        }
+    }
+
+    // Apagar só permitido para paragens desativadas
     function apagarParagem(nome) {
         const paragem = paragens.find(p => p.nome === nome);
         if (paragem && !paragem.ativa) {
@@ -248,7 +294,10 @@
 
     function atualizarListaParagens() {
         const paragensList = document.getElementById("paragensList");
-        paragensList.innerHTML = "<h2>Lista de Paragens</h2>";
+        const paragensDesativadasList = document.getElementById("paragensDesativadasList");
+
+        paragensList.innerHTML = "<h2>Lista de Paragens Ativas</h2>";
+        paragensDesativadasList.innerHTML = "<h2>Paragens Desativadas</h2>";
 
         paragens.forEach(paragem => {
             const div = document.createElement("div");
@@ -259,11 +308,20 @@
                 <p><strong>Várias Rotas:</strong> ${paragem.variasRotas ? "Sim" : "Não"}</p>
                 <p><strong>Ativa:</strong> ${paragem.ativa ? "Sim" : "Não"}</p>
                 <button onclick="prepararEdicao('${paragem.nome}')">Editar</button>
-                ${paragem.ativa 
-                    ? `<button onclick="desativarParagem('${paragem.nome}')">Desativar</button>`
-                    : `<button onclick="apagarParagem('${paragem.nome}')">Apagar</button>`}
             `;
-            paragensList.appendChild(div);
+
+            if (paragem.ativa) {
+                // Paragens ativas têm botão Desativar
+                div.innerHTML += `<button onclick="desativarParagem('${paragem.nome}')">Desativar</button>`;
+                paragensList.appendChild(div);
+            } else {
+                // Paragens desativadas têm botão Ativar e Apagar
+                div.innerHTML += `
+                    <button onclick="ativarParagem('${paragem.nome}')">Ativar</button>
+                    <button onclick="apagarParagem('${paragem.nome}')">Apagar</button>
+                `;
+                paragensDesativadasList.appendChild(div);
+            }
         });
     }
 </script>
