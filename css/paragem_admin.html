@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paragens</title>
+    <!-- Bibliotecas Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <style>
         * {
             margin: 0;
@@ -14,6 +18,7 @@
 
         body {
             background-color: #f4f4f4;
+            overflow-x: hidden;
         }
 
         .navbar {
@@ -54,12 +59,30 @@
             border-radius: 5px;
         }
 
-        .main-content {
-            margin-top: 100px;
+        /* Container principal flexível */
+        .main-container {
+            display: flex;
+            margin-top: 70px;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Container do modelo 3D */
+        #model-container {
+            width: 400px;
+            height: calc(100vh - 70px);
+            position: fixed;
+            left: 0;
+            top: 70px;
+            background: #f0f0f0;
+            z-index: 1;
+        }
+
+        /* Container do conteúdo */
+        .content-container {
+            flex: 1;
+            margin-left: 400px;
             padding: 20px;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
+            z-index: 2;
         }
 
         h1, h2 {
@@ -96,6 +119,8 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
         }
 
         button:hover {
@@ -113,6 +138,16 @@
         .paragem-card p {
             margin: 5px 0;
         }
+
+        @media (max-width: 768px) {
+            #model-container {
+                display: none;
+            }
+            .content-container {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -127,143 +162,308 @@
         </ul>
     </div>
 
-    <div class="main-content">
-        <h1>Gerir Paragens</h1>
+    <div class="main-container">
+        <!-- Container para o modelo 3D -->
+        <div id="model-container"></div>
 
-        <!-- Formulário para adicionar paragem -->
-        <form id="addParagemForm">
-            <h2>Adicionar Paragem</h2>
-            <label for="nome">Nome:</label>
-            <input type="text" id="nome" name="nome" placeholder="Nome da Paragem" required>
+        <!-- Container para o conteúdo -->
+        <div class="content-container">
+            <h1>Gerir Paragens</h1>
 
-            <label for="localizacao">Localização:</label>
-            <input type="text" id="localizacao" name="localizacao" placeholder="Localização da Paragem" required>
+            <!-- Formulário para adicionar paragem -->
+            <form id="addParagemForm">
+                <h2>Adicionar Paragem</h2>
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" placeholder="Nome da Paragem" required>
 
-            <label for="variasRotas">Várias Rotas:</label>
-            <select id="variasRotas" name="variasRotas" required>
-                <option value="true">Sim</option>
-                <option value="false">Não</option>
-            </select>
+                <label for="localizacao">Localização:</label>
+                <input type="text" id="localizacao" name="localizacao" placeholder="Localização da Paragem" required>
 
-            <button type="button" onclick="adicionarParagem()">Adicionar Paragem</button>
-        </form>
+                <label for="variasRotas">Várias Rotas:</label>
+                <select id="variasRotas" name="variasRotas" required>
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </select>
 
-        <!-- Formulário para editar paragem -->
-        <form id="editParagemForm" style="display: none;">
-            <h2>Editar Paragem</h2>
-            <label for="editNome">Nome:</label>
-            <input type="text" id="editNome" name="editNome" required>
+                <button type="button" onclick="adicionarParagem()">Adicionar Paragem</button>
+            </form>
 
-            <input type="hidden" id="editNomeOriginal" name="editNomeOriginal">
+            <!-- Formulário para editar paragem -->
+            <form id="editParagemForm" style="display: none;">
+                <h2>Editar Paragem</h2>
+                <label for="editNome">Nome:</label>
+                <input type="text" id="editNome" name="editNome" required>
 
-            <label for="editLocalizacao">Localização:</label>
-            <input type="text" id="editLocalizacao" name="editLocalizacao" required>
+                <input type="hidden" id="editNomeOriginal" name="editNomeOriginal">
 
-            <label for="editVariasRotas">Várias Rotas:</label>
-            <select id="editVariasRotas" name="editVariasRotas" required>
-                <option value="true">Sim</option>
-                <option value="false">Não</option>
-            </select>
+                <label for="editLocalizacao">Localização:</label>
+                <input type="text" id="editLocalizacao" name="editLocalizacao" required>
 
-            <button type="button" onclick="editarParagem()">Salvar Alterações</button>
-        </form>
+                <label for="editVariasRotas">Várias Rotas:</label>
+                <select id="editVariasRotas" name="editVariasRotas" required>
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </select>
 
-        <!-- Lista de paragens -->
-        <div id="paragensList">
-            <h2>Lista de Paragens</h2>
-            <!-- Esta secção será preenchida dinamicamente -->
+                <button type="button" onclick="editarParagem()">Salvar Alterações</button>
+            </form>
+
+            <!-- Lista de paragens -->
+            <div id="paragensList">
+                <h2>Lista de Paragens</h2>
+                <!-- Esta secção será preenchida dinamicamente -->
+            </div>
         </div>
     </div>
-</body>
-</html>
-
 
     <script>
+        // Inicialização do Three.js
+        let scene, camera, renderer, busStopModel, characterModel, signMesh, textMesh;
+        let currentParagemNome = "";
+
+        function init3DModel() {
+            // 1. Cena
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf0f0f0);
+            
+            // 2. Câmera
+            const container = document.getElementById('model-container');
+            camera = new THREE.PerspectiveCamera(
+                75, 
+                container.clientWidth / container.clientHeight, 
+                0.1, 
+                1000
+            );
+            camera.position.set(0, 1.5, 5);
+            
+            // 3. Renderizador
+            renderer = new THREE.WebGLRenderer({ 
+                antialias: true,
+                alpha: true
+            });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+            
+            // 4. Iluminação
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            directionalLight.position.set(5, 10, 7);
+            scene.add(directionalLight);
+            
+            // 5. Carregar modelos
+            const loader = new THREE.GLTFLoader();
+            
+            // Carregar paragem de autocarro
+            loader.load(
+                './models/bus_stop.glb',
+                function(gltf) {
+                    busStopModel = gltf.scene;
+                    busStopModel.scale.set(1.2, 1.2, 1.2);
+                    busStopModel.position.set(0, 0, 0);
+                    busStopModel.rotation.y = Math.PI / 2;
+                    scene.add(busStopModel);
+                    
+                    // Criar placa de identificação
+                    createSign(currentParagemNome);
+                },
+                undefined,
+                function(error) {
+                    console.error('Erro ao carregar paragem:', error);
+                }
+            );
+            
+            // Carregar personagem
+            loader.load(
+                './models/male_character.glb',
+                function(gltf) {
+                    characterModel = gltf.scene;
+                    characterModel.scale.set(0.6, 0.6, 0.6);
+                    characterModel.position.set(0.5, -0.45, 0);
+                    characterModel.rotation.y = Math.PI / 2; // De costas para a paragem
+                    scene.add(characterModel);
+                },
+                undefined,
+                function(error) {
+                console.error('Erro ao carregar personagem:', error);
+                }
+            );
+
+
+
+            // 6. Controles
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.target.set(0, 1, 0);
+            controls.enablePan = false;
+            controls.enableZoom = true;
+            controls.minDistance = 3;
+            controls.maxDistance = 10;
+            
+            // 7. Animação
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
+            
+            // 8. Redimensionamento
+            window.addEventListener('resize', function() {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+        }
         
-    let paragens = [];
+        // Criar placa de identificação
+        function createSign(text) {
+            // Remover placa anterior se existir
+            if (signMesh) scene.remove(signMesh);
+            if (textMesh) scene.remove(textMesh);
+            
+            if (!text) text = "Nome da Paragem";
+            
+            // Criar fundo da placa
+            const signGeometry = new THREE.PlaneGeometry(1.5, 0.5);
+            const signMaterial = new THREE.MeshBasicMaterial({ 
+                color: 0x2c72b7,
+                side: THREE.DoubleSide
+            });
+            signMesh = new THREE.Mesh(signGeometry, signMaterial);
+            signMesh.position.set(0, 1.8, -0.8);
+            signMesh.rotation.y = Math.PI / 2;
+            
+            // Criar texto
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 256;
+            const context = canvas.getContext('2d');
+            
+            context.fillStyle = '#2c72b7';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.fillStyle = '#ffffff';
+            context.font = 'Bold 40px Arial';
+            context.textAlign = 'center';
+            context.fillText(text, canvas.width/2, canvas.height/2 + 15);
+            
+            const texture = new THREE.CanvasTexture(canvas);
+            const textMaterial = new THREE.MeshBasicMaterial({
+                map: texture,
+                transparent: false,
+                side: THREE.DoubleSide
+            });
+            
+            const textGeometry = new THREE.PlaneGeometry(1.4, 0.4);
+            textMesh = new THREE.Mesh(textGeometry, textMaterial);
+            textMesh.position.set(0, 1.8, -0.79);
+            textMesh.rotation.y = Math.PI / 2;
+            
+            // Adicionar à cena
+            scene.add(signMesh);
+            scene.add(textMesh);
+        }
 
-    function adicionarParagem() {
-        const nome = document.getElementById("nome").value;
-        const localizacao = document.getElementById("localizacao").value;
-        const variasRotas = document.getElementById("variasRotas").value === "true";
+        // Atualizar placa quando uma paragem é selecionada/alterada
+        function updateSign(nomeParagem) {
+            currentParagemNome = nomeParagem || "Nome da Paragem";
+            createSign(currentParagemNome);
+        }
 
-        const novaParagem = { nome, localizacao, variasRotas, ativa: true };
-        paragens.push(novaParagem);
+        // Iniciar quando a página carregar
+        window.addEventListener('load', init3DModel);
 
-        alert("Paragem adicionada com sucesso!");
-        document.getElementById("addParagemForm").reset();
-        atualizarListaParagens();
-    }
+        // Código existente para gerenciar paragens
+        let paragens = [];
 
-    function editarParagem() {
-        const nomeOriginal = document.getElementById("editNomeOriginal").value;
-        const nome = document.getElementById("editNome").value;
-        const localizacao = document.getElementById("editLocalizacao").value;
-        const variasRotas = document.getElementById("editVariasRotas").value === "true";
+        function adicionarParagem() {
+            const nome = document.getElementById("nome").value;
+            const localizacao = document.getElementById("localizacao").value;
+            const variasRotas = document.getElementById("variasRotas").value === "true";
 
-        const paragem = paragens.find(p => p.nome === nomeOriginal);
-        if (paragem) {
-            paragem.nome = nome;
-            paragem.localizacao = localizacao;
-            paragem.variasRotas = variasRotas;
+            const novaParagem = { nome, localizacao, variasRotas, ativa: true };
+            paragens.push(novaParagem);
 
-            alert("Paragem editada com sucesso!");
-            document.getElementById("editParagemForm").style.display = "none";
+            alert("Paragem adicionada com sucesso!");
+            document.getElementById("addParagemForm").reset();
             atualizarListaParagens();
-        } else {
-            alert("Paragem não encontrada!");
+            updateSign(nome);
         }
-    }
 
-    function prepararEdicao(nome) {
-        const paragem = paragens.find(p => p.nome === nome);
-        if (paragem) {
-            document.getElementById("editNome").value = paragem.nome;
-            document.getElementById("editNomeOriginal").value = paragem.nome;
-            document.getElementById("editLocalizacao").value = paragem.localizacao;
-            document.getElementById("editVariasRotas").value = paragem.variasRotas.toString();
-            document.getElementById("editParagemForm").style.display = "block";
+        function editarParagem() {
+            const nomeOriginal = document.getElementById("editNomeOriginal").value;
+            const nome = document.getElementById("editNome").value;
+            const localizacao = document.getElementById("editLocalizacao").value;
+            const variasRotas = document.getElementById("editVariasRotas").value === "true";
+
+            const paragem = paragens.find(p => p.nome === nomeOriginal);
+            if (paragem) {
+                paragem.nome = nome;
+                paragem.localizacao = localizacao;
+                paragem.variasRotas = variasRotas;
+
+                alert("Paragem editada com sucesso!");
+                document.getElementById("editParagemForm").style.display = "none";
+                atualizarListaParagens();
+                updateSign(nome);
+            } else {
+                alert("Paragem não encontrada!");
+            }
         }
-    }
 
-    function desativarParagem(nome) {
-        const paragem = paragens.find(p => p.nome === nome);
-        if (paragem && paragem.ativa) {
-            paragem.ativa = false;
-            alert("Paragem desativada com sucesso!");
-            atualizarListaParagens();
+        function prepararEdicao(nome) {
+            const paragem = paragens.find(p => p.nome === nome);
+            if (paragem) {
+                document.getElementById("editNome").value = paragem.nome;
+                document.getElementById("editNomeOriginal").value = paragem.nome;
+                document.getElementById("editLocalizacao").value = paragem.localizacao;
+                document.getElementById("editVariasRotas").value = paragem.variasRotas.toString();
+                document.getElementById("editParagemForm").style.display = "block";
+                updateSign(paragem.nome);
+            }
         }
-    }
 
-    function apagarParagem(nome) {
-        const paragem = paragens.find(p => p.nome === nome);
-        if (paragem && !paragem.ativa) {
-            paragens = paragens.filter(p => p.nome !== nome);
-            alert("Paragem apagada com sucesso!");
-            atualizarListaParagens();
-        } else {
-            alert("A paragem precisa estar desativada antes de ser apagada.");
+        function desativarParagem(nome) {
+            const paragem = paragens.find(p => p.nome === nome);
+            if (paragem && paragem.ativa) {
+                paragem.ativa = false;
+                alert("Paragem desativada com sucesso!");
+                atualizarListaParagens();
+            }
         }
-    }
 
-    function atualizarListaParagens() {
-        const paragensList = document.getElementById("paragensList");
-        paragensList.innerHTML = "<h2>Lista de Paragens</h2>";
+        function apagarParagem(nome) {
+            const paragem = paragens.find(p => p.nome === nome);
+            if (paragem && !paragem.ativa) {
+                paragens = paragens.filter(p => p.nome !== nome);
+                alert("Paragem apagada com sucesso!");
+                atualizarListaParagens();
+            } else {
+                alert("A paragem precisa estar desativada antes de ser apagada.");
+            }
+        }
 
-        paragens.forEach(paragem => {
-            const div = document.createElement("div");
-            div.className = "paragem-card";
-            div.innerHTML = `
-                <p><strong>Nome:</strong> ${paragem.nome}</p>
-                <p><strong>Localização:</strong> ${paragem.localizacao}</p>
-                <p><strong>Várias Rotas:</strong> ${paragem.variasRotas ? "Sim" : "Não"}</p>
-                <p><strong>Ativa:</strong> ${paragem.ativa ? "Sim" : "Não"}</p>
-                <button onclick="prepararEdicao('${paragem.nome}')">Editar</button>
-                ${paragem.ativa 
-                    ? `<button onclick="desativarParagem('${paragem.nome}')">Desativar</button>`
-                    : `<button onclick="apagarParagem('${paragem.nome}')">Apagar</button>`}
-            `;
-            paragensList.appendChild(div);
-        });
-    }
-</script>
+        function atualizarListaParagens() {
+            const paragensList = document.getElementById("paragensList");
+            paragensList.innerHTML = "<h2>Lista de Paragens</h2>";
+
+            paragens.forEach(paragem => {
+                const div = document.createElement("div");
+                div.className = "paragem-card";
+                div.innerHTML = `
+                    <p><strong>Nome:</strong> ${paragem.nome}</p>
+                    <p><strong>Localização:</strong> ${paragem.localizacao}</p>
+                    <p><strong>Várias Rotas:</strong> ${paragem.variasRotas ? "Sim" : "Não"}</p>
+                    <p><strong>Ativa:</strong> ${paragem.ativa ? "Sim" : "Não"}</p>
+                    <button onclick="prepararEdicao('${paragem.nome}')">Editar</button>
+                    ${paragem.ativa 
+                        ? `<button onclick="desativarParagem('${paragem.nome}')">Desativar</button>`
+                        : `<button onclick="apagarParagem('${paragem.nome}')">Apagar</button>`}
+                    <button onclick="updateSign('${paragem.nome}')">Visualizar</button>
+                `;
+                paragensList.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
