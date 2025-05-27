@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa em Tempo Real</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        /* Estilo do menu no topo */
+        .navbar {
+            width: 100%;
+            background-color: #2c72b7;
+            color: white;
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            margin: 0;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+        }
+
+        .navbar ul li {
+            padding: 10px 20px;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .navbar ul li:hover {
+            background-color: #1a436c;
+            border-radius: 5px;
+        }
+
+        /* Estilo do conteúdo principal */
+        .main-content {
+            margin-top: 70px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+ /* Estilo dos cartões de autocarros */
+        .bus-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .bus-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            width: 300px;
+            text-align: center;
+            padding: 20px;
+            min-height: 350px;
+        }
+        .bus-card img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .bus-card button {
+            background-color: #2c72b7;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .bus-card button:hover {
+            background-color: #1a436c;
+        }
+
+        .bus-table {
+            display: none;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #2c72b7;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        #map {
+            height: 400px; /* Define a altura do mapa */
+            width: 100%; /* Define a largura do mapa */
+            margin-bottom: 20px;
+        }
+        .btn-acoes {
+            width: 100%;
+            padding: 15px 0;
+            font-size: 18px;
+            border-radius: 6px;
+            margin: 2px 0;
+            background-color: #2c72b7;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-acoes:hover {
+            background-color: #1a436c;
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <!-- Menu lateral -->
+    <div class="navbar">
+        <h2>TUB</h2>
+        <ul>
+            <li><a href="dashboard_admin.html"> Início</a></li>
+            <li><a href="autocarro_por_rota_admin.html"> Autocarros</a></li>
+            <li><a href="paragem_admin.html"> Paragens</a></li>
+            <li><a href="perfil_motorista.html"> Perfil</a></li>
+            <li><a href="index.html"> Sair</a></li>
+        </ul>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div class="main-content">
+
+        <!-- Mapa -->
+        <div id="map"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Inicializa o mapa
+            const map = L.map('map').setView([41.545448, -8.426507], 13); // Coordenadas iniciais (Braga)
+
+            // Adiciona o tile layer (camada de mapa)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            // Exemplo: Adiciona um marcador no mapa
+            const marker = L.marker([41.545448, -8.426507]).addTo(map);
+            marker.bindPopup("<b>Bem-vindo!</b><br>Este é o mapa em tempo real.").openPopup();
+        });
+    </script>
+
+        <!-- Rotas -->
+        <div class="header">Escolha uma Rota</div>
+        <div class="bus-container">
+            <div class="bus-card">
+                <img src="fotos/rota1.jpg" alt="Linha 1">
+                <h2>Linha 1</h2>
+                <p>Estação - Universidade do Minho</p>
+            <!--<p>Lotação ocupada: 70%</p>-->
+                <button onclick="mostrarTabela('linha1')">Ver Informações</button>
+            </div>
+            <div class="bus-card">
+                <img src="fotos/rota1.jpg" alt="Linha 2">
+                <h2>Linha 2</h2>
+                <p>Nova Arcada - Minho Center</p>
+                <!--<p>Lotação ocupada: 50%</p>-->
+                <button onclick="mostrarTabela('linha2')">Ver Informações</button>
+            </div>
+            <!-- Adiciona mais autocarros conforme necessário -->
+            <div class="bus-card">
+                <img src="fotos/rota1.jpg" alt="Linha 3">
+                <h2>Linha 3</h2>
+                <p>Hospital - Avenida Central</p>
+                <!--<p>Lotação ocupada: 90%</p>-->
+                <button onclick="mostrarTabela('linha3')">Ver Informações</button>
+            </div>
+            <div class="bus-card">
+                <img src="fotos/rota1.jpg" alt="Linha 4">
+                <h2>Linha 4</h2>
+                <p>Estação - Universidade do Minho</p>
+                <!--<p>Lotação ocupada: 20%</p>-->
+                <button onclick="mostrarTabela('linha4')">Ver Informações</button>
+            </div>
+        </div>
+        <!--tabela de autocarros por rota-->
+        <div id="linha1" class="bus-table">
+            <h2>Autocarros - Rota 1</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rota</th>
+                        <th>Número do Autocarro</th>
+                        <th>Horário</th>
+                        <th>Estado</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Rota 1</td>
+                        <td>1</td>
+                        <td>08:00 - 09:00</td>
+                        <td>Em operação</td>
+                        <td>
+                            <button class="btn-acoes" onclick="mostrarInformacoesAutocarro('Rota 1', '1', '08:00 - 09:00', 'Em operação')">Ver</button>
+                            <button class="btn-acoes" onclick="editarAutocarro('1')">Editar</button>
+                            <button class="btn-acoes" onclick="removerAutocarro('1')">Remover</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Rota 1</td>
+                        <td>6</td>
+                        <td>09:00 - 10:00</td>
+                        <td>Em operação</td>
+                        <td>
+                            <button class="btn-acoes" onclick="mostrarInformacoesAutocarro('Rota 1', '6', '09:00 - 10:00', 'Em operação')">Ver</button>
+                            <button class="btn-acoes" onclick="editarAutocarro('6')">Editar</button>
+                            <button class="btn-acoes" onclick="removerAutocarro('6')">Remover</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="linha2" class="bus-table">
+            <h2>Autocarros - Rota 2</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rota</th>
+                        <th>Número do Autocarro</th>
+                        <th>Horário</th>
+                        <th>Estado</th>
+                        <th>Ações</th>
+                        
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Rota 2</td>
+                        <td>2</td>
+                        <td>08:30 - 09:30</td>
+                        <td>Em operação</td>
+                        </td>
+                        <td>
+                            <button class="btn-acoes" onclick="mostrarInformacoesAutocarro('Rota 2', '2', '08:30 - 09:30', 'Em operação')">Ver</button>
+                            <button class="btn-acoes" onclick="editarAutocarro('1')">Editar</button>
+                            <button class="btn-acoes" onclick="removerAutocarro('1')">Remover</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Rota 2</td>
+                        <td>7</td>
+                        <td>09:30 - 10:30</td>
+                        <td>Em operação</td>
+                        <td>
+                            <button class="btn-acoes" onclick="mostrarInformacoesAutocarro('Rota 2', '7', '09:30 - 10:30', 'Em operação')">Ver</button>
+                            <button class="btn-acoes" onclick="editarAutocarro('1')">Editar</button>
+                            <button class="btn-acoes" onclick="removerAutocarro('1')">Remover</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="linha3" class="bus-table">
+            <h2>Autocarros - Rota 3</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rota</th>
+                        <th>Número do Autocarro</th>
+                        <th>Horário</th>
+                        <th>Estado</th>
+                        <th>Ações</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Rota 3</td>
+                        <td>3</td>
+                        <td>07:00 - 08:00</td>
+                        <td>Em operação</td>
+                        <td>
+                            <button class="btn-acoes" onclick="mostrarInformacoesAutocarro('Rota 3', '3', '07:00 - 08:00', 'Em operação')">Ver</button>
+                            <button class="btn-acoes" onclick="editarAutocarro('3')">Editar</button>
+                            <button class="btn-acoes" onclick="removerAutocarro('3')">Remover</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Rota 3</td>
+                        <td>8</td>
+                        <td>09:30 - 10:30</td>
+                        <td>Em operação</td>
+                        <td>
+                            <button class="btn-acoes" onclick="mostrarInformacoesAutocarro('Rota 4', '8', '09:30 - 10:30', 'Em operação')">Ver</button>
+                            <button class="btn-acoes" onclick="editarAutocarro('1')">Editar</butto>
+                            <button class="btn-acoes" onclick="removerAutocarro('1')">Remover</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button onclick="criarAutocarro()">Criar Autocarro</button>
+        </div>
+    <!-- Área para exibir as informações do autocarro -->
+    <div id="informacoes-autocarro" style="display: none; margin-top: 20px; border: 1px solid #ddd; padding: 20px; background-color: #fff;">
+        <h2>Informações do Autocarro</h2>
+        <p><strong>Rota:</strong> <span id="rota"></span></p>
+        <p><strong>Número do Autocarro:</strong> <span id="numero"></span></p>
+        <p><strong>Horário:</strong> <span id="horario"></span></p>
+        <p><strong>Estado:</strong> <span id="estado"></span></p>
+        <button onclick="voltarParaLista()">Voltar</button>
+    </div>
+</div>
+
+
+    <script>
+        function mostrarTabela(linhaId) {
+            // Esconde todas as tabelas
+            const tabelas = document.querySelectorAll('.bus-table');
+            tabelas.forEach(tabela => tabela.style.display = 'none');
+
+            // Mostra a tabela correspondente
+            const tabelaSelecionada = document.getElementById(linhaId);
+            if (tabelaSelecionada) {
+                tabelaSelecionada.style.display = 'block';
+            }
+        }
+
+
+    </script>
+    <script>
+        function mostrarInformacoesAutocarro(rota, numero, horario, estado) {
+            // Esconde todas as tabelas
+            const tabelas = document.querySelectorAll('.bus-table');
+            tabelas.forEach(tabela => tabela.style.display = 'none');
+    
+            // Preenche os dados do autocarro selecionado
+            document.getElementById('rota').textContent = rota;
+            document.getElementById('numero').textContent = numero;
+            document.getElementById('horario').textContent = horario;
+            document.getElementById('estado').textContent = estado;
+    
+            // Mostra a área de informações do autocarro
+            document.getElementById('informacoes-autocarro').style.display = 'block';
+        }
+    
+        function voltarParaLista() {
+            // Esconde a área de informações do autocarro
+            document.getElementById('informacoes-autocarro').style.display = 'none';
+    
+            // Mostra novamente as tabelas
+            const tabelas = document.querySelectorAll('.bus-table');
+            tabelas.forEach(tabela => tabela.style.display = 'block');
+        }
+
+</script>
+</body>
+</html>

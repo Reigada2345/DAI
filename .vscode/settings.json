@@ -1,0 +1,39 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/b24e68cd-5d63-49eb-9ef8-9aeba38e6db5/resourceGroups/DAITUB/providers/Microsoft.Web/sites/AppTubDai",
+    "appService.deploySubpath": "app.jar",
+    "java.project.referencedLibraries": [
+      "lib/**/*.jar"
+    ],
+    "sqltools.connections": [
+      {
+        "mysqlOptions": {
+          "authProtocol": "default",
+          "enableSsl": "Disabled"
+        },
+        "previewLimit": 50,
+        "server": "localhost",
+        "port": 3306,
+        "driver": "MySQL",
+        "username": "root",
+        "database": "bd_dai",
+        "name": "bd_dai",
+        "password": ""
+      },
+      {
+        "mysqlOptions": {
+          "authProtocol": "default",
+          "enableSsl": "Disabled"
+        },
+        "previewLimit": 50,
+        "server": "localhost",
+        "port": 3306,
+        "driver": "MySQL",
+        "name": "bd\\_dai",
+        "group": "Trabalhos Faculdade",
+        "database": "bd\\_dai",
+        "username": "root",
+        "password": "1234"
+      }
+    ]
+  }
+  

@@ -5,6 +5,27 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "TestDBConnection",
+            "request": "launch",
+            "mainClass": "models.TestDBConnection",
+            "projectName": "app_37d7c52b"
+        },
+        {
+            "type": "java",
+            "name": "ServidorLogin",
+            "request": "launch",
+            "mainClass": "models.ServidorLogin",
+            "projectName": "app_37d7c52b"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "app_37d7c52b"
+        },
+        {
             "type": "jdk",
             "request": "launch",
             "name": "Launch Java App"

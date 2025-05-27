@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autocarros por Rota</title>
+    <!-- Bibliotecas Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            width: 100%;
+            background-color: #2c72b7;
+            color: white;
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .navbar h2 {
+            margin: 0;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+        }
+
+        .navbar ul li {
+            padding: 10px 20px;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .navbar ul li:hover {
+            background-color: #1a436c;
+            border-radius: 5px;
+        }
+
+        /* Container principal flexível */
+        .main-container {
+            display: flex;
+            margin-top: 70px;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Container do modelo 3D */
+        #model-container {
+            width: 400px;
+            height: calc(100vh - 70px);
+            position: fixed;
+            left: 0;
+            top: 70px;
+            background: #f0f0f0;
+            z-index: 1;
+        }
+
+        /* Container do conteúdo */
+        .content-container {
+            flex: 1;
+            margin-left: 400px;
+            padding: 20px;
+            z-index: 2;
+        }
+
+        h1, h2 {
+            margin-bottom: 20px;
+            color: #2c72b7;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #2c72b7;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        button {
+            font-size: 16px;
+            padding: 8px 16px;
+            background-color: #2c72b7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        button:hover {
+            background-color: #1a436c;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        #informacoes-autocarro {
+            display: none;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            background-color: #fff;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        #informacoes-autocarro h2 {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        #form-adicionar, #form-eliminar {
+            display: none;
+            margin-bottom: 40px;
+            text-align: left;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .caixa-branca {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+            padding: 30px 25px;
+            margin: 40px auto;
+            max-width: 900px;
+        }
+
+        @media (max-width: 768px) {
+            #model-container {
+                display: none;
+            }
+            .content-container {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <h2>TUB</h2>
+        <ul>
+            <li><a href="dashboard_admin.html">Início</a></li>
+            <li><a href="autocarro_por_rota_admin.html">Autocarros</a></li>
+            <li><a href="paragem_admin.html">Paragens</a></li>
+            <li><a href="perfil_motorista.html">Perfil</a></li>
+            <li><a href="index.html">Sair</a></li>
+        </ul>
+    </div>
+
+    <div class="main-container">
+        <!-- Container para o modelo 3D -->
+        <div id="model-container"></div>
+
+        <!-- Container para o conteúdo -->
+        <div class="content-container">
+            <h1 id="titulo-principal">Autocarros por Rota</h1>
+
+            <div class="caixa-branca">
+                <!-- Botões -->
+                <div style="margin: 20px 0;">
+                    <button onclick="mostrarFormularioAdicionar()">Adicionar Autocarro</button>
+                    <button onclick="mostrarFormularioEliminar()">Eliminar Autocarro</button>
+                </div>
+
+                <!-- Formulário Adicionar -->
+                <form id="form-adicionar">
+                    <h2>Adicionar Autocarro</h2>
+                    <label for="rota">Rota</label>
+                    <input type="text" id="rota" required>
+
+                    <label for="numero">Número do Autocarro</label>
+                    <input type="number" id="numero" required>
+
+                    <label for="horario">Horário</label>
+                    <input type="text" id="horario" placeholder="Ex: 08:00 - 09:00" required>
+
+                    <label for="estado">Estado</label>
+                    <select id="estado" required>
+                        <option value="Em operação">Em operação</option>
+                        <option value="Em manutenção">Em manutenção</option>
+                    </select>
+
+                    <label for="lotacao">Lotação (%)</label>
+                    <input type="text" id="lotacao" required>
+
+                    <button type="submit">Adicionar</button>
+                </form>
+
+                <!-- Formulário Eliminar -->
+                <form id="form-eliminar">
+                    <h2>Eliminar Autocarro</h2>
+                    <label for="numero-eliminar">Número do Autocarro a eliminar</label>
+                    <input type="number" id="numero-eliminar" required>
+                    <button type="submit">Eliminar</button>
+                </form>
+
+                <!-- Tabela -->
+                <table id="tabela-autocarros">
+                    <thead>
+                        <tr>
+                            <th>Rota</th>
+                            <th>Número</th>
+                            <th>Horário</th>
+                            <th>Estado</th>
+                            <th>Lotação</th>
+                            <th>Informações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Rota 1</td>
+                            <td>1</td>
+                            <td>08:00 - 09:00</td>
+                            <td>Em manutenção</td>
+                            <td>50%</td>
+                            <td><button onclick="mostrarInformacoesAutocarro('Rota 1', '1', '08:00 - 09:00', 'Em manutenção', '50%')">Ver</button></td>
+                        </tr>
+                        <tr>
+                            <td>Rota 2</td>
+                            <td>2</td>
+                            <td>09:30 - 10:30</td>
+                            <td>Em operação</td>
+                            <td>80%</td>
+                            <td><button onclick="mostrarInformacoesAutocarro('Rota 2', '2', '09:30 - 10:30', 'Em operação', '80%')">Ver</button></td>
+                        </tr>
+                        <tr>
+                            <td>Rota 3</td>
+                            <td>3</td>
+                            <td>07:00 - 08:00</td>
+                            <td>Em operação</td>
+                            <td>30%</td>
+                            <td><button onclick="mostrarInformacoesAutocarro('Rota 3', '3', '07:00 - 08:00', 'Em operação', '30%')">Ver</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Informações do autocarro -->
+                <div id="informacoes-autocarro">
+                    <h2>Informações do Autocarro</h2>
+                    <p><strong>Rota:</strong> <span id="info-rota"></span></p>
+                    <p><strong>Número:</strong> <span id="info-numero"></span></p>
+                    <p><strong>Horário:</strong> <span id="info-horario"></span></p>
+                    <p><strong>Estado:</strong> <span id="info-estado"></span></p>
+                    <p><strong>Lotação:</strong> <span id="info-lotacao"></span></p>
+                    <button onclick="voltarParaLista()">Voltar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Inicialização do Three.js
+        let scene, camera, renderer, busModel, characterModel;
+
+        function init3DModel() {
+            // 1. Cena
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf0f0f0);
+            
+            // 2. Câmera
+            const container = document.getElementById('model-container');
+            camera = new THREE.PerspectiveCamera(
+                75, 
+                container.clientWidth / container.clientHeight, 
+                0.1, 
+                1000
+            );
+            camera.position.set(0, 1.5, 5);
+            
+            // 3. Renderizador
+            renderer = new THREE.WebGLRenderer({ 
+                antialias: true,
+                alpha: true
+            });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+            
+            // 4. Iluminação
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            directionalLight.position.set(5, 10, 7);
+            scene.add(directionalLight);
+            
+            // 5. Carregar modelos
+            const loader = new THREE.GLTFLoader();
+            
+            // Carregar autocarro
+            loader.load(
+                './models/bus.glb',
+                function(gltf) {
+                    busModel = gltf.scene;
+                    busModel.scale.set(0.6, 0.6, 0.6);
+                    busModel.position.set(27, -0.55, );
+                    busModel.rotation.y = Math.PI / 2;
+                    scene.add(busModel);
+                },
+                undefined,
+                function(error) {
+                    console.error('Erro ao carregar autocarro:', error);
+                }
+            );
+            
+            // Carregar paragem de autocarro
+            loader.load(
+                './models/bus_stop.glb',
+                function(gltf) {
+                    busStopModel = gltf.scene;
+                    busStopModel.scale.set(1.2, 1.2, 1.2);
+                    busStopModel.position.set(0, 0, 0);
+                    busStopModel.rotation.y = Math.PI / 2;
+                    scene.add(busStopModel);
+                },
+                undefined,
+                function(error) {
+                    console.error('Erro ao carregar paragem:', error);
+                }
+            );
+
+            // Carregar personagem
+            loader.load(
+                './models/male_character.glb',
+                function(gltf) {
+                    characterModel = gltf.scene;
+                    characterModel.scale.set(0.6, 0.6, 0.6);
+                    characterModel.position.set(0.25, -0.45, 0);
+                    characterModel.rotation.y = Math.PI / 2;
+                    scene.add(characterModel);
+                },
+                undefined,
+                function(error) {
+                    console.error('Erro ao carregar personagem:', error);
+                }
+            );
+
+            // 6. Controles
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.target.set(0, 1, 0);
+            controls.enablePan = false;
+            controls.enableZoom = true;
+            controls.minDistance = 3;
+            controls.maxDistance = 10;
+            
+            // 7. Animação
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
+            
+            // 8. Redimensionamento
+            window.addEventListener('resize', function() {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+        }
+
+        // Iniciar quando a página carregar
+        window.addEventListener('load', init3DModel);
+
+        // Código existente para gerenciar autocarros
+        function mostrarFormularioAdicionar() {
+            document.getElementById("form-adicionar").style.display = "block";
+            document.getElementById("form-eliminar").style.display = "none";
+        }
+
+        function mostrarFormularioEliminar() {
+            document.getElementById("form-eliminar").style.display = "block";
+            document.getElementById("form-adicionar").style.display = "none";
+        }
+
+        // Adicionar autocarro
+        document.getElementById("form-adicionar").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const rota = document.getElementById("rota").value;
+            const numero = document.getElementById("numero").value;
+            const horario = document.getElementById("horario").value;
+            const estado = document.getElementById("estado").value;
+            const lotacao = document.getElementById("lotacao").value;
+
+            const tabela = document.getElementById("tabela-autocarros").getElementsByTagName("tbody")[0];
+            const novaLinha = tabela.insertRow();
+            novaLinha.innerHTML = `
+                <td>${rota}</td>
+                <td>${numero}</td>
+                <td>${horario}</td>
+                <td>${estado}</td>
+                <td>${lotacao}</td>
+                <td><button onclick="mostrarInformacoesAutocarro('${rota}', '${numero}', '${horario}', '${estado}', '${lotacao}')">Ver</button></td>
+            `;
+
+            document.getElementById("form-adicionar").reset();
+            document.getElementById("form-adicionar").style.display = "none";
+        });
+
+        // Eliminar autocarro
+        document.getElementById("form-eliminar").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const numeroEliminar = document.getElementById("numero-eliminar").value;
+            const tabela = document.getElementById("tabela-autocarros").getElementsByTagName("tbody")[0];
+            const linhas = tabela.getElementsByTagName("tr");
+            let encontrado = false;
+
+            for (let i = 0; i < linhas.length; i++) {
+                const numeroAutocarro = linhas[i].cells[1].innerText;
+                if (parseInt(numeroAutocarro) === parseInt(numeroEliminar)) {
+                    tabela.deleteRow(i);
+                    encontrado = true;
+                    break;
+                }
+            }
+
+            if (!encontrado) {
+                alert("Autocarro não encontrado.");
+            }
+
+            document.getElementById("form-eliminar").reset();
+            document.getElementById("form-eliminar").style.display = "none";
+        });
+
+        // Mostrar informações
+        function mostrarInformacoesAutocarro(rota, numero, horario, estado, lotacao) {
+            document.getElementById("tabela-autocarros").style.display = "none";
+            document.getElementById("titulo-principal").style.display = "none";
+            document.getElementById("informacoes-autocarro").style.display = "block";
+
+            document.getElementById("info-rota").textContent = rota;
+            document.getElementById("info-numero").textContent = numero;
+            document.getElementById("info-horario").textContent = horario;
+            document.getElementById("info-estado").textContent = estado;
+            document.getElementById("info-lotacao").textContent = lotacao;
+        }
+
+        function voltarParaLista() {
+            document.getElementById("informacoes-autocarro").style.display = "none";
+            document.getElementById("tabela-autocarros").style.display = "table";
+            document.getElementById("titulo-principal").style.display = "block";
+        }
+    </script>
+</body>
+</html>

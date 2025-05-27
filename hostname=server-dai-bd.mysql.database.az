@@ -1,0 +1,5 @@
+hostname=server-dai-bd.mysql.database.azure.com
+port=3306
+username=CloudSAa64f1709
+password={your-password}
+ssl-mode=require
