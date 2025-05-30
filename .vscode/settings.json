@@ -16,7 +16,23 @@
         "driver": "MySQL",
         "username": "root",
         "database": "bd_dai",
-        "name": "bd_dai"
+        "name": "bd_dai",
+        "password": ""
+      },
+      {
+        "mysqlOptions": {
+          "authProtocol": "default",
+          "enableSsl": "Disabled"
+        },
+        "previewLimit": 50,
+        "server": "localhost",
+        "port": 3306,
+        "driver": "MySQL",
+        "name": "bd\\_dai",
+        "group": "Trabalhos Faculdade",
+        "database": "bd\\_dai",
+        "username": "root",
+        "password": ""
       }
     ]
   }

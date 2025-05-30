@@ -110,17 +110,28 @@ UNLOCK TABLES;
 -- Table structure for table `paragens`
 --
 
-DROP TABLE IF EXISTS `paragens`;
+DROP TABLE IF EXISTS `stops`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `paragens` (
-  `nome` varchar(100) NOT NULL,
-  `localizacao` varchar(255) DEFAULT NULL,
-  `varias_rotas` tinyint(1) DEFAULT NULL,
-  `lotacao` int DEFAULT NULL,
-  `ativa` tinyint(1) DEFAULT '1',
-  PRIMARY KEY (`nome`)
+CREATE TABLE `stops` (
+  `stop_id` varchar(255) NOT NULL, -- GTFS stop_id (pode ser string)
+  `stop_code` varchar(50) DEFAULT NULL, -- GTFS stop_code
+  `stop_name` varchar(255) NOT NULL, -- GTFS stop_name (mapeado do teu 'nome')
+  `stop_desc` varchar(255) DEFAULT NULL, -- GTFS stop_desc
+  `stop_lat` decimal(10,8) NOT NULL, -- GTFS stop_lat
+  `stop_lon` decimal(11,8) NOT NULL, -- GTFS stop_lon
+  `zone_id` varchar(50) DEFAULT NULL, -- GTFS zone_id
+  `stop_url` varchar(255) DEFAULT NULL, -- GTFS stop_url
+  `location_type` int DEFAULT '0', -- GTFS location_type (0: Stop, 1: Station, etc.)
+  `parent_station` varchar(255) DEFAULT NULL, -- GTFS parent_station
+  `stop_timezone` varchar(50) DEFAULT NULL, -- GTFS stop_timezone
+  `wheelchair_boarding` int DEFAULT '0', -- GTFS wheelchair_boarding (0, 1, 2)
+  `varias_rotas` tinyint(1) DEFAULT NULL, -- Mantido do teu esquema original
+  `lotacao` int DEFAULT NULL, -- Mantido do teu esquema original
+  `ativa` tinyint(1) DEFAULT '1', -- Mantido do teu esquema original
+  PRIMARY KEY (`stop_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
