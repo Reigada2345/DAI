@@ -23,13 +23,14 @@ CREATE TABLE IF NOT EXISTS paragens (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     created_by VARCHAR(100),
-    
-    -- Índices para melhor performance
     INDEX idx_zone (zone_id),
     INDEX idx_ativa (ativa),
     INDEX idx_name (stop_name),
     INDEX idx_coordinates (stop_lat, stop_lon)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO paragens (stop_id, stop_name, stop_lat, stop_lon, zone_id)
+VALUES (1, 'BOM JESUS', 41.554462, -8.381193, 1);
 
 -- Tabela de auditoria para histórico de alterações
 CREATE TABLE IF NOT EXISTS paragens_audit (
