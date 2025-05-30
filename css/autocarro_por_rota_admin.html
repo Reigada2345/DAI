@@ -211,7 +211,6 @@
         </ul>
     </div>
 
-
     <div class="main-container">
         <!-- Container para o modelo 3D -->
         <div id="model-container"></div>
@@ -460,37 +459,34 @@
             document.getElementById("form-adicionar").style.display = "none";
         }
 
+        // Adicionar autocarro
         document.getElementById("form-adicionar").addEventListener("submit", function(event) {
             event.preventDefault();
             const rota = document.getElementById("rota").value;
             const numero = document.getElementById("numero").value;
             const horario = document.getElementById("horario").value;
-            const ativo = document.getElementById("estado").value;
+            const estado = document.getElementById("estado").value;
             const lotacao = document.getElementById("lotacao").value;
 
             const status = (estado === "Em operação" || estado === "Em manutenção") ? "Ativo" : "Inativo";
 
             const tabela = document.getElementById("tabela-autocarros").getElementsByTagName("tbody")[0];
             const novaLinha = tabela.insertRow();
-
-            // Botão com base no estado
-            let botaoAcao = ativo === "Sim"
-                ? `<button onclick="alternarEstado('${numero}')">Desativar</button>`
-                : `<button onclick="alternarEstado('${numero}')">Ativar</button>`;
-
             novaLinha.innerHTML = `
                 <td>${rota}</td>
                 <td>${numero}</td>
                 <td>${horario}</td>
-                <td>${ativo}</td>
+                <td>${estado}</td>
                 <td>${lotacao}</td>
                 <td>${status}</td>
-                <td>${botaoAcao}</td>
             `;
+
 
             document.getElementById("form-adicionar").reset();
             document.getElementById("form-adicionar").style.display = "none";
         });
+
+
 
         // Eliminar autocarro
         document.getElementById("form-eliminar").addEventListener("submit", function(event) {
@@ -498,53 +494,20 @@
             const numeroEliminar = document.getElementById("numero-eliminar").value;
             const tabela = document.getElementById("tabela-autocarros").getElementsByTagName("tbody")[0];
             const linhas = tabela.getElementsByTagName("tr");
+            let encontrado = false;
 
             for (let i = 0; i < linhas.length; i++) {
                 const numeroAutocarro = linhas[i].cells[1].innerText;
-                if (numeroAutocarro === numero) {
-                    const estadoAtual = linhas[i].cells[3].innerText;
-                    if (estadoAtual === "Sim") {
-                        // Desativar
-                        linhas[i].cells[3].innerText = "Não";
-                        linhas[i].cells[5].innerHTML = `<button onclick="alternarEstado('${numero}')">Ativar</button>`;
-                        alert(`Autocarro número ${numero} foi desativado.`);
-                    } else {
-                        // Ativar
-                        linhas[i].cells[3].innerText = "Sim";
-                        linhas[i].cells[5].innerHTML = `<button onclick="alternarEstado('${numero}')">Desativar</button>`;
-                        alert(`Autocarro número ${numero} foi ativado.`);
-                    }
-                    return;
+                if (parseInt(numeroAutocarro) === parseInt(numeroEliminar)) {
+                    tabela.deleteRow(i);
+                    encontrado = true;
+                    break;
                 }
             }
-            alert("Autocarro não encontrado.");
-        }
 
-        // Apagar só autocarros desativados
-        function apagarAutocarro(numero) {
-            const tabela = document.getElementById("tabela-autocarros").getElementsByTagName("tbody")[0];
-            const linhas = tabela.getElementsByTagName("tr");
-
-            for (let i = 0; i < linhas.length; i++) {
-                const numeroAutocarro = linhas[i].cells[1].innerText;
-                const estado = linhas[i].cells[3].innerText;
-                if (numeroAutocarro === numero) {
-                    if (estado === "Não") {
-                        tabela.deleteRow(i);
-                        alert(`Autocarro número ${numero} foi apagado.`);
-                    } else {
-                        alert("Só pode apagar autocarros que estejam desativados.");
-                    }
-                    return;
-                }
+            if (!encontrado) {
+                alert("Autocarro não encontrado.");
             }
-            alert("Autocarro não encontrado.");
-        }
-
-        document.getElementById("form-eliminar").addEventListener("submit", function(event) {
-            event.preventDefault();
-            const numeroEliminar = document.getElementById("numero-eliminar").value;
-            apagarAutocarro(numeroEliminar);
 
             document.getElementById("form-eliminar").reset();
             document.getElementById("form-eliminar").style.display = "none";
@@ -570,6 +533,7 @@
             <p><strong>Lotação:</strong> ${lotacao}</p>
             <button onclick="voltarParaLista()">Voltar</button>
         `;
+
         info.style.display = 'block';
         document.getElementById("tabela-autocarros").style.display = "none";
         document.getElementById("titulo-principal").style.display = "none";
