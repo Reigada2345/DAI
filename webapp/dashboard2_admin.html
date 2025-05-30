@@ -157,6 +157,27 @@
             background-color: #1a436c;
         }
 
+<h1>Gestão de Rotas</h1>
+<div id="rota-form">
+    <input type="text" id="route_short_name" placeholder="Nome curto (ex: 2)">
+    <input type="text" id="route_long_name" placeholder="Descrição (ex: PONTE DE PRADO - BOM JESUS)">
+    <button onclick="adicionarRota()">Adicionar Rota</button>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome Curto</th>
+            <th>Descrição</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody id="tabela-rotas">
+        <!-- Rotas serão injetadas aqui -->
+    </tbody>
+</table>
+
 
     </style>
 </head>
@@ -375,8 +396,6 @@
             }
         }
 
-
-    </script>
     <script>
         function mostrarInformacoesAutocarro(rota, numero, horario, estado) {
             // Esconde todas as tabelas
@@ -402,7 +421,26 @@
             tabelas.forEach(tabela => tabela.style.display = 'block');
         }
 
+async function carregarRotasDinamicamente() {
+    const res = await fetch("/api/routes");
+    const rotas = await res.json();
+    const container = document.querySelector(".bus-container");
+    container.innerHTML = ""; // Limpa as rotas atuais
+
+    rotas.forEach((rota, index) => {
+        const card = document.createElement("div");
+        card.className = "bus-card";
+        card.innerHTML = `
+            <img src="${rota.image}" alt="Linha ${rota.short_name}">
+            <h2>Linha ${rota.short_name}</h2>
+            <p>${rota.long_name}</p>
+            <button onclick="mostrarTabela('linha${index + 1}')">Ver Informações</button>
+        `;
+        container.appendChild(card);
+    });
+}
+
+window.onload = carregarRotasDinamicamente;
 </script>
 </body>
-</script>
 </html>
