@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Autocarros por Rota</title>
+    <!-- Bibliotecas Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <style>
         * {
             margin: 0;
@@ -14,7 +18,7 @@
 
         body {
             background-color: #f4f4f4;
-            padding: 20px;
+            overflow-x: hidden;
         }
 
         .navbar {
@@ -28,7 +32,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 999;
+            z-index: 1000;
         }
 
         .navbar h2 {
@@ -55,10 +59,35 @@
             border-radius: 5px;
         }
 
-        .main-content {
-            margin-top: 100px;
+        /* Container principal flexível */
+        .main-container {
+            display: flex;
+            margin-top: 70px;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Container do modelo 3D */
+        #model-container {
+            width: 400px;
+            height: calc(100vh - 70px);
+            position: fixed;
+            left: 0;
+            top: 70px;
+            background: #f0f0f0;
+            z-index: 1;
+        }
+
+        /* Container do conteúdo */
+        .content-container {
+            flex: 1;
+            margin-left: 400px;
             padding: 20px;
-            text-align: center;
+            z-index: 2;
+        }
+
+        h1, h2 {
+            margin-bottom: 20px;
+            color: #2c72b7;
         }
 
         table {
@@ -94,10 +123,34 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-right: 5px;
+            margin-bottom: 5px;
         }
 
         button:hover {
             background-color: #1a436c;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
 
         #informacoes-autocarro {
@@ -125,27 +178,24 @@
             margin-right: auto;
         }
 
-        #form-adicionar label, #form-eliminar label {
-            display: block;
-            margin-top: 10px;
-            margin-bottom: 5px;
-        }
-
-        #form-adicionar input, #form-eliminar input, #form-adicionar select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-        }
-
         .caixa-branca {
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
-    padding: 30px 25px;
-    margin: 40px auto;
-    max-width: 900px;
-}
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+            padding: 30px 25px;
+            margin: 40px auto;
+            max-width: 900px;
+        }
 
+        @media (max-width: 768px) {
+            #model-container {
+                display: none;
+            }
+            .content-container {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -161,87 +211,222 @@
         </ul>
     </div>
 
-   <div class="main-content">
-        <h1 id="titulo-principal">Autocarros por Rota</h1>
 
-        <div class="caixa-branca">
-            <div style="margin: 20px 0;">
-                <button onclick="mostrarFormularioAdicionar()">Adicionar Autocarro</button>
-                <button onclick="mostrarFormularioEliminar()">Eliminar Autocarro</button>
+    <div class="main-container">
+        <!-- Container para o modelo 3D -->
+        <div id="model-container"></div>
+
+        <!-- Container para o conteúdo -->
+        <div class="content-container">
+            <h1 id="titulo-principal">Autocarros por Rota</h1>
+
+            <div class="caixa-branca">
+                <!-- Botões -->
+                <div style="margin: 20px 0;">
+                    <button onclick="mostrarFormularioAdicionar()">Adicionar Autocarro</button>
+                    <button onclick="mostrarFormularioEliminar()">Eliminar Autocarro</button>
+                </div>
+
+                <!-- Formulário Adicionar -->
+                <form id="form-adicionar">
+                    <h2>Adicionar Autocarro</h2>
+                    <label for="rota">Rota</label>
+                    <input type="text" id="rota" required>
+
+                    <label for="numero">Número do Autocarro</label>
+                    <input type="number" id="numero" required>
+
+                    <label for="horario">Horário</label>
+                    <input type="text" id="horario" placeholder="Ex: 08:00 - 09:00" required>
+
+                    <label for="estado">Estado</label>
+                    <select id="estado" required>
+                        <option value="Em operação">Em operação</option>
+                        <option value="Em manutenção">Em manutenção</option>
+                    </select>
+
+                    <label for="lotacao">Lotação (%)</label>
+                    <input type="text" id="lotacao" required>
+
+                    <button type="submit">Adicionar</button>
+                </form>
+
+                <!-- Formulário Eliminar -->
+                <form id="form-eliminar">
+                    <h2>Eliminar Autocarro</h2>
+                    <label for="numero-eliminar">Número do Autocarro a eliminar</label>
+                    <input type="number" id="numero-eliminar" required>
+                    <button type="submit">Eliminar</button>
+                </form>
+
+                <!-- Tabela -->
+                <table id="tabela-autocarros">
+                    <thead>
+                        <tr>
+                            <th>Rota</th>
+                            <th>Número</th>
+                            <th>Horário</th>
+                            <th>Estado</th>
+                            <th>Lotação</th>
+                            <th>Informações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Rota 1</td>
+                            <td>1</td>
+                            <td>08:00 - 09:00</td>
+                            <td>Em manutenção</td>
+                            <td>50%</td>
+                            <td><button onclick="mostrarInformacoesAutocarro('Rota 1', '1', '08:00 - 09:00', 'Em manutenção', '50%')">Ver</button></td>
+                        </tr>
+                        <tr>
+                            <td>Rota 2</td>
+                            <td>2</td>
+                            <td>09:30 - 10:30</td>
+                            <td>Em operação</td>
+                            <td>80%</td>
+                            <td><button onclick="mostrarInformacoesAutocarro('Rota 2', '2', '09:30 - 10:30', 'Em operação', '80%')">Ver</button></td>
+                        </tr>
+                        <tr>
+                            <td>Rota 3</td>
+                            <td>3</td>
+                            <td>07:00 - 08:00</td>
+                            <td>Em operação</td>
+                            <td>30%</td>
+                            <td><button onclick="mostrarInformacoesAutocarro('Rota 3', '3', '07:00 - 08:00', 'Em operação', '30%')">Ver</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Informações do autocarro -->
+                <div id="informacoes-autocarro">
+                    <h2>Informações do Autocarro</h2>
+                    <p><strong>Rota:</strong> <span id="info-rota"></span></p>
+                    <p><strong>Número:</strong> <span id="info-numero"></span></p>
+                    <p><strong>Horário:</strong> <span id="info-horario"></span></p>
+                    <p><strong>Estado:</strong> <span id="info-estado"></span></p>
+                    <p><strong>Lotação:</strong> <span id="info-lotacao"></span></p>
+                    <button onclick="voltarParaLista()">Voltar</button>
+                </div>
             </div>
-
-            <form id="form-adicionar">
-                <h2>Adicionar Autocarro</h2>
-                <label for="rota">Rota</label>
-                <input type="text" id="rota" required>
-
-                <label for="numero">Número do Autocarro</label>
-                <input type="number" id="numero" required>
-
-                <label for="horario">Horário</label>
-                <input type="text" id="horario" placeholder="Ex: 08:00 - 09:00" required>
-
-                <label for="estado">Ativo</label>
-                <select id="estado" required>
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
-                </select>
-
-                <label for="lotacao">Lotação (%)</label>
-                <input type="text" id="lotacao" required>
-
-                <button type="submit">Adicionar</button>
-            </form>
-
-            <form id="form-eliminar">
-                <h2>Eliminar Autocarro</h2>
-                <label for="numero-eliminar">Número do Autocarro a eliminar</label>
-                <input type="number" id="numero-eliminar" required>
-                <button type="submit">Eliminar</button>
-            </form>
-
-            <table id="tabela-autocarros">
-                <thead>
-                    <tr>
-                        <th>Rota</th>
-                        <th>Número</th>
-                        <th>Horário</th>
-                        <th>Ativo</th>
-                        <th>Lotação</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Rota 1</td>
-                        <td>1</td>
-                        <td>08:00 - 09:00</td>
-                        <td>Não</td>
-                        <td>50%</td>
-                        <td><button onclick="alternarEstado('1')">Ativar</button></td>
-                    </tr>
-                    <tr>
-                        <td>Rota 2</td>
-                        <td>2</td>
-                        <td>09:30 - 10:30</td>
-                        <td>Sim</td>
-                        <td>80%</td>
-                        <td><button onclick="alternarEstado('2')">Desativar</button></td>
-                    </tr>
-                    <tr>
-                        <td>Rota 3</td>
-                        <td>3</td>
-                        <td>07:00 - 08:00</td>
-                        <td>Sim</td>
-                        <td>30%</td>
-                        <td><button onclick="alternarEstado('3')">Desativar</button></td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </div>
 
     <script>
+        // Inicialização do Three.js
+        let scene, camera, renderer, busModel, characterModel;
+
+        function init3DModel() {
+            // 1. Cena
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf0f0f0);
+            
+            // 2. Câmera
+            const container = document.getElementById('model-container');
+            camera = new THREE.PerspectiveCamera(
+                75, 
+                container.clientWidth / container.clientHeight, 
+                0.1, 
+                1000
+            );
+            camera.position.set(0, 1.5, 5);
+            
+            // 3. Renderizador
+            renderer = new THREE.WebGLRenderer({ 
+                antialias: true,
+                alpha: true
+            });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+            
+            // 4. Iluminação
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            directionalLight.position.set(5, 10, 7);
+            scene.add(directionalLight);
+            
+            // 5. Carregar modelos
+            const loader = new THREE.GLTFLoader();
+            
+            // Carregar autocarro
+            loader.load(
+                './models/bus.glb',
+                function(gltf) {
+                    busModel = gltf.scene;
+                    busModel.scale.set(0.6, 0.6, 0.6);
+                    busModel.position.set(27, -0.55, );
+                    busModel.rotation.y = Math.PI / 2;
+                    scene.add(busModel);
+                },
+                undefined,
+                function(error) {
+                    console.error('Erro ao carregar autocarro:', error);
+                }
+            );
+            
+            // Carregar paragem de autocarro
+            loader.load(
+                './models/bus_stop.glb',
+                function(gltf) {
+                    busStopModel = gltf.scene;
+                    busStopModel.scale.set(1.2, 1.2, 1.2);
+                    busStopModel.position.set(0, 0, 0);
+                    busStopModel.rotation.y = Math.PI / 2;
+                    scene.add(busStopModel);
+                },
+                undefined,
+                function(error) {
+                    console.error('Erro ao carregar paragem:', error);
+                }
+            );
+
+            // Carregar personagem
+            loader.load(
+                './models/male_character.glb',
+                function(gltf) {
+                    characterModel = gltf.scene;
+                    characterModel.scale.set(0.6, 0.6, 0.6);
+                    characterModel.position.set(0.25, -0.45, 0);
+                    characterModel.rotation.y = Math.PI / 2;
+                    scene.add(characterModel);
+                },
+                undefined,
+                function(error) {
+                    console.error('Erro ao carregar personagem:', error);
+                }
+            );
+
+            // 6. Controles
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.target.set(0, 1, 0);
+            controls.enablePan = false;
+            controls.enableZoom = true;
+            controls.minDistance = 3;
+            controls.maxDistance = 10;
+            
+            // 7. Animação
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
+            
+            // 8. Redimensionamento
+            window.addEventListener('resize', function() {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+        }
+
+        // Iniciar quando a página carregar
+        window.addEventListener('load', init3DModel);
+
+        // Código existente para gerenciar autocarros
         function mostrarFormularioAdicionar() {
             document.getElementById("form-adicionar").style.display = "block";
             document.getElementById("form-eliminar").style.display = "none";
@@ -337,6 +522,5 @@
             document.getElementById("form-eliminar").style.display = "none";
         });
     </script>
-
 </body>
 </html>

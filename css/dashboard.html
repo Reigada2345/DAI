@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,8 @@
     <title>Mapa em Tempo Real</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
- 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+
 <style>
         * {
             margin: 0;
@@ -184,7 +185,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Inicializa o mapa
-            const map = L.map('map').setView([41.545448, -8.426507], 13); // Coordenadas iniciais (Braga)
+            const map = L.map('map').setView([41.545448, -8.426507], 15); // Coordenadas iniciais (Braga)
 
             // Adiciona o tile layer (camada de mapa)
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -193,10 +194,46 @@
             }).addTo(map);
 
             // Exemplo: Adiciona um marcador no mapa
-            const marker = L.marker([41.545448, -8.426507]).addTo(map);
-            marker.bindPopup("<b>Bem-vindo!</b><br>Este é o mapa em tempo real.").openPopup();
+            Papa.parse('data/stops.csv', {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                if (!results || !results.data) {
+                    console.error("Erro a carregar o CSV:", results);
+                    return;
+                }
+
+console.log('Paragens carregadas:', results.data.length);
+
+        results.data.forEach(stop => {
+        const lat = parseFloat(stop.stop_lat);
+        const lon = parseFloat(stop.stop_lon);
+        const name = stop.stop_name;
+
+        console.log("Paragem:", name, lat, lon);
+
+        if (!isNaN(lat) && !isNaN(lon)) {
+            L.circle([lat, lon], {
+            radius: 150,
+            color: 'black',
+            weight: 2,
+            fillColor: 'yellow',
+            fillOpacity: 0.9
+        })
+            .addTo(map)
+            .bindPopup(`<b>${name}</b>`)
+            .bindTooltip(name, { permanent: true, direction: 'top', offset: [0, -10]
         });
-    </script>
+        }
+        });
+    },
+    error: function(err) {
+        console.error("Erro a ler o ficheiro CSV:", err);
+    }
+    });
+});
+</script>
 
         <!-- Rotas -->
         <div class="header">Escolha uma Rota</div>
@@ -205,7 +242,7 @@
                 <img src="fotos/rota1.jpg" alt="Linha 1">
                 <h2>Linha 1</h2>
                 <p>Estação - Universidade do Minho</p>
-               <!--<p>Lotação ocupada: 70%</p>-->
+            <!--<p>Lotação ocupada: 70%</p>-->
                 <button onclick="mostrarTabela('linha1')">Ver Informações</button>
             </div>
             <div class="bus-card">
