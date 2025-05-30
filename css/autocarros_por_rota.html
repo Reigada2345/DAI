@@ -256,13 +256,13 @@
                 <td>Em operação</td>
                 <td>60%</td>
                 <td>
-                    <button onclick="mostrarInformacoesAutocarro('Rota 4', '4', '10:00 - 11:00', 'Em operação', '60%')">Ver</button>
+                    <button onclick="mostrarInformacoesAutocarro('Rota 4', '4', '10:00 - 11:00', 'Em operação', '60%', '21°C')">Ver</button>
                 </td>
 
         </tbody>
     </table>
     <script>
-        function mostrarInformacoesAutocarro(rota, numero, horario, estado, lotacao) {
+        function mostrarInformacoesAutocarro(rota, numero, horario, estado, lotacao, temperatura) {
             // Esconde a tabela
             const tabela = document.querySelector('table');
             tabela.style.display = 'none';
