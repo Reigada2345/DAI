@@ -13,75 +13,159 @@
         }
 
         body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             background-color: #f4f4f4;
-            padding: 20px;
-        }
-        
-
-        .header {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
         }
 
-        .bus-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .navbar {
             width: 100%;
-            max-width: 600px;
-        }
-
-        .bus-item {
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
+            background-color: #2c72b7;
+            color: white;
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
         }
 
-        .bus-item:hover {
-            background-color: #f9f9f9;
-        }
-
-        .bus-item h3 {
+        .navbar h2 {
             margin: 0;
-            font-size: 18px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 1px;
         }
 
-        .bus-item span {
-            font-size: 14px;
-            color: gray;
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            padding: 10px 20px;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.2s;
+        }
+
+        .navbar ul li:hover {
+            background-color: #1a436c;
+            border-radius: 5px;
+        }
+
+        #titulo-autocarros {
+            margin-top: 100px;
+            font-size: 2.5rem;
+            color: #2c72b7;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .bus-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto 40px auto;
+        }
+
+        .bus-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(44, 114, 183, 0.10);
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: box-shadow 0.2s, transform 0.2s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .bus-card:hover {
+            box-shadow: 0 8px 32px rgba(44, 114, 183, 0.18);
+            border: 2px solid #2c72b7;
+            transform: translateY(-4px) scale(1.02);
+            background: #f6faff;
+        }
+
+        .bus-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.4rem;
+            color: #2c72b7;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .bus-card .rota {
+            font-size: 1.1rem;
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        .bus-card .info-extra {
+            font-size: 0.95rem;
+            color: #555;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 600px) {
+            #titulo-autocarros {
+                font-size: 2rem;
+                margin-top: 80px;
+            }
+            .bus-list {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+            .bus-card {
+                padding: 20px 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="header">Lista de Autocarros</div>
+    <div class="navbar">
+        <h2>TUB</h2>
+        <ul>
+            <li><a href="dashboard.html">Início</a></li>
+            <li><a href="autocarros.html">Autocarros</a></li>
+            <li><a href="paragem_cliente.html">Paragens</a></li>
+            <li><a href="perfil_cliente.html">Perfil</a></li>
+            <li><a href="index.html">Sair</a></li>
+        </ul>
+    </div>
+
+    <h1 id="titulo-autocarros">Lista de Autocarros</h1>
     <div class="bus-list">
-        <!-- Cada autocarro é um item clicável -->
-        <div class="bus-item" onclick="verInformacoes('1')">
+        <div class="bus-card" onclick="verInformacoes('1')">
             <h3>Autocarro 1</h3>
-            <span>Rota: Estação - Universidade do Minho</span>
+            <div class="rota">Rota 1</div>
+            <div class="info-extra">Horário: 08:00 - 09:00</div>
         </div>
-        <div class="bus-item" onclick="verInformacoes('2')">
+        <div class="bus-card" onclick="verInformacoes('2')">
             <h3>Autocarro 2</h3>
-            <span>Rota: Nova Arcada - Minho Center</span>
+            <div class="rota">Rota 2</div>
+            <div class="info-extra">Horário: 09:30 - 10:30</div>
         </div>
-        <div class="bus-item" onclick="verInformacoes('3')">
+        <div class="bus-card" onclick="verInformacoes('3')">
             <h3>Autocarro 3</h3>
-            <span>Rota: Hospital - Avenida Central </span>
+            <div class="rota">Rota 3</div>
+            <div class="info-extra">Horário: 07:00 - 08:00</div>
         </div>
-        <div class="bus-item" onclick="verInformacoes('4')">
+        <div class="bus-card" onclick="verInformacoes('4')">
             <h3>Autocarro 4</h3>
-            <span>Rota: Universidade do Minho - Estação </span>
+            <div class="rota">Rota 4</div>
+            <div class="info-extra">Horário: 10:00 - 11:00</div>
         </div>
     </div>
 
@@ -89,15 +173,15 @@
         function verInformacoes(busId) {
             // Dados simulados para cada autocarro
             const busData = {
-                "43": {
+                "1": {
                     busName: "Autocarro 1",
                     temperature: "25°C",
                     occupancy: "70%",
                     schedule: "08:00 - 09:00",
                     departure: "Estação",
-                    destination: "Universidade"
+                    destination: "Universidade do Minho"
                 },
-                "95": {
+                "2": {
                     busName: "Autocarro 2",
                     temperature: "22°C",
                     occupancy: "50%",
@@ -105,23 +189,29 @@
                     departure: "Nova Arcada",
                     destination: "Minho Center"
                 },
-                "900": {
+                "3": {
                     busName: "Autocarro 3",
                     temperature: "20°C",
                     occupancy: "90%",
                     schedule: "07:00 - 08:00",
                     departure: "Hospital",
                     destination: "Avenida Central"
+                },
+                "4": {
+                    busName: "Autocarro 4",
+                    temperature: "21°C",
+                    occupancy: "60%",
+                    schedule: "10:00 - 11:00",
+                    departure: "Universidade do Minho",
+                    destination: "Estação"
                 }
             };
 
-            // Obtém os dados do autocarro selecionado
             const selectedBus = busData[busId];
+            if (!selectedBus) return;
 
-            // Redireciona para a página bus-info.html com os parâmetros na URL
             window.location.href = `bus-info.html?busName=${encodeURIComponent(selectedBus.busName)}&temperature=${encodeURIComponent(selectedBus.temperature)}&occupancy=${encodeURIComponent(selectedBus.occupancy)}&schedule=${encodeURIComponent(selectedBus.schedule)}&departure=${encodeURIComponent(selectedBus.departure)}&destination=${encodeURIComponent(selectedBus.destination)}`;
         }
     </script>
 </body>
 </html>
-  

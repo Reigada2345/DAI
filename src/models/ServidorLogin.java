@@ -80,39 +80,35 @@ public class ServidorLogin {
                 try {
 
                     ClienteDAO clienteDAO = new ClienteDAO();
-                MotoristaDAO motoristaDAO = new MotoristaDAO();
+                    AdminDAO adminDAO = new AdminDAO();
 
-                boolean validCliente = clienteDAO.validarLogin(email, password);
-                boolean validMotorista = motoristaDAO.validarLogin(email, password);
+                    boolean validCliente = clienteDAO.validarLogin(email, password);
+                    boolean validAdmin = adminDAO.validarLogin(email, password);
 
-                if (validCliente) {
-
-                    sendResponse(exchange, 200, "success_cliente");
-                } else if (validMotorista) {
-                    sendResponse(exchange, 200, "success_motorista");
-                } else {
-                    sendResponse(exchange, 401, "erro_login");
-                }
-
+                    if (validCliente) {
+                        sendResponse(exchange, 200, "success_cliente");
+                    } else if (validAdmin) {
+                        sendResponse(exchange, 200, "success_admin");
+                    } else {
+                        sendResponse(exchange, 401, "erro_login");
+                    }
                 } catch (IOException e) {
                     sendResponse(exchange, 500, "Erro de IO: " + e.getMessage());
                 } catch (RuntimeException e) {
                     sendResponse(exchange, 500, "Erro de execução: " + e.getMessage());
                 }
-            } else {
-                sendResponse(exchange, 405, "Método não suportado");
             }
         }
     }
 
-
-    
     static class PerfilHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
             exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, OPTIONS");
             exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
+            exchange.getResponseHeaders().add("Content-Type", "application/json; charset=utf-8");
+
 
             if ("OPTIONS".equals(exchange.getRequestMethod())) {
                 exchange.sendResponseHeaders(204, -1);
@@ -151,22 +147,21 @@ public class ServidorLogin {
                         return;
                     }
 
-                    MotoristaDAO motoristaDAO = new MotoristaDAO();
-                    Motorista motorista = motoristaDAO.buscarPorEmail(email);
+                    AdminDAO adminDAO = new AdminDAO();
+                    Admin admin = adminDAO.buscarPorEmail(email);
 
-                    if (motorista != null) {
-                        String json = "{"
-                            + "\"tipoUtilizador\":\"Motorista\","
-                            + "\"nome\":\"" + escapeJson(motorista.getNomeProprio()) + "\","
-                            + "\"apelido\":\"" + escapeJson(motorista.getApelido()) + "\","
+                    if (admin != null) {
+                    String json = "{"
+                        + "\"tipoUtilizador\":\"Admin\","
+                        + "\"nome\":\"" + escapeJson(admin.getNomeProprio()) + "\","
+                        + "\"apelido\":\"" + escapeJson(admin.getApelido()) + "\","
+                        + "\"contacto\":\"" + escapeJson(admin.getContacto()) + "\","
+                        + "\"email\":\"" + escapeJson(admin.getEmail()) + "\""
+                        + "}";
+                    sendResponse(exchange, 200, json);
+                    return;
+                }
 
-                            + "\"contacto\":\"" + escapeJson(motorista.getContacto()) + "\","
-                            + "\"email\":\"" + escapeJson(motorista.getEmail()) + "\","
-                            + "\"prioritario\":\"N/A\""
-                            + "}";
-                        sendResponse(exchange, 200, json);
-                        return;
-                    }
 
                     sendResponse(exchange, 404, "{\"erro\":\"Utilizador não encontrado\"}");
 
@@ -221,6 +216,9 @@ public class ServidorLogin {
         exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
         exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "POST, OPTIONS");
         exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
+        exchange.getResponseHeaders().add("Content-Type", "application/json; charset=utf-8");
+
+
 
         if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
             exchange.sendResponseHeaders(200, -1);
@@ -265,21 +263,17 @@ public class ServidorLogin {
         }
 
         try {
-            switch (tipoUtilizador) {
-                case "cliente" -> {
+           
                     Cliente cliente = new Cliente(firstName, lastName, contact, utilizadorPrioritario, email, password);
                     ClienteDAO dao = new ClienteDAO();
                     boolean sucesso = dao.adicionarCliente(cliente);
-                    sendResponse(exchange, 200, sucesso ? "success" : "erro");
-                }
-                case "motorista" -> {
-                    Motorista motorista = new Motorista(firstName, lastName, contact, false, email, password);
-                    MotoristaDAO dao = new MotoristaDAO();
-                    boolean sucesso = dao.adicionarMotorista(motorista);
-                    sendResponse(exchange, 200, sucesso ? "success" : "erro");
-                }
-                default -> sendResponse(exchange, 400, "Tipo de utilizador inválido");
-            }
+                    String jsonResponse = "{\"status\": \"" + (sucesso ? "success" : "erro") + "\"}";
+                    exchange.getResponseHeaders().add("Content-Type", "application/json; charset=utf-8");
+                    sendResponse(exchange, 200, jsonResponse);
+
+
+                
+                
         } catch (IOException e) {
             sendResponse(exchange, 500, "Erro de IO ao registar: " + e.getMessage());
         } catch (RuntimeException e) {
