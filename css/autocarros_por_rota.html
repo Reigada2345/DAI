@@ -178,6 +178,54 @@
         align-items: center;
         
     }
+
+    .bus-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto 40px auto;
+}
+
+.bus-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(44, 114, 183, 0.10);
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.bus-card:hover {
+    box-shadow: 0 8px 32px rgba(44, 114, 183, 0.18);
+    border: 2px solid #2c72b7;
+    transform: translateY(-4px) scale(1.02);
+    background: #f6faff;
+}
+
+.bus-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.4rem;
+    color: #2c72b7;
+    font-family: 'Poppins', sans-serif;
+}
+
+.bus-card .rota {
+    font-size: 1.1rem;
+    color: #222;
+    margin-bottom: 10px;
+}
+
+.bus-card .info-extra {
+    font-size: 0.95rem;
+    color: #555;
+    margin-top: 8px;
+}
 </style>
 </head>
 <!-- Área para exibir as informações do autocarro -->
@@ -203,96 +251,68 @@
     <button onclick="voltarParaLista()">Voltar</button>
 </div>
 <body>
-    <h1 id="titulo-autocarros" style="margin-top: 100px;">Autocarros por Rota</h1> 
-    <table>
-        <thead>
-            <tr>
-                <th>Rota</th>
-                <th>Número do Autocarro</th>
-                <th>Horário</th>
-                <th>Estado</th>
-                <th>Lotação</th>
-                <th>Informações do Autocarro</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Exemplo de dados -->
-    
-            <tr>
-                <td>Rota 1</td>
-                <td>1</td>
-                <td>08:00 - 09:00</td>
-                <td>Em manutenção</td>
-                <td>50%</td>
-                <td>
-                    <button onclick="mostrarInformacoesAutocarro('Rota 1', '1', '08:00 - 09:00', 'Em manutenção', '50%', '22°C')">Ver</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Rota 2</td>
-                <td>2</td>
-                <td>09:30 - 10:30</td>
-                <td>Em operação</td>
-                <td>80%</td>
-                <td>
-                    <button onclick="mostrarInformacoesAutocarro('Rota 2', '2', '09:30 - 10:30', 'Em operação', '80%', '25°C')">Ver</button>
-                </td>
-            </tr>
-        
-            <tr>
-                <td>Rota 3</td>
-                <td>3</td>
-                <td>07:00 - 08:00</td>
-                <td>Em operação</td>
-                <td>30%</td>
-                <td>
-                    <button onclick="mostrarInformacoesAutocarro('Rota 3', '3', '07:00 - 08:00', 'Em operação', '30%', '20°C')">Ver</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Rota 4</td>
-                <td>4</td>
-                <td>10:00 - 11:00</td>
-                <td>Em operação</td>
-                <td>60%</td>
-                <td>
-                    <button onclick="mostrarInformacoesAutocarro('Rota 4', '4', '10:00 - 11:00', 'Em operação', '60%', '21°C')">Ver</button>
-                </td>
-
-        </tbody>
+    <!-- Substitui a tabela por este bloco dentro do <body> -->
+<h1 id="titulo-autocarros" style="margin-top: 100px;">Autocarros por Rota</h1>
+<div class="bus-list">
+    <div class="bus-card" onclick="mostrarInformacoesAutocarro('Rota 1', '1', '08:00 - 09:00', 'Em manutenção', '50%', '22°C')">
+        <h3>Autocarro 1</h3>
+        <div class="rota">Rota 1</div>
+        <div class="info-extra">Horário: 08:00 - 09:00</div>
+        <div class="info-extra">Estado: Em manutenção</div>
+        <div class="info-extra">Lotação: 50%</div>
+    </div>
+    <div class="bus-card" onclick="mostrarInformacoesAutocarro('Rota 2', '2', '09:30 - 10:30', 'Em operação', '80%', '25°C')">
+        <h3>Autocarro 2</h3>
+        <div class="rota">Rota 2</div>
+        <div class="info-extra">Horário: 09:30 - 10:30</div>
+        <div class="info-extra">Estado: Em operação</div>
+        <div class="info-extra">Lotação: 80%</div>
+    </div>
+    <div class="bus-card" onclick="mostrarInformacoesAutocarro('Rota 3', '3', '07:00 - 08:00', 'Em operação', '30%', '20°C')">
+        <h3>Autocarro 3</h3>
+        <div class="rota">Rota 3</div>
+        <div class="info-extra">Horário: 07:00 - 08:00</div>
+        <div class="info-extra">Estado: Em operação</div>
+        <div class="info-extra">Lotação: 30%</div>
+    </div>
+    <div class="bus-card" onclick="mostrarInformacoesAutocarro('Rota 4', '4', '10:00 - 11:00', 'Em operação', '60%', '21°C')">
+        <h3>Autocarro 4</h3>
+        <div class="rota">Rota 4</div>
+        <div class="info-extra">Horário: 10:00 - 11:00</div>
+        <div class="info-extra">Estado: Em operação</div>
+        <div class="info-extra">Lotação: 60%</div>
+    </div>
+</div>
+   
     </table>
     <script>
-        function mostrarInformacoesAutocarro(rota, numero, horario, estado, lotacao, temperatura) {
-            // Esconde a tabela
-            const tabela = document.querySelector('table');
-            tabela.style.display = 'none';
-            // Esconde o título
-        const titulo = document.getElementById('titulo-autocarros');
-        titulo.style.display = 'none';
-    
-            // Preenche os dados do autocarro selecionado
-            document.getElementById('rota').textContent = rota;
-            document.getElementById('numero').textContent = numero;
-            document.getElementById('horario').textContent = horario;
-            document.getElementById('estado').textContent = estado;
-            document.getElementById('lotacao').textContent = lotacao;
-            document.getElementById('temperatura').textContent = temperatura; 
-    
-            // Mostra a área de informações do autocarro
-            document.getElementById('informacoes-autocarro').style.display = 'block';
-        }
-    
-        function voltarParaLista() {
-            // Esconde a área de informações do autocarro
-            document.getElementById('informacoes-autocarro').style.display = 'none';
-    
-            // Mostra novamente a tabela
-            const tabela = document.querySelector('table');
-            tabela.style.display = 'table';
-            // Mostra o título
-        const titulo = document.getElementById('titulo-autocarros');
-        titulo.style.display = 'block';
-        }
+    function mostrarInformacoesAutocarro(rota, numero, horario, estado, lotacao, temperatura) {
+        // Esconde a lista de cartões
+        document.querySelector('.bus-list').style.display = 'none';
+        // Esconde o título
+        document.getElementById('titulo-autocarros').style.display = 'none';
+
+        // Preenche os dados do autocarro selecionado
+        document.getElementById('rota').textContent = rota;
+        document.getElementById('numero').textContent = numero;
+        document.getElementById('horario').textContent = horario;
+        document.getElementById('estado').textContent = estado;
+        document.getElementById('lotacao').textContent = lotacao;
+        document.getElementById('temperatura').textContent = temperatura; 
+
+        // Mostra a área de informações do autocarro
+        document.getElementById('informacoes-autocarro').style.display = 'block';
+    }
+
+    function voltarParaLista() {
+        // Esconde a área de informações do autocarro
+        document.getElementById('informacoes-autocarro').style.display = 'none';
+
+        // Mostra novamente a lista de cartões e o título
+        document.querySelector('.bus-list').style.display = 'grid';
+        document.getElementById('titulo-autocarros').style.display = 'block';
+    }
     </script>
+   
 </body>
 </html>
