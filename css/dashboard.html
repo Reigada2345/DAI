@@ -22,6 +22,42 @@
             height: 100vh;
             background-color: #f4f4f4;
         }
+        #informacoes-autocarro {
+            display: none;
+            margin-top: 40px;
+            border: none;
+            padding: 32px 24px;
+            background: #f6faff;
+            width: 90%;
+            max-width: 700px;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(44, 114, 183, 0.10);
+            font-size: 1.2rem;
+            text-align: left;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #informacoes-autocarro h2 {
+            font-size: 2rem;
+            color: #2c72b7;
+            margin-bottom: 18px;
+            text-align: left;
+        }
+        #informacoes-autocarro button {
+            font-size: 1.1rem;
+            padding: 10px 28px;
+            background: linear-gradient(90deg, #2c72b7 60%, #3a9bdc 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 18px;
+            transition: background 0.2s, transform 0.2s;
+        }
+        #informacoes-autocarro button:hover {
+            background: #1a436c;
+            transform: translateY(-2px) scale(1.05);
+        }
 
         /* Estilo do menu no topo */
         .navbar {
@@ -75,24 +111,55 @@
         }
  /* Estilo dos cartões de autocarros */
         .bus-container {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
             justify-content: center;
+            margin-bottom: 40px;
+            margin-top: 10px;
         }
         .bus-card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin: 10px;
-            width: 300px;
-            text-align: center;
-            padding: 20px;
-            min-height: 350px;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 24px rgba(44, 114, 183, 0.10);
+            padding: 24px 18px 18px 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: box-shadow 0.2s, transform 0.2s;
+            cursor: pointer;
+            border: 2px solid transparent;
+            min-height: 370px;
+        }
+        .bus-card:hover {
+            box-shadow: 0 8px 32px rgba(44, 114, 183, 0.18);
+            border: 2px solid #2c72b7;
+            transform: translateY(-4px) scale(1.02);
+            background: #f6faff;
         }
         .bus-card img {
             width: 100%;
+            max-width: 220px;
             border-radius: 10px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 10px rgba(44, 114, 183, 0.07);
         }
+        .bus-title {
+            font-size: 1.4rem;
+            color: #2c72b7;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 8px;
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .bus-desc {
+            font-size: 1.05rem;
+            color: #444;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
         .bus-card button {
             background-color: #2c72b7;
             color: white;
@@ -110,7 +177,54 @@
 
         .bus-table {
             display: none;
-            margin-top: 20px;
+            margin-top: 30px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(44, 114, 183, 0.10);
+            padding: 32px 24px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .bus-table h2 {
+            color: #2c72b7;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .bus-table table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .bus-table th, .bus-table td {
+            border: none;
+            padding: 14px 10px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .bus-table th {
+            background-color: #2c72b7;
+            color: white;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+
+        .bus-table tr:nth-child(even) {
+            background-color: #f6faff;
+        }
+
+        .bus-table tr:hover {
+            background-color: #e3f0fa;
+            transition: background 0.2s;
         }
 
         table {
@@ -143,21 +257,44 @@
             margin-bottom: 20px;
         }
         .btn-acoes {
-            width: 100%;
-            padding: 15px 0;
-            font-size: 18px;
-            border-radius: 6px;
-            margin: 2px 0;
-            background-color: #2c72b7;
-            color: white;
+            background: linear-gradient(90deg, #2c72b7 60%, #3a9bdc 100%);
+            color: #fff;
             border: none;
+            border-radius: 6px;
+            padding: 10px 24px;
+            font-size: 1.1rem;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 2px 8px rgba(44, 114, 183, 0.10);
+            margin-top: auto;
+            font-family: 'Montserrat', sans-serif;
         }
         .btn-acoes:hover {
             background-color: #1a436c;
+            transform: translateY(-2px) scale(1.05);
         }
-    
+        
+        .rota-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 0 18px 0;
+            margin: 40px auto 30px auto;
+            max-width: 600px;
+            gap: 18px;
+        }
+
+        .rota-icon {
+            font-size: 2.2rem;
+        }
+
+        .rota-title {
+            font-size: 2rem;
+            color: #2c72b7;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
 
 
     </style>
@@ -236,41 +373,39 @@ console.log('Paragens carregadas:', results.data.length);
 </script>
 
         <!-- Rotas -->
-        <div class="header">Escolha uma Rota</div>
+        <div class="rota-header">
+            <span class="rota-title">Escolha uma Rota</span>
+        </div>
         <div class="bus-container">
             <div class="bus-card">
                 <img src="fotos/rota1.jpg" alt="Linha 1">
-                <h2>Linha 1</h2>
-                <p>Estação - Universidade do Minho</p>
-            <!--<p>Lotação ocupada: 70%</p>-->
-                <button onclick="mostrarTabela('linha1')">Ver Informações</button>
+                <h2 class="bus-title">Linha 1</h2>
+                <p class="bus-desc">Estação - Universidade do Minho</p>
+                <button class="btn-acoes" onclick="mostrarTabela('linha1')">Ver Informações</button>
             </div>
             <div class="bus-card">
                 <img src="fotos/rota1.jpg" alt="Linha 2">
-                <h2>Linha 2</h2>
-                <p>Nova Arcada - Minho Center</p>
-                <!--<p>Lotação ocupada: 50%</p>-->
-                <button onclick="mostrarTabela('linha2')">Ver Informações</button>
+                <h2 class="bus-title">Linha 2</h2>
+                <p class="bus-desc">Nova Arcada - Minho Center</p>
+                <button class="btn-acoes" onclick="mostrarTabela('linha2')">Ver Informações</button>
             </div>
-            <!-- Adiciona mais autocarros conforme necessário -->
             <div class="bus-card">
                 <img src="fotos/rota1.jpg" alt="Linha 3">
-                <h2>Linha 3</h2>
-                <p>Hospital - Avenida Central</p>
-                <!--<p>Lotação ocupada: 90%</p>-->
-                <button onclick="mostrarTabela('linha3')">Ver Informações</button>
+                <h2 class="bus-title">Linha 3</h2>
+                <p class="bus-desc">Hospital - Avenida Central</p>
+                <button class="btn-acoes" onclick="mostrarTabela('linha3')">Ver Informações</button>
             </div>
             <div class="bus-card">
                 <img src="fotos/rota1.jpg" alt="Linha 4">
-                <h2>Linha 4</h2>
-                <p>Estação - Universidade do Minho</p>
-                <!--<p>Lotação ocupada: 20%</p>-->
-                <button onclick="mostrarTabela('linha4')">Ver Informações</button>
+                <h2 class="bus-title">Linha 4</h2>
+                <p class="bus-desc">Estação - Universidade do Minho</p>
+                <button class="btn-acoes" onclick="mostrarTabela('linha4')">Ver Informações</button>
             </div>
         </div>
+
         <!--tabela de autocarros por rota-->
         <div id="linha1" class="bus-table">
-            <h2>Autocarros - Rota 1</h2>
+            <h2>🚌 Autocarros - Rota 1</h2>
             <table>
                 <thead>
                     <tr>
@@ -304,7 +439,7 @@ console.log('Paragens carregadas:', results.data.length);
             </table>
         </div>
         <div id="linha2" class="bus-table">
-            <h2>Autocarros - Rota 2</h2>
+            <h2>🚌 Autocarros - Rota 2</h2>
             <table>
                 <thead>
                     <tr>
@@ -339,7 +474,7 @@ console.log('Paragens carregadas:', results.data.length);
             </table>
         </div>
         <div id="linha3" class="bus-table">
-            <h2>Autocarros - Rota 3</h2>
+            <h2>🚌 Autocarros - Rota 3</h2>
             <table>
                 <thead>
                     <tr>
