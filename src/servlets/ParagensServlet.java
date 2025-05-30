@@ -362,7 +362,7 @@ public class ParagensServlet extends HttpServlet {
     }
     
     private void registarAuditoria(Connection conn, int stopId, String action, 
-                                  Map<String, Object> oldData, Map<String, Object> newData, String userId) {
+                        Map<String, Object> oldData, Map<String, Object> newData, String userId) {
         try {
             String sql = "INSERT INTO paragens_audit (stop_id, action_type, old_data, new_data, user_id) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
