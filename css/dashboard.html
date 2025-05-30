@@ -413,7 +413,6 @@ console.log('Paragens carregadas:', results.data.length);
                         <th>Número do Autocarro</th>
                         <th>Horário</th>
                         <th>Estado</th>
-                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -422,18 +421,12 @@ console.log('Paragens carregadas:', results.data.length);
                         <td>1</td>
                         <td>08:00 - 09:00</td>
                         <td>Em operação</td>
-                        <td>
-                            <button class="btn-acoes" onclick="mostrarInformacoesAutocarro('Rota 1', '1', '08:00 - 09:00', 'Em operação')">Ver</button>
-                        </td>
                     </tr>
                     <tr>
                         <td>Rota 1</td>
                         <td>6</td>
                         <td>09:00 - 10:00</td>
                         <td>Em operação</td>
-                        <td>
-                            <button class="btn-acoes" onclick="mostrarInformacoesAutocarro('Rota 1', '6', '09:00 - 10:00', 'Em operação')">Ver</button>
-                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -447,7 +440,6 @@ console.log('Paragens carregadas:', results.data.length);
                         <th>Número do Autocarro</th>
                         <th>Horário</th>
                         <th>Estado</th>
-                        <th>Ações</th>
                         
                     </tr>
                 </thead>
@@ -457,18 +449,12 @@ console.log('Paragens carregadas:', results.data.length);
                         <td>2</td>
                         <td>08:30 - 09:30</td>
                         <td>Em operação</td>
-                        <td>
-                            <button class="btn-acoes" onclick="mostrarInformacoesAutocarro('Rota 2', '2', '08:30 - 09:30', 'Em operação')">Ver</button>
-                        </td>
                     </tr>
                     <tr>
                         <td>Rota 2</td>
                         <td>7</td>
                         <td>09:30 - 10:30</td>
                         <td>Em operação</td>
-                        <td>
-                            <button class="btn-acoes" onclick="mostrarInformacoesAutocarro('Rota 2', '7', '09:30 - 10:30', 'Em operação')">Ver</button>
-                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -482,7 +468,6 @@ console.log('Paragens carregadas:', results.data.length);
                         <th>Número do Autocarro</th>
                         <th>Horário</th>
                         <th>Estado</th>
-                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -491,31 +476,16 @@ console.log('Paragens carregadas:', results.data.length);
                         <td>3</td>
                         <td>07:00 - 08:00</td>
                         <td>Em operação</td>
-                        <td>
-                            <button class="btn-acoes" onclick="mostrarInformacoesAutocarro('Rota 3', '3', '07:00 - 08:00', 'Em operação')">Ver</button>
-                        </td>
                     </tr>
                     <tr>
                         <td>Rota 3</td>
                         <td>8</td>
                         <td>09:30 - 10:30</td>
                         <td>Em operação</td>
-                        <td>
-                            <button class="btn-acoes"onclick="mostrarInformacoesAutocarro('Rota 4', '8', '09:30 - 10:30', 'Em operação')">Ver</button>
-                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-    <!-- Área para exibir as informações do autocarro -->
-    <div id="informacoes-autocarro" style="display: none; margin-top: 20px; border: 1px solid #ddd; padding: 20px; background-color: #fff;">
-        <h2>Informações do Autocarro</h2>
-        <p><strong>Rota:</strong> <span id="rota"></span></p>
-        <p><strong>Número do Autocarro:</strong> <span id="numero"></span></p>
-        <p><strong>Horário:</strong> <span id="horario"></span></p>
-        <p><strong>Estado:</strong> <span id="estado"></span></p>
-        <button onclick="voltarParaLista()">Voltar</button>
-    </div>
 </div>
 
 
