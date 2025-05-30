@@ -147,7 +147,7 @@
     }
 
     /* Ocultar campos inicialmente */
-    #userType,
+    
     #firstName,
     #lastName,
     #contact,
@@ -185,15 +185,7 @@
 
     <form id="loginForm">
 
-      <div class="input-group" id="userType" style="display: none;">
-        <i class="fas fa-user-tag"></i>
-        <select id="userTypeInput">
-          <option disabled selected>Tipo de utilizador</option>
-          <option value="cliente">Cliente</option>
-          <option value="motorista">Motorista</option>
-          <!-- Poderia adicionar mais tipos aqui -->
-        </select>
-      </div>
+      
 
       <div class="input-group">
         <i class="fas fa-envelope"></i>
@@ -241,13 +233,13 @@
     const toggleForm = document.getElementById("toggleForm");
     const submitButton = document.getElementById("submitButton");
 
-    const userTypeField = document.getElementById("userType");
+ 
     const firstNameField = document.getElementById("firstName");
     const lastNameField = document.getElementById("lastName");
     const contactField = document.getElementById("contact");
     const disabilityField = document.getElementById("disability");
 
-    const userTypeInput = document.getElementById("userTypeInput");
+    
     const firstNameInput = document.getElementById("firstNameInput");
     const lastNameInput = document.getElementById("lastNameInput");
     const contactInput = document.getElementById("contactInput");
@@ -263,7 +255,7 @@
       toggleForm.textContent = isLogin ? "Criar uma conta" : "Já tem uma conta? Login";
 
       const display = isLogin ? "none" : "block";
-      userTypeField.style.display = display;
+    
       firstNameField.style.display = display;
       lastNameField.style.display = display;
       contactField.style.display = display;
@@ -304,7 +296,7 @@
       if (data === "success_cliente") {
         localStorage.setItem("email", email);
         window.location.href = "dashboard.html";  // cliente vai para dashboard.html
-      } else if (data === "success_motorista") {
+      } else if (data === "success_admin") {
         window.location.href = "dashboard_admin.html";  // motorista vai para dashboard_admin.html
       } else if (data === "erro_login" || data === "erro") {
         alert("E-mail ou senha incorretos.");
@@ -318,13 +310,15 @@
     });
       } else {
         // REGISTO
+       // REGISTO
         const newUser = {
           email: email,
           password: password,
           firstName: firstNameInput.value.trim(),
           lastName: lastNameInput.value.trim(),
           contact: contactInput.value.trim(),
-          utilizadorPrioritario: (disabilityInput.value === "sim").toString()
+          utilizadorPrioritario: (disabilityInput.value === "sim").toString(),
+          tipoUtilizador: "cliente"  // Forçar a criar só cliente, não admin
         };
 
         const formBody = 
@@ -333,37 +327,39 @@
           `firstName=${encodeURIComponent(newUser.firstName)}&` +
           `lastName=${encodeURIComponent(newUser.lastName)}&` +
           `contact=${encodeURIComponent(newUser.contact)}&` +
-          `utilizadorPrioritario=${encodeURIComponent(newUser.utilizadorPrioritario)}`;
+          `utilizadorPrioritario=${encodeURIComponent(newUser.utilizadorPrioritario)}&` +
+          `tipoUtilizador=${encodeURIComponent(newUser.tipoUtilizador)}`;
+
 
         fetch("http://localhost:8000/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: formBody
-        })
-          .then(response => {
-            if (!response.ok) throw new Error("Erro ao criar conta: " + response.status);
-            return response.text();
-          })
-          .then(data => {
-            if (data === "success") {
-              alert("Conta criada com sucesso!");
-              isLogin = true;
-              sessionStorage.setItem("email", dados.email);
-              toggleForm.click();
-            } else if (data === "existe") {
-              alert("Este e-mail já está registado.");
-            } else {
-              alert("Erro inesperado ao criar conta: " + data);
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: formBody
+      })
+      .then(response => {
+        if (!response.ok) throw new Error("Erro ao criar conta: " + response.status);
+        return response.text();
+      })
+      .then(data => {
+        if (data === "success") {
+          alert("Conta criada com sucesso!");
+          isLogin = true;
+          sessionStorage.setItem("email", newUser.email);
+          toggleForm.click();
+        } else if (data === "existe") {
+          alert("Este e-mail já está registado.");
+        } else {
+          alert("Erro inesperado ao criar conta: " + data);
+        }
+      })
+      .catch(error => {
+        console.error("Erro no registo:", error);
+        alert("Erro no registo: " + error.message);
+      });
             }
-          })
-          .catch(error => {
-            console.error("Erro no registo:", error);
-            alert("Erro ao conectar com o servidor.");
           });
-      }
-    });
-  </script>
+        </script>   
 </body>
 </html>
