@@ -224,6 +224,8 @@
                 <div style="margin: 20px 0;">
                     <button onclick="mostrarFormularioAdicionar()">Adicionar Autocarro</button>
                     <button onclick="mostrarFormularioEliminar()">Eliminar Autocarro</button>
+                    <button onclick="mostrarFormularioAlterarEstado()">Alterar Estado</button>
+
                 </div>
 
                 <!-- Formulário Adicionar -->
@@ -262,6 +264,29 @@
                     <label for="numero-eliminar">Número do Autocarro a eliminar</label>
                     <input type="number" id="numero-eliminar" required>
                     <button type="submit">Eliminar</button>
+                </form>
+
+                <!-- Formulário Alterar Estado-->
+                <form id="form-alterar-estado" style="display:none;">
+                    <h2>Alterar Estado do Autocarro</h2>
+                    <label for="numero-alterar">Número do Autocarro</label>
+                    <input type="number" id="numero-alterar" required>
+
+                    <label for="novo-status">Novo Status</label>
+                    <select id="novo-status" required onchange="atualizarEstadoOperacionalAlterar()">
+                    <option value="Ativo">Ativo</option>
+                    <option value="Inativo">Inativo</option>
+                    </select>
+
+                    <div id="estado-operacional-container" style="display:none;">
+                    <label for="novo-estado-operacao">Novo Estado Operacional</label>
+                    <select id="novo-estado-operacao">
+                    <option value="Em operação">Em operação</option>
+                    <option value="Em manutenção">Em manutenção</option>
+                    </select>
+                    </div>
+
+                    <button type="submit">Confirmar Alteração</button>
                 </form>
 
                 <!-- Barra de pesquisa -->
@@ -319,6 +344,24 @@
         const selectEstadoOperacao = document.getElementById('estadoOperacao');
         const labelEstadoOperacao = document.getElementById('label-estado-operacao');
 
+        function mostrarFormularioAlterarEstado() {
+            document.getElementById("form-adicionar").style.display = "none";
+            document.getElementById("form-eliminar").style.display = "none";
+            document.getElementById("form-alterar-estado").style.display = "block";
+        }
+
+        function atualizarEstadoOperacionalAlterar() {
+            const status = document.getElementById("novo-status").value;
+            const container = document.getElementById("estado-operacional-container");
+
+            if (status === "Ativo") {
+                container.style.display = "block";
+            } else {
+                container.style.display = "none";
+            }
+        }
+
+   
         function atualizarEstadoOperacao() {
             if (selectAtivoInativo.value === 'Ativo') {
             selectEstadoOperacao.disabled = false;
@@ -459,16 +502,23 @@
             document.getElementById("form-adicionar").style.display = "none";
         }
 
+        function mostrarFormularioAlterarEstado() {
+            document.getElementById("form-adicionar").style.display = "none";
+            document.getElementById("form-eliminar").style.display = "none";
+            document.getElementById("form-alterar-estado").style.display = "block";
+        }   
+
         // Adicionar autocarro
         document.getElementById("form-adicionar").addEventListener("submit", function(event) {
             event.preventDefault();
             const rota = document.getElementById("rota").value;
             const numero = document.getElementById("numero").value;
             const horario = document.getElementById("horario").value;
-            const estado = document.getElementById("estado").value;
+            const estado = document.getElementById("estadoOperacao").value;
+            const ativoInativo = document.getElementById("ativoInativo").value;
             const lotacao = document.getElementById("lotacao").value;
 
-            const status = (estado === "Em operação" || estado === "Em manutenção") ? "Ativo" : "Inativo";
+            const status = ativoInativo; 
 
             const tabela = document.getElementById("tabela-autocarros").getElementsByTagName("tbody")[0];
             const novaLinha = tabela.insertRow();
@@ -481,11 +531,9 @@
                 <td>${status}</td>
             `;
 
-
             document.getElementById("form-adicionar").reset();
             document.getElementById("form-adicionar").style.display = "none";
         });
-
 
 
         // Eliminar autocarro
@@ -498,20 +546,66 @@
 
             for (let i = 0; i < linhas.length; i++) {
                 const numeroAutocarro = linhas[i].cells[1].innerText;
-                if (parseInt(numeroAutocarro) === parseInt(numeroEliminar)) {
-                    tabela.deleteRow(i);
-                    encontrado = true;
-                    break;
-                }
+                const status = linhas[i].cells[5].innerText; // Coluna "Status" (Ativo/Inativo)
+
+            if (parseInt(numeroAutocarro) === parseInt(numeroEliminar)) {
+                encontrado = true;
+            if (status.toLowerCase() === "inativo") {
+                tabela.deleteRow(i);
+                alert("Autocarro eliminado com sucesso.");
+            } else {
+                alert("Não é possível eliminar um autocarro ativo.");
             }
+            break;
+        }
+    }
 
             if (!encontrado) {
                 alert("Autocarro não encontrado.");
-            }
+        }
 
             document.getElementById("form-eliminar").reset();
             document.getElementById("form-eliminar").style.display = "none";
         });
+
+        // Alterar estado do autocarro
+        document.getElementById("form-alterar-estado").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const numeroAlvo = document.getElementById("numero-alterar").value;
+            const novoStatus = document.getElementById("novo-status").value;
+            const novoEstadoOperacao = document.getElementById("novo-estado-operacao").value;
+
+            const tabela = document.getElementById("tabela-autocarros").getElementsByTagName("tbody")[0];
+            const linhas = tabela.getElementsByTagName("tr");
+            let encontrado = false;
+
+            for (let i = 0; i < linhas.length; i++) {
+            const numero = linhas[i].cells[1].innerText;
+
+            if (parseInt(numero) === parseInt(numeroAlvo)) {
+                encontrado = true;
+                linhas[i].cells[5].innerText = novoStatus; // coluna Status
+
+            if (novoStatus === "Ativo") {
+                linhas[i].cells[3].innerText = novoEstadoOperacao; // coluna Estado
+            } else {
+                linhas[i].cells[3].innerText = "Inativo";
+            }
+
+            alert("Estado atualizado com sucesso!");
+            break;
+        }
+    }
+
+            if (!encontrado) {
+                alert("Autocarro não encontrado.");
+    }
+
+    document.getElementById("form-alterar-estado").reset();
+    document.getElementById("form-alterar-estado").style.display = "none";
+});
+
 
         // Mostrar informações
         function mostrarInformacoesAutocarro(rota, numero, horario, estado, lotacao) {
