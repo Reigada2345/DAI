@@ -196,6 +196,23 @@
                 width: 100%;
             }
         }
+
+        .status-indicador {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        .status-ativo {
+            background-color: green;
+        }
+
+        .status-inativo {
+            background-color: red;
+        }
     </style>
 </head>
 <body>
@@ -224,7 +241,7 @@
                 <div style="margin: 20px 0;">
                     <button onclick="mostrarFormularioAdicionar()">Adicionar Autocarro</button>
                     <button onclick="mostrarFormularioEliminar()">Eliminar Autocarro</button>
-                    <button onclick="mostrarFormularioAlterarEstado()">Alterar Estado</button>
+                    <button onclick="mostrarFormularioAlterarEstado()">Alterar Status</button>
 
                 </div>
 
@@ -315,7 +332,7 @@
                     <td>08:00 - 09:00</td>
                     <td>Em manutenção</td>
                     <td>50%</td>
-                    <td>Ativo</td>
+                    <td><span class="status-indicador status-ativo"></span>Ativo</td>
                 </tr>
                 <tr>
                     <td>Rota 2</td>
@@ -323,15 +340,15 @@
                     <td>09:30 - 10:30</td>
                     <td>Em operação</td>
                     <td>80%</td>
-                    <td>Ativo</td>
+                    <td><span class="status-indicador status-ativo"></span>Ativo</td>
                 </tr>
                 <tr>
                     <td>Rota 3</td>
                     <td>3</td>
                     <td>07:00 - 08:00</td>
                     <td>Em operação</td>
-                    <td>30%</td>
-                    <td>Ativo</td>
+                    <td>0%</td>
+                    <td><span class="status-indicador status-inativo"></span>Inativo</td>
                 </tr>
                 </tbody>
                 </table>  
@@ -353,14 +370,20 @@
         function atualizarEstadoOperacionalAlterar() {
             const status = document.getElementById("novo-status").value;
             const container = document.getElementById("estado-operacional-container");
+            const selectEstado = document.getElementById("novo-estado-operacao");
 
             if (status === "Ativo") {
                 container.style.display = "block";
+                selectEstado.disabled = false;
+                selectEstado.required = true;
+                selectEstado.style.backgroundColor = "";
             } else {
                 container.style.display = "none";
+                selectEstado.disabled = true;
+                selectEstado.required = false;
+                selectEstado.style.backgroundColor = "#eee";
             }
         }
-
    
         function atualizarEstadoOperacao() {
             if (selectAtivoInativo.value === 'Ativo') {
@@ -511,6 +534,7 @@
         // Adicionar autocarro
         document.getElementById("form-adicionar").addEventListener("submit", function(event) {
             event.preventDefault();
+
             const rota = document.getElementById("rota").value;
             const numero = document.getElementById("numero").value;
             const horario = document.getElementById("horario").value;
@@ -518,22 +542,32 @@
             const ativoInativo = document.getElementById("ativoInativo").value;
             const lotacao = document.getElementById("lotacao").value;
 
-            const status = ativoInativo; 
+            const status = ativoInativo;
 
             const tabela = document.getElementById("tabela-autocarros").getElementsByTagName("tbody")[0];
             const novaLinha = tabela.insertRow();
+
             novaLinha.innerHTML = `
                 <td>${rota}</td>
                 <td>${numero}</td>
                 <td>${horario}</td>
-                <td>${estado}</td>
+                <td>${status === "Ativo" ? estado : ""}</td>
                 <td>${lotacao}</td>
-                <td>${status}</td>
+                <td></td> <!-- esta será preenchida em baixo -->
             `;
+
+            const celulaStatus = novaLinha.cells[5];
+            const bolinha = document.createElement("span");
+            bolinha.classList.add("status-indicador");
+            bolinha.classList.add(status === "Ativo" ? "status-ativo" : "status-inativo");
+            celulaStatus.appendChild(bolinha);
+            celulaStatus.appendChild(document.createTextNode(" " + status));
 
             document.getElementById("form-adicionar").reset();
             document.getElementById("form-adicionar").style.display = "none";
+            atualizarEstadoOperacao(); // para garantir que desativa campo se mudar estado
         });
+
 
 
         // Eliminar autocarro
