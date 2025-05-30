@@ -238,10 +238,16 @@
                     <label for="horario">Horário</label>
                     <input type="text" id="horario" placeholder="Ex: 08:00 - 09:00" required>
 
-                    <label for="estado">Estado</label>
-                    <select id="estado" required>
-                        <option value="Em operação">Em operação</option>
-                        <option value="Em manutenção">Em manutenção</option>
+                    <label for="ativoInativo">Estado</label>
+                    <select id="ativoInativo" required>
+                    <option value="Ativo">Ativo</option>
+                    <option value="Inativo">Inativo</option>
+                    </select>
+
+                    <label for="estadoOperacao" id="label-estado-operacao">Estado Operacional</label>
+                    <select id="estadoOperacao" required>
+                    <option value="Em operação">Em operação</option>
+                    <option value="Em manutenção">Em manutenção</option>
                     </select>
 
                     <label for="lotacao">Lotação (%)</label>
@@ -258,61 +264,78 @@
                     <button type="submit">Eliminar</button>
                 </form>
 
-                <!-- Tabela -->
-                <table id="tabela-autocarros">
-                    <thead>
-                        <tr>
-                            <th>Rota</th>
-                            <th>Número</th>
-                            <th>Horário</th>
-                            <th>Estado</th>
-                            <th>Lotação</th>
-                            <th>Informações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Rota 1</td>
-                            <td>1</td>
-                            <td>08:00 - 09:00</td>
-                            <td>Em manutenção</td>
-                            <td>50%</td>
-                            <td><button onclick="mostrarInformacoesAutocarro('Rota 1', '1', '08:00 - 09:00', 'Em manutenção', '50%')">Ver</button></td>
-                        </tr>
-                        <tr>
-                            <td>Rota 2</td>
-                            <td>2</td>
-                            <td>09:30 - 10:30</td>
-                            <td>Em operação</td>
-                            <td>80%</td>
-                            <td><button onclick="mostrarInformacoesAutocarro('Rota 2', '2', '09:30 - 10:30', 'Em operação', '80%')">Ver</button></td>
-                        </tr>
-                        <tr>
-                            <td>Rota 3</td>
-                            <td>3</td>
-                            <td>07:00 - 08:00</td>
-                            <td>Em operação</td>
-                            <td>30%</td>
-                            <td><button onclick="mostrarInformacoesAutocarro('Rota 3', '3', '07:00 - 08:00', 'Em operação', '30%')">Ver</button></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <!-- Barra de pesquisa -->
+                <input type="text" id="pesquisa-autocarro" 
+                    placeholder="Pesquisar por rota, número ou estado..."  
+                    tyle="width: 100%; padding: 10px; margin-top: 20px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc;"
+                    onkeyup="filtrarTabela()"/>
 
-                <!-- Informações do autocarro -->
-                <div id="informacoes-autocarro">
-                    <h2>Informações do Autocarro</h2>
-                    <p><strong>Rota:</strong> <span id="info-rota"></span></p>
-                    <p><strong>Número:</strong> <span id="info-numero"></span></p>
-                    <p><strong>Horário:</strong> <span id="info-horario"></span></p>
-                    <p><strong>Estado:</strong> <span id="info-estado"></span></p>
-                    <p><strong>Lotação:</strong> <span id="info-lotacao"></span></p>
-                    <button onclick="voltarParaLista()">Voltar</button>
-                </div>
+                <!-- Tabela -->
+                <!-- Tabela atualizada -->
+                <table id="tabela-autocarros">
+                <thead>
+                <tr>
+                    <th>Rota</th>
+                    <th>Número</th>
+                    <th>Horário</th>
+                    <th>Estado</th>
+                    <th>Lotação</th>
+                    <th>Status</th> <!-- Nova coluna -->
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Rota 1</td>
+                    <td>1</td>
+                    <td>08:00 - 09:00</td>
+                    <td>Em manutenção</td>
+                    <td>50%</td>
+                    <td>Ativo</td>
+                </tr>
+                <tr>
+                    <td>Rota 2</td>
+                    <td>2</td>
+                    <td>09:30 - 10:30</td>
+                    <td>Em operação</td>
+                    <td>80%</td>
+                    <td>Ativo</td>
+                </tr>
+                <tr>
+                    <td>Rota 3</td>
+                    <td>3</td>
+                    <td>07:00 - 08:00</td>
+                    <td>Em operação</td>
+                    <td>30%</td>
+                    <td>Ativo</td>
+                </tr>
+                </tbody>
+                </table>  
             </div>
         </div>
     </div>
 
     <script>
+        const selectAtivoInativo = document.getElementById('ativoInativo');
+        const selectEstadoOperacao = document.getElementById('estadoOperacao');
+        const labelEstadoOperacao = document.getElementById('label-estado-operacao');
+
+        function atualizarEstadoOperacao() {
+            if (selectAtivoInativo.value === 'Ativo') {
+            selectEstadoOperacao.disabled = false;
+            selectEstadoOperacao.required = true;
+            labelEstadoOperacao.style.color = '';
+            selectEstadoOperacao.style.backgroundColor = '';
+        } else {
+            selectEstadoOperacao.disabled = true;
+            selectEstadoOperacao.required = false;
+            labelEstadoOperacao.style.color = '#aaa';
+            selectEstadoOperacao.style.backgroundColor = '#eee';
+        }
+    }
+        // Atualiza o select assim que carregar a página e também ao mudar a opção
+        atualizarEstadoOperacao();
+        selectAtivoInativo.addEventListener('change', atualizarEstadoOperacao);
+
         // Inicialização do Three.js
         let scene, camera, renderer, busModel, characterModel;
 
@@ -445,6 +468,8 @@
             const estado = document.getElementById("estado").value;
             const lotacao = document.getElementById("lotacao").value;
 
+            const status = (estado === "Em operação" || estado === "Em manutenção") ? "Ativo" : "Inativo";
+
             const tabela = document.getElementById("tabela-autocarros").getElementsByTagName("tbody")[0];
             const novaLinha = tabela.insertRow();
             novaLinha.innerHTML = `
@@ -453,12 +478,14 @@
                 <td>${horario}</td>
                 <td>${estado}</td>
                 <td>${lotacao}</td>
-                <td><button onclick="mostrarInformacoesAutocarro('${rota}', '${numero}', '${horario}', '${estado}', '${lotacao}')">Ver</button></td>
+                <td>${status}</td>
             `;
 
             document.getElementById("form-adicionar").reset();
             document.getElementById("form-adicionar").style.display = "none";
         });
+
+
 
         // Eliminar autocarro
         document.getElementById("form-eliminar").addEventListener("submit", function(event) {
@@ -487,22 +514,58 @@
 
         // Mostrar informações
         function mostrarInformacoesAutocarro(rota, numero, horario, estado, lotacao) {
-            document.getElementById("tabela-autocarros").style.display = "none";
-            document.getElementById("titulo-principal").style.display = "none";
-            document.getElementById("informacoes-autocarro").style.display = "block";
+        const info = document.getElementById('informacoes-autocarro');
 
-            document.getElementById("info-rota").textContent = rota;
-            document.getElementById("info-numero").textContent = numero;
-            document.getElementById("info-horario").textContent = horario;
-            document.getElementById("info-estado").textContent = estado;
-            document.getElementById("info-lotacao").textContent = lotacao;
+        let estadoFormatado = estado;
+        if (estado === 'Inativo') {
+            estadoFormatado = 'Inativo';
+        } else if (estado === 'Em operação' || estado === 'Em manutenção') {
+            estadoFormatado = 'Ativo - ' + estado;
         }
+
+        info.innerHTML = `
+            <h2>Informações do Autocarro</h2>
+            <p><strong>Rota:</strong> ${rota}</p>
+            <p><strong>Número:</strong> ${numero}</p>
+            <p><strong>Horário:</strong> ${horario}</p>
+            <p><strong>Estado:</strong> ${estadoFormatado}</p>
+            <p><strong>Lotação:</strong> ${lotacao}</p>
+            <button onclick="voltarParaLista()">Voltar</button>
+        `;
+        info.style.display = 'block';
+        document.getElementById("tabela-autocarros").style.display = "none";
+        document.getElementById("titulo-principal").style.display = "none";
+}
+
 
         function voltarParaLista() {
             document.getElementById("informacoes-autocarro").style.display = "none";
             document.getElementById("tabela-autocarros").style.display = "table";
             document.getElementById("titulo-principal").style.display = "block";
         }
+
+        function filtrarTabela() {
+    const input = document.getElementById("pesquisa-autocarro").value.trim().toLowerCase();
+    const tabela = document.getElementById("tabela-autocarros");
+    const linhas = tabela.getElementsByTagName("tr");
+
+    for (let i = 1; i < linhas.length; i++) {
+        const cells = linhas[i].getElementsByTagName("td");
+
+        // Apenas as colunas: Rota (0), Nº (1), Estado (3)
+        const rota = cells[0]?.innerText.trim().toLowerCase() || "";
+        const numero = cells[1]?.innerText.trim().toLowerCase() || "";
+        const estado = cells[3]?.innerText.trim().toLowerCase() || "";
+
+        const corresponde =
+            rota.includes(input) ||
+            numero.includes(input) ||
+            estado.includes(input);
+
+        linhas[i].style.display = corresponde || input === "" ? "" : "none";
+    }
+}
+
     </script>
 </body>
 </html>
