@@ -30,7 +30,7 @@ public class ParagemDAO {
         }
     }
 
-    // OBTER TODAS AS PARAGENS
+    // LISTAR TODAS AS PARAGENS
     public ArrayList<Paragem> listarParagens() {
         ArrayList<Paragem> paragens = new ArrayList<>();
         String sql = "SELECT * FROM paragens";
@@ -56,8 +56,8 @@ public class ParagemDAO {
 
         return paragens;
     }
-
-    // EDITAR PARAGEM EXISTENTE
+    
+    // EDITAR PARAGEM
     public boolean editarParagem(String nomeOriginal, Paragem novaParagem) {
         String sql = "UPDATE paragens SET nome = ?, localizacao = ?, varias_rotas = ?, lotacao = ? WHERE nome = ?";
 
@@ -79,40 +79,62 @@ public class ParagemDAO {
         }
     }
 
-    // DESATIVAR PARAGEM
+    // DESATIVAR PARAGEM (não apaga, apenas altera o estado)
     public boolean desativarParagem(String nomeParagem) {
-    String verificarSql = "SELECT ativa FROM paragens WHERE nome = ?";
-    String apagarSql = "DELETE FROM paragens WHERE nome = ?";
+        String sql = "UPDATE paragens SET ativa = false WHERE nome = ? AND ativa = true";
 
-    try (Connection conn = DatabaseConnection.connect();
-         PreparedStatement verificarStmt = conn.prepareStatement(verificarSql)) {
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        verificarStmt.setString(1, nomeParagem);
-        ResultSet rs = verificarStmt.executeQuery();
+            stmt.setString(1, nomeParagem);
+            int linhasAfetadas = stmt.executeUpdate();
 
-        if (rs.next()) {
-            boolean ativa = rs.getBoolean("ativa");
-            if (!ativa) {
-                try (PreparedStatement apagarStmt = conn.prepareStatement(apagarSql)) {
-                    apagarStmt.setString(1, nomeParagem);
-                    apagarStmt.executeUpdate();
-                    return true;
-                }
+            if (linhasAfetadas > 0) {
+                return true; // desativação bem-sucedida
             } else {
-                System.out.println("Não é possível apagar: a paragem está ativa.");
+                System.out.println("Paragem já está desativada ou não existe.");
                 return false;
             }
-        } else {
-            System.out.println("Paragem não encontrada.");
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao desativar paragem: " + e.getMessage());
             return false;
         }
-
-    } catch (SQLException e) {
-        System.err.println("Erro ao apagar paragem: " + e.getMessage());
-        return false;
     }
-}
 
+    // APAGAR PARAGEM (apenas se estiver desativada)
+    public boolean apagarParagem(String nomeParagem) {
+        String verificarSql = "SELECT ativa FROM paragens WHERE nome = ?";
+        String apagarSql = "DELETE FROM paragens WHERE nome = ?";
+
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement verificarStmt = conn.prepareStatement(verificarSql)) {
+
+            verificarStmt.setString(1, nomeParagem);
+            ResultSet rs = verificarStmt.executeQuery();
+
+            if (rs.next()) {
+                boolean ativa = rs.getBoolean("ativa");
+                if (!ativa) {
+                    try (PreparedStatement apagarStmt = conn.prepareStatement(apagarSql)) {
+                        apagarStmt.setString(1, nomeParagem);
+                        apagarStmt.executeUpdate();
+                        return true;
+                    }
+                } else {
+                    System.out.println("Não é possível apagar: a paragem está ativa.");
+                    return false;
+                }
+            } else {
+                System.out.println("Paragem não encontrada.");
+                return false;
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao apagar paragem: " + e.getMessage());
+            return false;
+        }
+    }
 
     // OBTER PARAGEM PELO NOME
     public Paragem buscarParagemPorNome(String nome) {
