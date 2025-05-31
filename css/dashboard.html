@@ -297,11 +297,66 @@
             letter-spacing: 1px;
         }
 
+        .tipo-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .tipo-1 { background-color: #2c72b7; }
+        .tipo-2 { background-color: #28a745; }
+        .tipo-3 { background-color: #fd7e14; }
+
+        /* Estilos para paginação */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+            gap: 20px;
+        }
+
+        .pagination-button {
+            background-color: #2c72b7;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(44, 114, 183, 0.15);
+        }
+
+        .pagination-button:hover {
+            background-color: #1a436c;
+            transform: scale(1.1);
+        }
+
+        .pagination-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .pagination-info {
+            font-size: 16px;
+            color: #555;
+            font-weight: 500;
+        }
 
     </style>
 </head>
 <body>
-
+   
     <!-- Menu lateral -->
     <div class="navbar">
         <h2>TUB</h2>
@@ -317,219 +372,359 @@
     <!-- Conteúdo principal -->
     <div class="main-content">
 
-        <!-- Mapa -->
-        <div id="map"></div>
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Inicializa o mapa
-            const map = L.map('map').setView([41.545448, -8.426507], 15); // Coordenadas iniciais (Braga)
+    <!-- Mapa -->
+    <div id="map"></div>
 
-            // Adiciona o tile layer (camada de mapa)
+    <!-- Barra de pesquisa -->
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="Pesquisar rota..."
+        style="width: 90%; max-width: 700px; padding: 10px 15px; margin: 20px auto; display: block; border-radius: 8px; border: 1px solid #ccc; font-size: 1.1rem;"
+    >
+    
+    <div id="busContainer" class="bus-container">
+    <!-- Cartões serão inseridos aqui dinamicamente -->
+    </div>
+
+    <!-- Paginação -->
+    <div class="pagination-container">
+        <button id="prevPage" class="pagination-button" disabled>&larr;</button>
+        <span class="pagination-info">Página <span id="currentPage">1</span> de <span id="totalPages">1</span></span>
+        <button id="nextPage" class="pagination-button">&rarr;</button>
+    </div>
+
+    <!-- Container para tabelas dinâmicas -->
+    <div id="tabelasContainer"></div>
+
+    <script>
+        // Variáveis globais
+        let rotasData = [];
+        let rotasFiltradas = [];
+        let paginaAtual = 1;
+        let rotasPorPagina = 4;
+        let totalPaginas = 1;
+        
+        let autocarrosPorRota = {
+            "2": [
+                { numero: "2", horario: "08:30 - 09:30", estado: "Em operação" },
+                { numero: "7", horario: "09:30 - 10:30", estado: "Em operação" }
+            ],
+            "3": [
+                { numero: "3", horario: "07:00 - 08:00", estado: "Em operação" },
+                { numero: "8", horario: "09:30 - 10:30", estado: "Em operação" }
+            ],
+            "5": [
+                { numero: "5", horario: "08:00 - 09:00", estado: "Em operação" },
+                { numero: "10", horario: "10:00 - 11:00", estado: "Em operação" }
+            ]
+        };
+
+        // Função para obter o nome do tipo
+        function getTipoNome(tipo) {
+            switch(tipo) {
+                case "3": return "Urbano";
+                default: return "Outro";
+            }
+        }
+
+        // Função para criar cartão de rota
+        function criarCartaoRota(rota) {
+            const card = document.createElement('div');
+            card.className = 'bus-card';
+            card.innerHTML = `
+                <img src="fotos/rota1.jpg" alt="Linha ${rota.codigo}">
+                <h2 class="bus-title">
+                    Linha ${rota.codigo}
+                    <span class="tipo-badge tipo-${rota.tipo}">${getTipoNome(rota.tipo)}</span>
+                </h2>
+                <p class="bus-desc">${rota.nome}</p>
+                <button class="btn-acoes" onclick="mostrarTabela('linha${rota.id}')">Ver Informações</button>
+            `;
+            return card;
+        }
+
+        // Função para criar tabela de autocarros
+        function criarTabelaAutocarros(rota) {
+            const autocarros = autocarrosPorRota[rota.id] || [];
+            
+            let linhasTabela = '';
+            autocarros.forEach(autocarro => {
+                linhasTabela += `
+                    <tr>
+                        <td>Linha ${rota.codigo}</td>
+                        <td>${autocarro.numero}</td>
+                        <td>${autocarro.horario}</td>
+                        <td>${autocarro.estado}</td>
+                    </tr>
+                `;
+            });
+
+            if (autocarros.length === 0) {
+                linhasTabela = `
+                    <tr>
+                        <td colspan="4">Nenhum autocarro disponível para esta rota</td>
+                    </tr>
+                `;
+            }
+
+            const tabela = document.createElement('div');
+            tabela.id = `linha${rota.id}`;
+            tabela.className = 'bus-table';
+            tabela.innerHTML = `
+                <h2>🚌 Autocarros - Linha ${rota.codigo}</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rota</th>
+                            <th>Número do Autocarro</th>
+                            <th>Horário</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${linhasTabela}
+                    </tbody>
+                </table>
+            `;
+            return tabela;
+        }
+
+        // Função para carregar rotas do ficheiro
+        function carregarRotas() {
+            fetch('../src/routes.txt')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ficheiro não encontrado');
+                    }
+                    return response.text();
+                })
+                .then(text => {
+    const linhas = text.trim().split('\n');
+    rotasData = [];
+    
+    console.log('Total de linhas no ficheiro:', linhas.length);
+    
+    // Ignora a primeira linha (cabeçalho)
+    for (let i = 1; i < linhas.length; i++) {
+        const linha = linhas[i].trim();
+        if (linha) { // Verifica se a linha não está vazia
+            const partes = linha.split(',');
+            if (partes.length >= 5) {
+                const rota = {
+                    id: partes[0].trim(),
+                    agencia: partes[1].trim(),
+                    codigo: partes[2].trim(),
+                    nome: partes[3].trim(),
+                    tipo: partes[4].trim()
+                };
+                rotasData.push(rota);
+                console.log('Rota carregada:', rota);
+            }
+        }
+    }
+    
+    console.log('Total de rotas carregadas:', rotasData.length);
+    rotasFiltradas = [...rotasData];
+    atualizarPaginacao();
+    renderizarRotas();
+})
+                .catch(error => {
+                    console.error('Erro ao carregar rotas:', error);
+                    // Dados de fallback
+                    rotasData = [
+                        { id: "2", agencia: "TUB", codigo: "2", nome: "PONTE DE PRADO - BOM JESUS", tipo: "3" },
+                        { id: "3", agencia: "TUB", codigo: "3", nome: "AVENIDA CENTRAL - RUÃES", tipo: "3" },
+                        { id: "5", agencia: "TUB", codigo: "5", nome: "DUME - QUINTA DA CAPELA", tipo: "3" },
+                        { id: "6", agencia: "TUB", codigo: "6", nome: "AVENIDA GENERAL NORTON DE MATOS - GONDIZALVES/SEMELHE", tipo: "3" }
+                    ];
+                    rotasFiltradas = [...rotasData];
+                    atualizarPaginacao();
+                    renderizarRotas();
+                });
+        }
+
+        // Função para atualizar a paginação
+        function atualizarPaginacao() {
+    totalPaginas = Math.ceil(rotasFiltradas.length / rotasPorPagina);
+    if (totalPaginas === 0) totalPaginas = 1;
+    
+    // Garante que a página atual não excede o total
+    if (paginaAtual > totalPaginas) {
+        paginaAtual = totalPaginas;
+    }
+    
+    document.getElementById('totalPages').textContent = totalPaginas;
+    document.getElementById('currentPage').textContent = paginaAtual;
+    
+    console.log('Paginação atualizada:', {
+        totalRotas: rotasFiltradas.length,
+        totalPaginas: totalPaginas,
+        paginaAtual: paginaAtual,
+        rotasPorPagina: rotasPorPagina
+    });
+    
+    // Atualiza estado dos botões
+    document.getElementById('prevPage').disabled = paginaAtual === 1;
+    document.getElementById('nextPage').disabled = paginaAtual === totalPaginas;
+}
+
+        // Função para renderizar rotas da página atual
+        function renderizarRotas() {
+    const container = document.getElementById('busContainer');
+    const tabelasContainer = document.getElementById('tabelasContainer');
+    
+    // Limpa containers
+    container.innerHTML = '';
+    tabelasContainer.innerHTML = '';
+
+    // Calcula índices para a página atual
+    const inicio = (paginaAtual - 1) * rotasPorPagina;
+    const fim = Math.min(inicio + rotasPorPagina, rotasFiltradas.length);
+    
+    console.log('Renderizando rotas:', {
+        paginaAtual: paginaAtual,
+        inicio: inicio,
+        fim: fim,
+        totalRotasFiltradas: rotasFiltradas.length
+    });
+    
+    // Cria cartões e tabelas para a página atual
+    for (let i = inicio; i < fim; i++) {
+        const rota = rotasFiltradas[i];
+        console.log('Renderizando rota:', rota);
+        
+        // Cria cartão
+        const cartao = criarCartaoRota(rota);
+        container.appendChild(cartao);
+
+        // Cria tabela
+        const tabela = criarTabelaAutocarros(rota);
+        tabelasContainer.appendChild(tabela);
+    }
+
+    // Se não houver rotas para mostrar
+    if (rotasFiltradas.length === 0) {
+        container.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                <h3 style="color: #2c72b7; font-size: 1.5rem; margin-bottom: 10px;">Nenhuma rota encontrada</h3>
+                <p style="color: #666;">Tente ajustar os termos de pesquisa</p>
+            </div>
+        `;
+    }
+}
+
+        // Função de pesquisa
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const filter = this.value.toLowerCase();
+            
+            // Filtra as rotas
+            rotasFiltradas = rotasData.filter(rota => {
+                return rota.nome.toLowerCase().includes(filter) || 
+                       rota.codigo.toLowerCase().includes(filter);
+            });
+            
+            // Reseta para a primeira página e atualiza
+            paginaAtual = 1;
+            atualizarPaginacao();
+            renderizarRotas();
+        });
+
+        // Função para mostrar tabela
+        function mostrarTabela(linhaId) {
+            const tabelas = document.querySelectorAll('.bus-table');
+            const tabelaSelecionada = document.getElementById(linhaId);
+
+            if (!tabelaSelecionada) return;
+
+            // Se a tabela já estiver visível, esconde todas
+            if (tabelaSelecionada.style.display === 'block') {
+                tabelas.forEach(tabela => tabela.style.display = 'none');
+            } else {
+                // Esconde todas e mostra só a selecionada
+                tabelas.forEach(tabela => tabela.style.display = 'none');
+                tabelaSelecionada.style.display = 'block';
+
+                // Scroll suave para a tabela exibida
+                tabelaSelecionada.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Eventos de paginação
+        document.getElementById('prevPage').addEventListener('click', function() {
+            if (paginaAtual > 1) {
+                paginaAtual--;
+                atualizarPaginacao();
+                renderizarRotas();
+                // Scroll para o topo dos cartões
+                document.getElementById('busContainer').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        document.getElementById('nextPage').addEventListener('click', function() {
+            if (paginaAtual < totalPaginas) {
+                paginaAtual++;
+                atualizarPaginacao();
+                renderizarRotas();
+                // Scroll para o topo dos cartões
+                document.getElementById('busContainer').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        // Inicialização do mapa
+        document.addEventListener('DOMContentLoaded', function () {
+            // Carrega as rotas
+            carregarRotas();
+
+            // Inicializa o mapa
+            const map = L.map('map').setView([41.545448, -8.426507], 15);
+
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '© OpenStreetMap'
             }).addTo(map);
 
-            // Exemplo: Adiciona um marcador no mapa
-            Papa.parse('data/stops.csv', {
+            // Carrega paragens
+            Papa.parse('../data/stops.csv', {
                 download: true,
                 header: true,
                 skipEmptyLines: true,
                 complete: function(results) {
-                if (!results || !results.data) {
-                    console.error("Erro a carregar o CSV:", results);
-                    return;
+                    if (!results || !results.data) {
+                        console.error("Erro a carregar o CSV:", results);
+                        return;
+                    }
+
+                    console.log('Paragens carregadas:', results.data.length);
+
+                    results.data.forEach(stop => {
+                        const lat = parseFloat(stop.stop_lat);
+                        const lon = parseFloat(stop.stop_lon);
+                        const name = stop.stop_name;
+
+                        if (!isNaN(lat) && !isNaN(lon)) {
+                            L.circle([lat, lon], {
+                                radius: 150,
+                                color: 'black',
+                                weight: 2,
+                                fillColor: 'yellow',
+                                fillOpacity: 0.9
+                            })
+                            .addTo(map)
+                            .bindPopup(`<b>${name}</b>`)
+                            .bindTooltip(name, { 
+                                permanent: true, 
+                                direction: 'top', 
+                                offset: [0, -10]
+                            });
+                        }
+                    });
+                },
+                error: function(err) {
+                    console.error("Erro a ler o ficheiro CSV:", err);
                 }
-
-console.log('Paragens carregadas:', results.data.length);
-
-        results.data.forEach(stop => {
-        const lat = parseFloat(stop.stop_lat);
-        const lon = parseFloat(stop.stop_lon);
-        const name = stop.stop_name;
-
-        console.log("Paragem:", name, lat, lon);
-
-        if (!isNaN(lat) && !isNaN(lon)) {
-            L.circle([lat, lon], {
-            radius: 150,
-            color: 'black',
-            weight: 2,
-            fillColor: 'yellow',
-            fillOpacity: 0.9
-        })
-            .addTo(map)
-            .bindPopup(`<b>${name}</b>`)
-            .bindTooltip(name, { permanent: true, direction: 'top', offset: [0, -10]
+            });
         });
-        }
-        });
-    },
-    error: function(err) {
-        console.error("Erro a ler o ficheiro CSV:", err);
-    }
-    });
-});
-</script>
-
-        <!-- Rotas -->
-        <div class="rota-header">
-            <span class="rota-title">Escolha uma Rota</span>
-        </div>
-        <div class="bus-container">
-            <div class="bus-card">
-                <img src="fotos/rota1.jpg" alt="Linha 1">
-                <h2 class="bus-title">Linha 1</h2>
-                <p class="bus-desc">Estação - Universidade do Minho</p>
-                <button class="btn-acoes" onclick="mostrarTabela('linha1')">Ver Informações</button>
-            </div>
-            <div class="bus-card">
-                <img src="fotos/rota1.jpg" alt="Linha 2">
-                <h2 class="bus-title">Linha 2</h2>
-                <p class="bus-desc">Nova Arcada - Minho Center</p>
-                <button class="btn-acoes" onclick="mostrarTabela('linha2')">Ver Informações</button>
-            </div>
-            <div class="bus-card">
-                <img src="fotos/rota1.jpg" alt="Linha 3">
-                <h2 class="bus-title">Linha 3</h2>
-                <p class="bus-desc">Hospital - Avenida Central</p>
-                <button class="btn-acoes" onclick="mostrarTabela('linha3')">Ver Informações</button>
-            </div>
-            <div class="bus-card">
-                <img src="fotos/rota1.jpg" alt="Linha 4">
-                <h2 class="bus-title">Linha 4</h2>
-                <p class="bus-desc">Estação - Universidade do Minho</p>
-                <button class="btn-acoes" onclick="mostrarTabela('linha4')">Ver Informações</button>
-            </div>
-        </div>
-
-        <!--tabela de autocarros por rota-->
-        <div id="linha1" class="bus-table">
-            <h2>🚌 Autocarros - Rota 1</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Rota</th>
-                        <th>Número do Autocarro</th>
-                        <th>Horário</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Rota 1</td>
-                        <td>1</td>
-                        <td>08:00 - 09:00</td>
-                        <td>Em operação</td>
-                    </tr>
-                    <tr>
-                        <td>Rota 1</td>
-                        <td>6</td>
-                        <td>09:00 - 10:00</td>
-                        <td>Em operação</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div id="linha2" class="bus-table">
-            <h2>🚌 Autocarros - Rota 2</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Rota</th>
-                        <th>Número do Autocarro</th>
-                        <th>Horário</th>
-                        <th>Estado</th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Rota 2</td>
-                        <td>2</td>
-                        <td>08:30 - 09:30</td>
-                        <td>Em operação</td>
-                    </tr>
-                    <tr>
-                        <td>Rota 2</td>
-                        <td>7</td>
-                        <td>09:30 - 10:30</td>
-                        <td>Em operação</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div id="linha3" class="bus-table">
-            <h2>🚌 Autocarros - Rota 3</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Rota</th>
-                        <th>Número do Autocarro</th>
-                        <th>Horário</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Rota 3</td>
-                        <td>3</td>
-                        <td>07:00 - 08:00</td>
-                        <td>Em operação</td>
-                    </tr>
-                    <tr>
-                        <td>Rota 3</td>
-                        <td>8</td>
-                        <td>09:30 - 10:30</td>
-                        <td>Em operação</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-</div>
-
-
-    <script>
-        function mostrarTabela(linhaId) {
-            // Esconde todas as tabelas
-            const tabelas = document.querySelectorAll('.bus-table');
-            tabelas.forEach(tabela => tabela.style.display = 'none');
-
-            // Mostra a tabela correspondente
-            const tabelaSelecionada = document.getElementById(linhaId);
-            if (tabelaSelecionada) {
-                tabelaSelecionada.style.display = 'block';
-            }
-        }
-
-   
     </script>
-    <script>
-        function mostrarInformacoesAutocarro(rota, numero, horario, estado) {
-            // Esconde todas as tabelas
-            const tabelas = document.querySelectorAll('.bus-table');
-            tabelas.forEach(tabela => tabela.style.display = 'none');
-    
-            // Preenche os dados do autocarro selecionado
-            document.getElementById('rota').textContent = rota;
-            document.getElementById('numero').textContent = numero;
-            document.getElementById('horario').textContent = horario;
-            document.getElementById('estado').textContent = estado;
-    
-            // Mostra a área de informações do autocarro
-            document.getElementById('informacoes-autocarro').style.display = 'block';
-        }
-    
-        function voltarParaLista() {
-            // Esconde a área de informações do autocarro
-            document.getElementById('informacoes-autocarro').style.display = 'none';
-    
-            // Mostra novamente as tabelas
-            const tabelas = document.querySelectorAll('.bus-table');
-            tabelas.forEach(tabela => tabela.style.display = 'block');
-        }
-   
-</script>
 </body>
 </html>
