@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
     <title>Paragens</title>
     <style>
         * {
@@ -156,7 +158,6 @@
     <div class="main-content">
         <h1>🚏 Paragens</h1>
 
-        <!-- Controles -->
         <div class="section">
             <div class="controls">
                 <div class="search-box">
@@ -172,7 +173,6 @@
             </div>
         </div>
 
-        <!-- Lista de Paragens -->
         <div class="section">
             <h2>📋 Lista de Paragens (<span id="contadorParagens">0</span>)</h2>
             <div class="table-container">
@@ -184,11 +184,12 @@
                             <th>Latitude</th>
                             <th>Longitude</th>
                             <th>Zona</th>
+                            <th>Localização</th>
                         </tr>
                     </thead>
                     <tbody id="paragensTableBody">
                         <tr>
-                            <td colspan="5" style="text-align: center; padding: 40px;">
+                            <td colspan="6" style="text-align: center; padding: 40px;">
                                 Nenhuma paragem carregada. Contacte a administração.
                             </td>
                         </tr>
@@ -210,7 +211,6 @@
         let paginaAtual = 1;
         const itensPorPagina = 50;
 
-        // Carregar dados ao iniciar
         window.onload = function() {
             carregarParagens();
         };
@@ -224,8 +224,7 @@
                     atualizarFiltroZonas();
                     renderizarParagens();
                 } catch (error) {
-                    // Se der erro, mostra mensagem
-                    document.getElementById('paragensTableBody').innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px;">Erro ao carregar paragens.</td></tr>';
+                    document.getElementById('paragensTableBody').innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px;">Erro ao carregar paragens.</td></tr>';
                 }
             }
         }
@@ -233,7 +232,6 @@
         function atualizarFiltroZonas() {
             const zoneFilter = document.getElementById('zoneFilter');
             const zonas = [...new Set(todasParagens.map(p => p.zone_id))].sort((a, b) => a - b);
-            
             zoneFilter.innerHTML = '<option value="">Todas as Zonas</option>';
             zonas.forEach(zona => {
                 zoneFilter.innerHTML += `<option value="${zona}">Zona ${zona}</option>`;
@@ -243,15 +241,12 @@
         function filtrarParagens() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const zoneFilter = document.getElementById('zoneFilter').value;
-
             paragensFiltered = todasParagens.filter(paragem => {
                 const matchesSearch = paragem.stop_name.toLowerCase().includes(searchTerm) || 
                                     paragem.stop_id.toString().includes(searchTerm);
                 const matchesZone = !zoneFilter || paragem.zone_id.toString() === zoneFilter;
-                
                 return matchesSearch && matchesZone;
             });
-
             paginaAtual = 1;
             renderizarParagens();
         }
@@ -261,9 +256,8 @@
             const startIndex = (paginaAtual - 1) * itensPorPagina;
             const endIndex = startIndex + itensPorPagina;
             const paragensPage = paragensFiltered.slice(startIndex, endIndex);
-
             if (paragensPage.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px;">Nenhuma paragem encontrada</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px;">Nenhuma paragem encontrada</td></tr>';
             } else {
                 tbody.innerHTML = paragensPage.map(paragem => `
                     <tr>
@@ -272,10 +266,12 @@
                         <td>${paragem.stop_lat.toFixed(6)}</td>
                         <td>${paragem.stop_lon.toFixed(6)}</td>
                         <td>Zona ${paragem.zone_id}</td>
+                        <td>
+                            <button onclick="verLocalizacao(${paragem.stop_lat}, ${paragem.stop_lon})">Ver</button>
+                        </td>
                     </tr>
                 `).join('');
             }
-
             atualizarPaginacao();
             document.getElementById('contadorParagens').textContent = paragensFiltered.length;
         }
@@ -300,6 +296,11 @@
                 paginaAtual++;
                 renderizarParagens();
             }
+        }
+
+        function verLocalizacao(lat, lon) {
+            const url = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat},${lon}`;
+            window.open(url, '_blank');
         }
     </script>
 </body>
