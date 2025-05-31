@@ -12,7 +12,7 @@ public class RouteImporter {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath));
             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            String line;
+            String line = ;
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
                 // Verifique se o número de colunas está correto
