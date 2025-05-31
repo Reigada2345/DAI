@@ -211,6 +211,31 @@
             display: none;
         }
 
+        .rota-info table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .rota-info th, .rota-info td {
+            padding: 14px 10px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .rota-info th {
+            background-color: #2c72b7;
+            color: white;
+        }
+
+        .rota-info tr:nth-child(even) {
+            background-color: #f6faff;
+        }
+
         #map {
             height: 400px;
             width: 100%;
@@ -374,7 +399,19 @@
 
     <div id="rota-info" class="rota-info" style="display:none;">
         <h2 id="rota-info-title"></h2>
-        <p id="rota-info-desc"></p>
+        <table id="rota-info-table" style="width:100%; margin-top:20px;">
+            <thead>
+                <tr>
+                    <th>Rota</th>
+                    <th>Número do Autocarro</th>
+                    <th>Horário</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody id="rota-info-tbody">
+                <!-- Linhas preenchidas por JS -->
+            </tbody>
+        </table>
         <button class="btn-acoes" onclick="fecharInfo()">Fechar</button>
     </div>
 
@@ -383,6 +420,61 @@
     </footer>
 
 <script>
+    function filtrarTabela(linha) {
+        document.getElementById('rota-info').style.display = 'block';
+
+        let titulo = '';
+        let autocarros = [];
+
+        switch(linha) {
+            case 'Linha 1':
+                titulo = '🚌 Autocarros - Rota 1';
+                autocarros = [
+                    { rota: 'Rota 1', numero: '1', horario: '08:00 - 09:00', estado: 'Em operação' },
+                    { rota: 'Rota 1', numero: '6', horario: '09:00 - 10:00', estado: 'Em operação' }
+                ];
+                break;
+            case 'Linha 2':
+                titulo = '🚌 Autocarros - Rota 2';
+                autocarros = [
+                    { rota: 'Rota 2', numero: '2', horario: '08:30 - 09:30', estado: 'Em operação' },
+                    { rota: 'Rota 2', numero: '7', horario: '09:30 - 10:30', estado: 'Em operação' }
+                ];
+                break;
+            case 'Linha 3':
+                titulo = '🚌 Autocarros - Rota 3';
+                autocarros = [
+                    { rota: 'Rota 3', numero: '3', horario: '07:00 - 08:00', estado: 'Em operação' },
+                    { rota: 'Rota 3', numero: '8', horario: '09:30 - 10:30', estado: 'Em operação' }
+                ];
+                break;
+            case 'Linha 4':
+                titulo = '🚌 Autocarros - Rota 4';
+                autocarros = [
+                    { rota: 'Rota 4', numero: '4', horario: '10:00 - 11:00', estado: 'Em operação' }
+                ];
+                break;
+            default:
+                titulo = linha;
+                autocarros = [];
+        }
+        document.getElementById('rota-info-title').textContent = titulo;
+
+        const tbody = document.getElementById('rota-info-tbody');
+        tbody.innerHTML = autocarros.map(a => `
+            <tr>
+                <td>${a.rota}</td>
+                <td>${a.numero}</td>
+                <td>${a.horario}</td>
+                <td>${a.estado}</td>
+            </tr>
+        `).join('');
+    }
+
+
+    function fecharInfo() {
+        document.getElementById('rota-info').style.display = 'none';
+    }
     document.addEventListener('DOMContentLoaded', function() {
     // 1. Configuração do Mapa
     const map = L.map('map').setView([41.545448, -8.426507], 13);
@@ -426,43 +518,6 @@
     
     reader.readAsText(file);
 });
-
-
-    // 3. Função para filtrar tabela
-    function filtrarTabela(linha) { 
-            document.getElementById('rota-info').style.display = 'block';
-
-            let titulo = '';
-            let desc = '';
-            switch(linha) {
-                case 'Linha 1':
-                    titulo = 'Linha 1';
-                    desc = 'Estação - Universidade do Minho';
-                    break;
-                case 'Linha 2':
-                    titulo = 'Linha 2';
-                    desc = 'Nova Arcada - Minho Center';
-                    break;
-                case 'Linha 3':
-                    titulo = 'Linha 3';
-                    desc = 'Hospital - Avenida Central';
-                    break;
-                case 'Linha 4':
-                    titulo = 'Linha 4';
-                    desc = 'Estação - Universidade do Minho';
-                    break;
-                default:
-                    titulo = linha;
-                    desc = '';
-            }
-            document.getElementById('rota-info-title').textContent = titulo;
-            document.getElementById('rota-info-desc').textContent = desc;
-        }
-
-        function fecharInfo() {
-            document.getElementById('rota-info').style.display = 'none';
-        }
-        
 
             // Função para mostrar notificações
             function showNotification(message, type) {
