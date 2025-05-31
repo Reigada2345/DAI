@@ -118,160 +118,12 @@
             background-color: #1a436c;
         }
 
-        .rota-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px 0 18px 0;
-            margin: 40px auto 30px auto;
-            max-width: 600px;
-            gap: 18px;
-        }
-        .rota-title {
-            font-size: 2rem;
-            color: #2c72b7;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-        .bus-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 30px;
-            justify-content: center;
-            margin-bottom: 40px;
-            margin-top: 10px;
-        }
-        .bus-card {
-            background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 4px 24px rgba(44, 114, 183, 0.10);
-            padding: 24px 18px 18px 18px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: box-shadow 0.2s, transform 0.2s;
-            cursor: pointer;
-            border: 2px solid transparent;
-            min-height: 370px;
-        }
-        .bus-card:hover {
-            box-shadow: 0 8px 32px rgba(44, 114, 183, 0.18);
-            border: 2px solid #2c72b7;
-            transform: translateY(-4px) scale(1.02);
-            background: #f6faff;
-        }
-        .bus-card img {
-            width: 100%;
-            max-width: 220px;
-            border-radius: 10px;
-            margin-bottom: 18px;
-            box-shadow: 0 2px 10px rgba(44, 114, 183, 0.07);
-        }
-        .bus-title {
-            font-size: 1.4rem;
-            color: #2c72b7;
-            font-family: 'Poppins', sans-serif;
-            margin-bottom: 8px;
-            margin-top: 0;
-            text-align: center;
-        }
-        .bus-desc {
-            font-size: 1.05rem;
-            color: #444;
-            margin-bottom: 18px;
-            text-align: center;
-        }
-        .btn-acoes {
-            background: linear-gradient(90deg, #2c72b7 60%, #3a9bdc 100%);
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            padding: 10px 24px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.2s;
-            box-shadow: 0 2px 8px rgba(44, 114, 183, 0.10);
-            margin-top: auto;
-            font-family: 'Montserrat', sans-serif;
-        }
-        .btn-acoes:hover {
-            background: #1a436c;
-            transform: translateY(-2px) scale(1.05);
-        }
-
-        .rota-info {
-            background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 4px 24px rgba(44, 114, 183, 0.13);
-            padding: 32px 24px;
-            max-width: 400px;
-            margin: 0 auto 40px auto;
-            text-align: center;
-            position: relative;
-            display: none;
-        }
-
-        .rota-info table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            background: #fff;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-
-        .rota-info th, .rota-info td {
-            padding: 14px 10px;
-            text-align: center;
-            font-size: 1.1rem;
-        }
-
-        .rota-info th {
-            background-color: #2c72b7;
-            color: white;
-        }
-
-        .rota-info tr:nth-child(even) {
-            background-color: #f6faff;
-        }
-
         #map {
             height: 400px;
             width: 100%;
             margin-bottom: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            background: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px 15px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #2c72b7;
-            color: white;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
         }
 
         footer {
@@ -287,35 +139,106 @@
             align-items: center;
             gap: 10px;
             margin: 20px 0 15px 0;
+            font-size: 1.5rem;
+            color: #2c72b7;
         }
-        /* Adicione ao seu estilo existente */
-#routesTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-}
 
-#routesTable th {
-    background-color: #2c72b7;
-    color: white;
-    padding: 12px;
-    text-align: left;
-    position: sticky;
-    top: 70px;
-}
+        .routes-table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin: 20px 0;
+        }
 
-#routesTable td {
-    padding: 10px 12px;
-    border-bottom: 1px solid #e0e0e0;
-}
+        #routesTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
 
-#routesTable tr:nth-child(even) {
-    background-color: #f8f9fa;
-}
+        #routesTable th {
+            background-color: #2c72b7;
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid #1a436c;
+        }
 
-#routesTable tr:hover {
-    background-color: #e9ecef;
-}
+        #routesTable td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: top;
+        }
+
+        #routesTable tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        #routesTable tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .notification {
+            display: none;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .notification.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .notification.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .routes-imported {
+            background-color: #e8f5e8;
+            border: 2px solid #4caf50;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .routes-imported h3 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .clear-data-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .clear-data-btn:hover {
+            background-color: #c82333;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .no-routes-message {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -341,79 +264,47 @@
         <div id="notification" class="notification"></div>
 
         <!-- Seção para importação de rotas -->
-        <section class="import-section">
+        <section id="importSection" class="import-section">
             <h2>📤 Importar Rotas</h2>
             <form id="uploadForm">
                 <input type="file" id="routeFile" name="file" accept=".txt,.csv,.json" required>
-                <button type="submit">Importar Rotas</button>
+                <button type="submit" id="importBtn">Importar Rotas</button>
+                <button type="button" class="clear-data-btn" onclick="clearImportedData()">Limpar Dados</button>
             </form>
         </section>
 
-        <!-- Remove este bloco -->
-        <section>
+        <!-- Indicador de rotas já importadas -->
+        <div id="routesImported" class="routes-imported hidden">
+            <h3>✅ Rotas já importadas!</h3>
+            <p>As rotas foram carregadas com sucesso. <span id="routeCount">0</span> rotas disponíveis.</p>
+            <button type="button" class="clear-data-btn" onclick="clearImportedData()">Reimportar Rotas</button>
+        </div>
+
+        <!-- Lista de Rotas -->
+        <section id="routesSection" class="hidden">
             <h2 class="section-title">📋 Lista de Rotas</h2>
-            <table id="routesTable">
-                <thead>
-                    <tr>
-                    <!--  <th>ID</th>
-                        <th>Agência</th>
-                        <th>Código</th>
-                        <th>Nome da Rota</th>
-                        <th>Tipo</th>-->
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Dados dinâmicos das rotas serão inseridos aqui -->
-                </tbody>
-            </table>
+            <div class="routes-table-container">
+                <table id="routesTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Agência</th>
+                            <th>Código</th>
+                            <th>Nome da Rota</th>
+                            <th>Tipo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="routesTableBody">
+                        <!-- Dados dinâmicos das rotas serão inseridos aqui -->
+                    </tbody>
+                </table>
+            </div>
         </section>
 
-        <div class="rota-header">
-        <span class="rota-title">Escolha uma Rota</span>
-    </div>
-    <div class="bus-container">
-        <div class="bus-card">
-            <img src="fotos/rota1.jpg" alt="Linha 1">
-            <h2 class="bus-title">Linha 1</h2>
-            <p class="bus-desc">Estação - Universidade do Minho</p>
-            <button class="btn-acoes" onclick="filtrarTabela('Linha 1')">Ver Informações</button>
+        <!-- Mensagem quando não há rotas -->
+        <div id="noRoutesMessage" class="no-routes-message">
+            <p>📋 Importe um ficheiro de rotas para começar</p>
         </div>
-        <div class="bus-card">
-            <img src="fotos/rota1.jpg" alt="Linha 2">
-            <h2 class="bus-title">Linha 2</h2>
-            <p class="bus-desc">Nova Arcada - Minho Center</p>
-            <button class="btn-acoes" onclick="filtrarTabela('Linha 2')">Ver Informações</button>
-        </div>
-        <div class="bus-card">
-            <img src="fotos/rota1.jpg" alt="Linha 3">
-            <h2 class="bus-title">Linha 3</h2>
-            <p class="bus-desc">Hospital - Avenida Central</p>
-            <button class="btn-acoes" onclick="filtrarTabela('Linha 3')">Ver Informações</button>
-        </div>
-        <div class="bus-card">
-            <img src="fotos/rota1.jpg" alt="Linha 4">
-            <h2 class="bus-title">Linha 4</h2>
-            <p class="bus-desc">Estação - Universidade do Minho</p>
-            <button class="btn-acoes" onclick="filtrarTabela('Linha 4')">Ver Informações</button>
-        </div>
-    </div>
-
-    <div id="rota-info" class="rota-info" style="display:none;">
-        <h2 id="rota-info-title"></h2>
-        <table id="rota-info-table" style="width:100%; margin-top:20px;">
-            <thead>
-                <tr>
-                    <th>Rota</th>
-                    <th>Número do Autocarro</th>
-                    <th>Horário</th>
-                    <th>Estado</th>
-                </tr>
-            </thead>
-            <tbody id="rota-info-tbody">
-                <!-- Linhas preenchidas por JS -->
-            </tbody>
-        </table>
-        <button class="btn-acoes" onclick="fecharInfo()">Fechar</button>
     </div>
 
     <footer>
@@ -421,165 +312,219 @@
     </footer>
 
 <script>
-    function filtrarTabela(linha) {
-        document.getElementById('rota-info').style.display = 'block';
+    // Variáveis globais
+    let importedRoutes = [];
 
-        let titulo = '';
-        let autocarros = [];
-
-        switch(linha) {
-            case 'Linha 1':
-                titulo = '🚌 Autocarros - Rota 1';
-                autocarros = [
-                    { rota: 'Rota 1', numero: '1', horario: '08:00 - 09:00', estado: 'Em operação' },
-                    { rota: 'Rota 1', numero: '6', horario: '09:00 - 10:00', estado: 'Em operação' }
-                ];
-                break;
-            case 'Linha 2':
-                titulo = '🚌 Autocarros - Rota 2';
-                autocarros = [
-                    { rota: 'Rota 2', numero: '2', horario: '08:30 - 09:30', estado: 'Em operação' },
-                    { rota: 'Rota 2', numero: '7', horario: '09:30 - 10:30', estado: 'Em operação' }
-                ];
-                break;
-            case 'Linha 3':
-                titulo = '🚌 Autocarros - Rota 3';
-                autocarros = [
-                    { rota: 'Rota 3', numero: '3', horario: '07:00 - 08:00', estado: 'Em operação' },
-                    { rota: 'Rota 3', numero: '8', horario: '09:30 - 10:30', estado: 'Em operação' }
-                ];
-                break;
-            case 'Linha 4':
-                titulo = '🚌 Autocarros - Rota 4';
-                autocarros = [
-                    { rota: 'Rota 4', numero: '4', horario: '10:00 - 11:00', estado: 'Em operação' }
-                ];
-                break;
-            default:
-                titulo = linha;
-                autocarros = [];
-        }
-        document.getElementById('rota-info-title').textContent = titulo;
-
-        const tbody = document.getElementById('rota-info-tbody');
-        tbody.innerHTML = autocarros.map(a => `
-            <tr>
-                <td>${a.rota}</td>
-                <td>${a.numero}</td>
-                <td>${a.horario}</td>
-                <td>${a.estado}</td>
-            </tr>
-        `).join('');
-    }
-
-
-    function fecharInfo() {
-        document.getElementById('rota-info').style.display = 'none';
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-    // 1. Configuração do Mapa
-    const map = L.map('map').setView([41.545448, -8.426507], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-    // 2. Variáveis Globais
-    const routeMarkers = [];
-    const routeData = [];
-    document.getElementById('uploadForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const fileInput = document.getElementById('routeFile');
-    const file = fileInput.files[0];
-    
-    if (!file) {
-        showNotification('Por favor, selecione um arquivo', 'error');
-        return;
-    }
-
-    const reader = new FileReader();
-    
-    reader.onload = function(e) {
-        try {
-            const content = e.target.result;
-            console.log("Conteúdo do arquivo:", content); // Para debug
-            
-            const routes = parseTXT(content);
-            console.log("Rotas processadas:", routes); // Para debug
-            
-            if (routes.length === 0) {
-                showNotification('O arquivo não contém dados válidos', 'error');
+    // Função para verificar se já existem rotas importadas
+    function checkImportedRoutes() {
+        const savedRoutes = localStorage.getItem('tubRoutes');
+        if (savedRoutes) {
+            try {
+                importedRoutes = JSON.parse(savedRoutes);
+                if (importedRoutes.length > 0) {
+                    showImportedState();
+                    displayRoutes(importedRoutes);
+                    return true;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar rotas do localStorage:', error);
+                localStorage.removeItem('tubRoutes');
             }
-            
-            displayRoutes(routes);
-            showNotification(`${routes.length} rotas importadas com sucesso`, 'success');
-            
-        } catch (error) {
-            console.error("Erro detalhado:", error);
-            showNotification('Formato de arquivo inválido', 'error');
         }
-    };
-    
-    reader.readAsText(file);
-});
+        return false;
+    }
 
-            // Função para mostrar notificações
-            function showNotification(message, type) {
-                const notification = document.getElementById('notification');
-                notification.textContent = message;
-                notification.className = 'notification ' + type;
-                notification.style.display = 'block';
+    // Função para mostrar estado de rotas importadas
+    function showImportedState() {
+        document.getElementById('importSection').classList.add('hidden');
+        document.getElementById('routesImported').classList.remove('hidden');
+        document.getElementById('routesSection').classList.remove('hidden');
+        document.getElementById('noRoutesMessage').classList.add('hidden');
+        document.getElementById('routeCount').textContent = importedRoutes.length;
+    }
+
+    // Função para mostrar estado inicial
+    function showInitialState() {
+        document.getElementById('importSection').classList.remove('hidden');
+        document.getElementById('routesImported').classList.add('hidden');
+        document.getElementById('routesSection').classList.add('hidden');
+        document.getElementById('noRoutesMessage').classList.remove('hidden');
+    }
+
+    // Função para limpar dados importados
+    function clearImportedData() {
+        localStorage.removeItem('tubRoutes');
+        importedRoutes = [];
+        
+        // Limpar tabela
+        const tbody = document.getElementById('routesTableBody');
+        tbody.innerHTML = '';
+        
+        showInitialState();
+        showNotification('Dados limpos. Pode importar novas rotas.', 'success');
+    }
+
+    // Função para mostrar notificações
+    function showNotification(message, type) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = 'notification ' + type;
+        notification.style.display = 'block';
+        
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 5000);
+    }
+
+    // Função para parsear TXT - CORRIGIDA
+    function parseTXT(txt) {
+        console.log("Iniciando parse do ficheiro...");
+        console.log("Conteúdo recebido:", txt.substring(0, 200) + "...");
+        
+        const lines = txt.split('\n').filter(line => line.trim() !== '');
+        const routes = [];
+        
+        console.log("Número de linhas:", lines.length);
+        
+        // Verifica se a primeira linha é cabeçalho
+        const startIndex = lines[0] && lines[0].toLowerCase().includes('id') ? 1 : 0;
+        console.log("Índice de início:", startIndex);
+        
+        for (let i = startIndex; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line) continue;
+            
+            const parts = line.split(',');
+            console.log(`Linha ${i}:`, parts);
+            
+            if (parts.length >= 5) {
+                let tipo;
+                switch(parts[4].trim()) {
+                    case '3':
+                        tipo = 'Urbano';
+                        break;
+                    case '2':
+                        tipo = 'Expresso';
+                        break;
+                    case '1':
+                        tipo = 'Suburbano';
+                        break;
+                    default:
+                        tipo = parts[4].trim();
+                }
+
+                const route = {
+                    route_id: parts[0].trim(),
+                    agency_id: parts[1].trim(),
+                    route_short_name: parts[2].trim(),
+                    route_long_name: parts[3].trim(),
+                    route_type: tipo
+                };
                 
-                setTimeout(() => {
-                    notification.style.display = 'none';
-                }, 5000);
+                routes.push(route);
+                console.log("Rota adicionada:", route);
+            } else {
+                console.log(`Linha ${i} ignorada - partes insuficientes:`, parts.length);
             }
+        }
+        
+        console.log("Total de rotas processadas:", routes.length);
+        return routes;
+    }
 
-            // Função para parsear TXT
-            function parseTXT(txt) {
-                return txt.split('\n')
-                    .filter(line => line.trim() !== '')
-                    .map(line => {
-                        const parts = line.split(',');
-                        if (parts.length >= 5) {
-                            return {
-                                route_id: parts[0].trim(),
-                                agency_id: parts[1].trim(),
-                                route_short_name: parts[2].trim(),
-                                route_long_name: parts[3].trim(),
-                                route_type: parts[4].trim() === '3' ? 'Urbano' : parts[4].trim(),
-                                stops: []
-                            };
-                        }
-                        return null;
-                    })
-                    .filter(route => route !== null);
-            }
-
-          // 5. Função para Exibir Rotas
+    // Função para exibir rotas
     function displayRoutes(routes) {
-        const tbody = document.querySelector('#routesTable tbody');
-        tbody.innerHTML = routes.map(route => `
-            <tr>
+        const tbody = document.getElementById('routesTableBody');
+        
+        // Limpar tabela primeiro
+        tbody.innerHTML = '';
+        
+        if (routes.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="no-routes-message">Nenhuma rota encontrada</td></tr>';
+            return;
+        }
+
+        // Adicionar rotas à tabela
+        routes.forEach(route => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
                 <td>${route.route_id}</td>
                 <td>${route.agency_id}</td>
                 <td>${route.route_short_name}</td>
                 <td>${route.route_long_name}</td>
                 <td>${route.route_type}</td>
-            </tr>
-        `).join('');
+            `;
+            tbody.appendChild(row);
+        });
     }
-    
-    routes.forEach(route => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${route.route_id}</td>
-            <td>${route.agency_id}</td>
-            <td>${route.route_short_name}</td>
-            <td>${route.route_long_name}</td>
-            <td>${route.route_type}</td>
-        `;
-        tbody.appendChild(row);
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Configuração do Mapa
+        const map = L.map('map').setView([41.545448, -8.426507], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        // 2. Verificar se já existem rotas importadas
+        if (!checkImportedRoutes()) {
+            showInitialState();
+        }
+
+        // 3. Event listener para upload
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('routeFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showNotification('Por favor, selecione um arquivo', 'error');
+                return;
+            }
+
+            console.log("Ficheiro selecionado:", file.name, file.type, file.size);
+
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const content = e.target.result;
+                    console.log("Conteúdo do arquivo carregado, tamanho:", content.length);
+                    
+                    if (!content || content.trim() === '') {
+                        showNotification('O arquivo está vazio', 'error');
+                        return;
+                    }
+                    
+                    const routes = parseTXT(content);
+                    console.log("Rotas processadas:", routes.length);
+                    
+                    if (routes.length === 0) {
+                        showNotification('O arquivo não contém dados válidos. Verifique o formato.', 'error');
+                        return;
+                    }
+                    
+                    // Salvar no localStorage
+                    localStorage.setItem('tubRoutes', JSON.stringify(routes));
+                    importedRoutes = routes;
+                    
+                    displayRoutes(routes);
+                    showImportedState();
+                    showNotification(`${routes.length} rotas importadas com sucesso`, 'success');
+                    
+                    // Limpar o input file
+                    fileInput.value = '';
+                    
+                } catch (error) {
+                    console.error("Erro detalhado:", error);
+                    showNotification('Erro ao processar o arquivo: ' + error.message, 'error');
+                }
+            };
+            
+            reader.onerror = function() {
+                showNotification('Erro ao ler o arquivo', 'error');
+            };
+            
+            reader.readAsText(file, 'UTF-8');
+        });
     });
-    
-});
 </script>
 </body>
 </html>
