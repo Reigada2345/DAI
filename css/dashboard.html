@@ -353,6 +353,25 @@
             font-weight: 500;
         }
 
+        /* Estilo para o botão de limpar rota */
+        .clear-route-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            z-index: 1000;
+        }
+
+        .clear-route-btn:hover {
+            background-color: #c82333;
+        }
+
     </style>
 </head>
 <body>
@@ -373,7 +392,11 @@
     <div class="main-content">
 
     <!-- Mapa -->
-    <div id="map"></div>
+    <div id="map" style="position: relative;">
+        <button id="clearRouteBtn" class="clear-route-btn" style="display: none;" onclick="limparRotaDoMapa()">
+            Limpar Rota
+        </button>
+    </div>
 
     <!-- Barra de pesquisa -->
     <input
@@ -404,6 +427,10 @@
         let paginaAtual = 1;
         let rotasPorPagina = 4;
         let totalPaginas = 1;
+        let map;
+        let todasParagens = [];
+        let paragensMap = new Map(); // Mapa para acesso rápido às paragens por ID
+        let markersRotaAtual = [];
         
         let autocarrosPorRota = {
             "2": [
@@ -419,6 +446,184 @@
                 { numero: "10", horario: "10:00 - 11:00", estado: "Em operação" }
             ]
         };
+
+        // Mapeamento das rotas com paragens de início e fim baseadas nos dados reais
+        let rotasParagens = {
+            "2": {
+                nome: "PONTE DE PRADO - BOM JESUS",
+                paragens: [
+                    { id: "1", nome: "BOM JESUS", lat: 41.554462, lon: -8.381193 },
+                    { id: "12", nome: "CENTRAL IV", lat: 41.551860, lon: -8.421896 },
+                    { id: "17", nome: "NOVA ESTAÇÃO I", lat: 41.549251, lon: -8.434851 }
+                ]
+            },
+            "3": {
+                nome: "AVENIDA CENTRAL - RUÃES",
+                paragens: [
+                    { id: "12", nome: "CENTRAL IV", lat: 41.551860, lon: -8.421896 },
+                    { id: "594", nome: "RUÃES", lat: 41.581507, lon: -8.475170 }
+                ]
+            },
+            "5": {
+                nome: "DUME - QUINTA DA CAPELA",
+                paragens: [
+                    { id: "82", nome: "S ROSENDO (DUME)", lat: 41.568033, lon: -8.434335 },
+                    { id: "30", nome: "CARMO I (CAPELA)", lat: 41.582040, lon: -8.453871 }
+                ]
+            },
+            "6": {
+                nome: "AVENIDA GENERAL NORTON DE MATOS - GONDIZALVES/SEMELHE",
+                paragens: [
+                    { id: "66", nome: "NORTON MATOS I", lat: 41.555217, lon: -8.424519 },
+                    { id: "647", nome: "IMAC CONCEIÇÃO VI (JUNTA)", lat: 41.586860, lon: -8.400003 }
+                ]
+            }
+        };
+
+        // Função para criar ícone de autocarro personalizado
+        function criarIconeAutocarro() {
+            return L.divIcon({
+                html: `<div style="
+                    background-color: #2c72b7;
+                    color: white;
+                    border-radius: 50%;
+                    width: 30px;
+                    height: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 16px;
+                    border: 3px solid white;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                ">🚌</div>`,
+                className: 'custom-bus-icon',
+                iconSize: [30, 30],
+                iconAnchor: [15, 15]
+            });
+        }
+
+        // Função para carregar paragens do ficheiro
+        function carregarParagens() {
+            return fetch('../data/stops.txt')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ficheiro stops.txt não encontrado');
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    const linhas = text.trim().split('\n');
+                    console.log('Carregando paragens do ficheiro stops.txt...');
+                    
+                    // Ignora a primeira linha (cabeçalho)
+                    for (let i = 1; i < linhas.length; i++) {
+                        const linha = linhas[i].trim();
+                        if (linha) {
+                            const partes = linha.split(',');
+                            if (partes.length >= 4) {
+                                const paragem = {
+                                    id: partes[0].trim(),
+                                    nome: partes[1].replace(/"/g, '').trim(),
+                                    lat: parseFloat(partes[2].trim()),
+                                    lon: parseFloat(partes[3].trim())
+                                };
+                                
+                                if (!isNaN(paragem.lat) && !isNaN(paragem.lon)) {
+                                    todasParagens.push(paragem);
+                                    paragensMap.set(paragem.id, paragem);
+                                }
+                            }
+                        }
+                    }
+                    
+                    console.log(`${todasParagens.length} paragens carregadas do ficheiro`);
+                    return todasParagens;
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar paragens:', error);
+                    // Usar dados de fallback se o ficheiro não existir
+                    console.log('Usando dados de paragens de fallback...');
+                    return [];
+                });
+        }
+
+        // Função para mostrar rota no mapa
+        function mostrarRotaNoMapa(rotaId) {
+            // Limpar markers anteriores
+            limparRotaDoMapa();
+
+            const rotaInfo = rotasParagens[rotaId];
+            if (!rotaInfo) {
+                console.log('Informações da rota não encontradas:', rotaId);
+                return;
+            }
+
+            console.log('Mostrando rota no mapa:', rotaId, rotaInfo);
+
+            // Adicionar markers para cada paragem da rota
+            rotaInfo.paragens.forEach((paragem, index) => {
+                const marker = L.marker([paragem.lat, paragem.lon], {
+                    icon: criarIconeAutocarro()
+                }).addTo(map);
+
+                const isInicio = index === 0;
+                const isFim = index === rotaInfo.paragens.length - 1;
+                let tipoParagem = '';
+                
+                if (isInicio) tipoParagem = ' (INÍCIO)';
+                else if (isFim) tipoParagem = ' (FIM)';
+
+                marker.bindPopup(`
+                    <div style="text-align: center;">
+                        <b>🚌 ${paragem.nome}${tipoParagem}</b><br>
+                        <strong>Linha ${rotasData.find(r => r.id === rotaId)?.codigo || rotaId}</strong><br>
+                        <em>${rotaInfo.nome}</em>
+                    </div>
+                `);
+
+                marker.bindTooltip(paragem.nome + tipoParagem, {
+                    permanent: false,
+                    direction: 'top',
+                    offset: [0, -35]
+                });
+
+                markersRotaAtual.push(marker);
+            });
+
+            // Criar linha conectando as paragens
+            if (rotaInfo.paragens.length > 1) {
+                const coordenadas = rotaInfo.paragens.map(p => [p.lat, p.lon]);
+                const linha = L.polyline(coordenadas, {
+                    color: '#2c72b7',
+                    weight: 4,
+                    opacity: 0.8,
+                    dashArray: '10, 5'
+                }).addTo(map);
+
+                markersRotaAtual.push(linha);
+            }
+
+            // Ajustar vista do mapa para mostrar toda a rota
+            if (rotaInfo.paragens.length > 0) {
+                const group = new L.featureGroup(markersRotaAtual);
+                map.fitBounds(group.getBounds().pad(0.1));
+            }
+
+            // Mostrar botão de limpar rota
+            document.getElementById('clearRouteBtn').style.display = 'block';
+        }
+
+        // Função para limpar rota do mapa
+        function limparRotaDoMapa() {
+            markersRotaAtual.forEach(marker => {
+                map.removeLayer(marker);
+            });
+            markersRotaAtual = [];
+            document.getElementById('clearRouteBtn').style.display = 'none';
+            
+            // Voltar à vista inicial
+            map.setView([41.545448, -8.426507], 15);
+        }
 
         // Função para obter o nome do tipo
         function getTipoNome(tipo) {
@@ -439,7 +644,7 @@
                     <span class="tipo-badge tipo-${rota.tipo}">${getTipoNome(rota.tipo)}</span>
                 </h2>
                 <p class="bus-desc">${rota.nome}</p>
-                <button class="btn-acoes" onclick="mostrarTabela('linha${rota.id}')">Ver Informações</button>
+                <button class="btn-acoes" onclick="mostrarTabela('linha${rota.id}', '${rota.id}')">Ver Informações</button>
             `;
             return card;
         }
@@ -486,6 +691,7 @@
                         ${linhasTabela}
                     </tbody>
                 </table>
+                <button class="btn-acoes" onclick="esconderTabela('linha${rota.id}')">Fechar</button>
             `;
             return tabela;
         }
@@ -630,23 +836,36 @@
             renderizarRotas();
         });
 
-        // Função para mostrar tabela
-        function mostrarTabela(linhaId) {
+        // Função para mostrar tabela (ATUALIZADA)
+        function mostrarTabela(linhaId, rotaId) {
             const tabelas = document.querySelectorAll('.bus-table');
             const tabelaSelecionada = document.getElementById(linhaId);
 
             if (!tabelaSelecionada) return;
 
-            // Se a tabela já estiver visível, esconde todas
+            // Se a tabela já estiver visível, esconde todas e limpa o mapa
             if (tabelaSelecionada.style.display === 'block') {
                 tabelas.forEach(tabela => tabela.style.display = 'none');
+                limparRotaDoMapa();
             } else {
                 // Esconde todas e mostra só a selecionada
                 tabelas.forEach(tabela => tabela.style.display = 'none');
                 tabelaSelecionada.style.display = 'block';
 
+                // Mostrar rota no mapa
+                mostrarRotaNoMapa(rotaId);
+
                 // Scroll suave para a tabela exibida
                 tabelaSelecionada.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Função para esconder tabela
+        function esconderTabela(linhaId) {
+            const tabela = document.getElementById(linhaId);
+            if (tabela) {
+                tabela.style.display = 'none';
+                limparRotaDoMapa();
             }
         }
 
@@ -673,56 +892,35 @@
 
         // Inicialização do mapa
         document.addEventListener('DOMContentLoaded', function () {
-            // Carrega as rotas
-            carregarRotas();
-
             // Inicializa o mapa
-            const map = L.map('map').setView([41.545448, -8.426507], 15);
+            map = L.map('map').setView([41.545448, -8.426507], 15);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '© OpenStreetMap'
             }).addTo(map);
 
-            // Carrega paragens
-            Papa.parse('../data/stops.csv', {
-                download: true,
-                header: true,
-                skipEmptyLines: true,
-                complete: function(results) {
-                    if (!results || !results.data) {
-                        console.error("Erro a carregar o CSV:", results);
-                        return;
-                    }
-
-                    console.log('Paragens carregadas:', results.data.length);
-
-                    results.data.forEach(stop => {
-                        const lat = parseFloat(stop.stop_lat);
-                        const lon = parseFloat(stop.stop_lon);
-                        const name = stop.stop_name;
-
-                        if (!isNaN(lat) && !isNaN(lon)) {
-                            L.circle([lat, lon], {
-                                radius: 150,
-                                color: 'black',
-                                weight: 2,
-                                fillColor: 'yellow',
-                                fillOpacity: 0.9
-                            })
-                            .addTo(map)
-                            .bindPopup(`<b>${name}</b>`)
-                            .bindTooltip(name, { 
-                                permanent: true, 
-                                direction: 'top', 
-                                offset: [0, -10]
-                            });
-                        }
+            // Carregar paragens primeiro, depois rotas
+            carregarParagens().then(() => {
+                carregarRotas();
+                
+                // Mostrar todas as paragens no mapa como círculos amarelos
+                todasParagens.forEach(paragem => {
+                    L.circle([paragem.lat, paragem.lon], {
+                        radius: 150,
+                        color: 'black',
+                        weight: 2,
+                        fillColor: 'yellow',
+                        fillOpacity: 0.9
+                    })
+                    .addTo(map)
+                    .bindPopup(`<b>${paragem.nome}</b>`)
+                    .bindTooltip(paragem.nome, { 
+                        permanent: true, 
+                        direction: 'top', 
+                        offset: [0, -10]
                     });
-                },
-                error: function(err) {
-                    console.error("Erro a ler o ficheiro CSV:", err);
-                }
+                });
             });
         });
     </script>
