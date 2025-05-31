@@ -49,15 +49,12 @@ CREATE TABLE IF NOT EXISTS paragens_audit (
 
 
 CREATE TABLE routes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    route_id VARCHAR(10),
-    agency_id VARCHAR(10),
-    route_short_name VARCHAR(100),
+    route_id INT PRIMARY KEY,
+    agency_id VARCHAR(255),
+    route_short_name VARCHAR(255),
     route_long_name VARCHAR(255),
-    route_type INT,
-    image_path VARCHAR(255) DEFAULT 'fotos/rota1.jpg'
+    route_type INT
 );
-
 
 -- Tabela de zonas (para referência)
 CREATE TABLE IF NOT EXISTS zonas (

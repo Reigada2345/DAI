@@ -14,10 +14,11 @@
         "server": "localhost",
         "port": 3306,
         "driver": "MySQL",
+        "name": "bd\\_dai",
+        "group": "Trabalhos Faculdade",
+        "database": "bd\\_dai",
         "username": "root",
-        "database": "bd_dai",
-        "name": "bd_dai",
-        "password": ""
+        "password": "1234"
       },
       {
         "mysqlOptions": {
@@ -28,11 +29,10 @@
         "server": "localhost",
         "port": 3306,
         "driver": "MySQL",
-        "name": "bd\\_dai",
-        "group": "Trabalhos Faculdade",
-        "database": "bd\\_dai",
         "username": "root",
-        "password": "1234"
+        "database": "bd_dai",
+        "name": "bd_dai",
+        "password": "root"
       }
     ]
   }

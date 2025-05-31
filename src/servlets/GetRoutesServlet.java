@@ -1,54 +1,45 @@
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.WebServlet;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import com.google.gson.Gson;
 
-import java.io.*;
-import java.sql.*;
-
-@WebServlet("/api/routes") // URL para o fetch do JS
+@WebServlet("/getRoutes")
 public class GetRoutesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+            throws ServletException, IOException {
 
         response.setContentType("application/json");
-        PrintWriter out = response.getWriter();
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bd_dai", "root", "1234")) {
+            String sql = "SELECT * FROM routes";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<Route> routes = new ArrayList<>();
 
-        String dbUrl = "jdbc:mysql://localhost:3306/NOME_DA_TUA_BASE";
-        String dbUser = "root";
-        String dbPass = "SENHA";
-
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPass);
-            Statement stmt = conn.createStatement();
-
-            ResultSet rs = stmt.executeQuery("SELECT * FROM routes");
-
-            StringBuilder json = new StringBuilder("[");
-            while (rs.next()) {
-                json.append("{")
-                    .append("\"route_id\":\"").append(rs.getString("route_id")).append("\",")
-                    .append("\"short_name\":\"").append(rs.getString("route_short_name")).append("\",")
-                    .append("\"long_name\":\"").append(rs.getString("route_long_name")).append("\",")
-                    .append("\"image\":\"").append(rs.getString("image_path")).append("\"")
-                    .append("},");
+            while (resultSet.next()) {
+                Route route = new Route(
+                    resultSet.getInt("route_id"),
+                    resultSet.getString("agency_id"),
+                    resultSet.getString("route_short_name"),
+                    resultSet.getString("route_long_name"),
+                    resultSet.getInt("route_type")
+                );
+                routes.add(route);
             }
-
-            if (json.length() > 1) {
-                json.setLength(json.length() - 1); // remove vírgula final
-            }
-
-            json.append("]");
-            out.print(json.toString());
-
-            rs.close();
-            stmt.close();
-            conn.close();
-
-        } catch (Exception e) {
+            String json = new Gson().toJson(routes);
+            response.getWriter().write(json);
+        } catch (SQLException e) {
             e.printStackTrace();
-            out.print("[]"); // resposta vazia em caso de erro
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 }
-

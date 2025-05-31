@@ -143,7 +143,19 @@ LOCK TABLES `paragens` WRITE;
 /*!40000 ALTER TABLE `paragens` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
+--DROP TABLE IF EXISTS `routes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `routes` (
+  `route_id` int NOT NULL, -- GTFS route_id (identificador da rota)
+  `agency_id` varchar(255) DEFAULT NULL, -- GTFS agency_id
+  `route_short_name` varchar(255) NOT NULL, -- GTFS route_short_name
+  `route_long_name` varchar(255) DEFAULT NULL, -- GTFS route_long_name
+  `route_type` int NOT NULL, -- GTFS route_type (tipo de transporte)
+  PRIMARY KEY (`route_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 -- Table structure for table `passageiros`
 --
 

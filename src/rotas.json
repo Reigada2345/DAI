@@ -1,0 +1,4 @@
+[
+    {"routeId": "1", "agencyId": "TUB", "routeShortName": "2", "routeLongName": "Mire de Tibães - Frossos - Dume - EN 101", "routeType": "Urbano"},
+    {"routeId": "2", "agencyId": "TUB", "routeShortName": "7", "routeLongName": "São Filipe - Gondizalves - Ferreiros - Lomar", "routeType": "Urbano"}
+]
