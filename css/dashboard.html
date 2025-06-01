@@ -434,16 +434,18 @@
         
         let autocarrosPorRota = {
             "2": [
-                { numero: "2", horario: "08:30 - 09:30", estado: "Em operação" },
-                { numero: "7", horario: "09:30 - 10:30", estado: "Em operação" }
+                { numero: "2", horario: "08:30 - 09:30", estado: "Em operação", status: "Ativo"  },
+                { numero: "7", horario: "09:30 - 10:30", estado: "Em operação", status: "Ativo"  }
             ],
             "3": [
-                { numero: "3", horario: "07:00 - 08:00", estado: "Em operação" },
-                { numero: "8", horario: "09:30 - 10:30", estado: "Em operação" }
+                { numero: "3", horario: "07:00 - 08:00", estado: "Em operação", status: "Inativo" },
+                { numero: "6", horario: "08:00 - 09:00", estado: "Em operação", status: "Ativo"  },
+                { numero: "9", horario: "09:00 - 10:00", estado: "Em operação", status: "Ativo"  },
+                { numero: "8", horario: "09:30 - 10:30", estado: "Em operação", status: "Inativo" },
             ],
             "5": [
-                { numero: "5", horario: "08:00 - 09:00", estado: "Em operação" },
-                { numero: "10", horario: "10:00 - 11:00", estado: "Em operação" }
+                { numero: "5", horario: "08:00 - 09:00", estado: "Em operação", status: "Ativo" },
+                { numero: "10", horario: "10:00 - 11:00", estado: "Em operação", status: "Inativo" },
             ]
         };
 
@@ -655,16 +657,35 @@
             
             let linhasTabela = '';
             autocarros.forEach(autocarro => {
-                linhasTabela += `
-                    <tr>
-                        <td>Linha ${rota.codigo}</td>
-                        <td>${autocarro.numero}</td>
-                        <td>${autocarro.horario}</td>
-                        <td>${autocarro.estado}</td>
-                    </tr>
-                `;
-            });
-
+    const statusAtivo = autocarro.status?.toLowerCase() === 'ativo'; // <-- Usa 'status' aqui
+    const corStatus = statusAtivo ? 'green' : 'red';
+    const textoStatus = statusAtivo ? 'Ativo' : 'Inativo';
+    
+    linhasTabela += `
+        <tr>
+            <td>Linha ${rota.codigo}</td>
+            <td>${autocarro.numero}</td>
+            <td>${autocarro.horario}</td>
+            <td>${autocarro.estado}</td>
+            <td>
+                <span style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                ">
+                    <span style="
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                        background-color: ${corStatus};
+                        display: inline-block;
+                    "></span>
+                    ${textoStatus}
+                </span>
+            </td>
+        </tr>
+    `;
+});
             if (autocarros.length === 0) {
                 linhasTabela = `
                     <tr>
@@ -685,6 +706,7 @@
                             <th>Número do Autocarro</th>
                             <th>Horário</th>
                             <th>Estado</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
