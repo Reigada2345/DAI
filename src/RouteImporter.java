@@ -10,9 +10,9 @@ public class RouteImporter {
     public void importRoutes(String filePath, Connection connection) throws SQLException, IOException {
         String sql = "INSERT INTO routes (route_id, agency_id, route_short_name, route_long_name, route_type) VALUES (?, ?, ?, ?, ?)";
         try (BufferedReader br = new BufferedReader(new FileReader(filePath));
-            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            String line = ;
+            String line = br.readLine(); // lê o cabeçalho e ignora
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
                 // Verifique se o número de colunas está correto
@@ -24,7 +24,6 @@ public class RouteImporter {
                     preparedStatement.setInt(5, Integer.parseInt(data[4]));
                     preparedStatement.executeUpdate();
                 } else {
-                    // Log ou tratamento de erro se a formatação estiver incorreta
                     System.err.println("Formato de linha incorreto: " + line);
                 }
             }

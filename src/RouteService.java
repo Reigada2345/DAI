@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import models.Route;
 
 public class RouteService {
 public List<Route> getRoutes(Connection connection) throws SQLException {
